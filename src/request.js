@@ -1,6 +1,9 @@
-const isDebugger = () => location.href.indexOf('__debugger__') > -1;
+import axios from 'axios';
+import jsonpAdapter from 'axios-jsonp';
+
+const isDebugger = location.href.indexOf('__debugger__') > -1;
 const url = (pathname) => {
-    if (isDebugger()) {
+    if (isDebugger) {
         const query = location.search.split('&').reduce((currentObj, item) => {
             const itemArr = item.split('=');
             currentObj[itemArr[0]] = itemArr[1];
@@ -12,13 +15,20 @@ const url = (pathname) => {
 };
 const req = {};
 
-['get', 'post', 'put', 'delete', 'jsonp', 'patch'].forEach(item => {
-    req[item] = (pathname, params) => {
-        return fetch(url(pathname), {
+['get', 'post', 'put', 'delete', 'patch', 'jsonp'].forEach(item => {
+    req[item] = (pathname, params, config) => {
+        config = config || {};
+        if (item === 'jsonp') {
+            config.adapter = jsonpAdapter;
+        }
+        return axios({
+            url: url(pathname),
             method: item.toUpperCase(),
             data: params,
-            credentials: isDebugger() ? 'omit' : 'include'
-        }).then(res => res.json()).then(body => {
+            ...config
+        }, config).then(ret => {
+            return ret.data;
+        }).then(body => {
             return new Promise((resolve, reject) => {
                 if (body.success) {
                     resolve(body.returnValue || body);
