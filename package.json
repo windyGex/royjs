@@ -1,6 +1,6 @@
 {
   "name": "@alife/roy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A tiny mvvm library for react",
   "main": "lib/roy.js",
   "scripts": {
@@ -13,6 +13,14 @@
     "type": "git",
     "url": "http://gitlab.alibaba-inc.com/xing.gex/roy.git"
   },
+  "files": [
+    "docs",
+    "lib",
+    "src",
+    "test",
+    "HISTORY.md",
+    "README.md"
+  ],
   "keywords": [
     "mvvm",
     "react",
