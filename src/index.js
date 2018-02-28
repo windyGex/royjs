@@ -1,4 +1,4 @@
-import request, {DataSource, withRequest} from '@alife/seek-request';
+import request, {DataSource, withRequest} from '@alife/s-request';
 import inject from './inject';
 import Observer from './observe-model';
 import Store from './store';
