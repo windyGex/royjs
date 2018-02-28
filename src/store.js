@@ -69,7 +69,7 @@ class Store extends Events {
     }
     findIndexFromId(id) {
         let matched = -1;
-        this.data.forEach((item, index) => {
+        this.state.data.forEach((item, index) => {
             if (item[this.primaryKey] === id) {
                 matched = index;
             }
@@ -79,9 +79,9 @@ class Store extends Events {
     modifyById(id) {
         this.findById(id, false).then(ret => {
             const index = this.findIndexFromId(id);
-            this.data.splice(index, 1, ret);
+            this.state.data.splice(index, 1, ret);
             this.set({
-                data: this.data,
+                data: this.state.data,
                 record: ret
             });
         });

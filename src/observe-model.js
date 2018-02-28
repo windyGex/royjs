@@ -40,6 +40,13 @@ class ObservableModel extends Events {
         super(object);
         this._wrapAll(object, this);
     }
+    toJSON() {
+        const ret = {};
+        Object.keys(this).forEach(key => {
+            ret[key] = this[key];
+        });
+        return ret;
+    }
     _wrapAll(object, target) {
         const parent = () => this;
         Object.keys(object).forEach(key => {

@@ -1,10 +1,10 @@
 {
   "name": "@alife/roy",
   "version": "0.1.0",
-  "description": "Produce universal library with webpack and es6",
+  "description": "A tiny mvvm library for react",
   "main": "lib/roy.js",
   "scripts": {
-    "build": "webpack --env dev && webpack --env build && npm run test",
+    "build": "webpack --env dev && webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js"
@@ -14,9 +14,9 @@
     "url": "http://gitlab.alibaba-inc.com/xing.gex/roy.git"
   },
   "keywords": [
-    "webpack",
-    "es6",
-    "starter",
+    "mvvm",
+    "react",
+    "tiny",
     "library",
     "universal",
     "umd",
@@ -48,7 +48,9 @@
     "yargs": "^10.0.3"
   },
   "dependencies": {
-    "axios": "^0.17.1",
-    "axios-jsonp": "^1.0.1"
+    "@alife/seek-request": "^1.x"
+  },
+  "publishConfig": {
+    "registry": "http://registry.npm.alibaba-inc.com"
   }
 }

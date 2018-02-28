@@ -1,10 +1,11 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 // inject(listStore)
 // inject('listStore', listStore)
 // inject({
-//  listStore,
-//  noticeStore
+// listStore,
+// noticeStore
 // })
 const inject = function (key, value) {
     const length = arguments.length;
@@ -47,6 +48,10 @@ const inject = function (key, value) {
                 Object.keys(defaultProps).forEach(key => {
                     this[key].off('change', this._change);
                 });
+            }
+            componentDidMount() {
+                const node = ReactDOM.findDOMNode(this);
+                node._instance = this;
             }
             render() {
                 return <Component {...this.props} />;

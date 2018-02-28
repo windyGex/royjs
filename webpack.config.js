@@ -48,7 +48,8 @@ const config = {
     },
     plugins: plugins,
     externals: {
-        react: 'react'
+        react: 'react',
+        'react-dom' : 'react-dom'
     }
 };
 

@@ -1,4 +1,4 @@
-import req from './request';
+import req from '@alife/seek-request';
 
 function DataSource(props) {
     Object.keys(props).forEach(key => {
