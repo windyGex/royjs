@@ -2,9 +2,10 @@
   "name": "@alife/roy",
   "version": "0.1.4",
   "description": "A tiny mvvm library for react",
-  "main": "lib/roy.js",
+  "main": "lib/index.js",
   "scripts": {
-    "build": "webpack --env dev && webpack --env build",
+    "build": "rimraf lib && babel src --out-dir lib",
+    "build:umd": "webpack --env dev && webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js"
@@ -14,6 +15,7 @@
     "url": "http://gitlab.alibaba-inc.com/xing.gex/roy.git"
   },
   "files": [
+    "dist",
     "docs",
     "lib",
     "src",
@@ -52,6 +54,7 @@
     "mocha": "^4.0.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "rimraf": "^2.6.2",
     "webpack": "^3.10.0",
     "yargs": "^10.0.3"
   },
