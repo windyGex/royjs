@@ -1,6 +1,6 @@
 {
   "name": "@alife/roy",
-  "version": "0.1.6",
+  "version": "0.2.1",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "build:umd": "webpack --env dev && webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-    "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js"
+    "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js",
+    "prepublish": "tnpm run build && tnpm run build:umd"
   },
   "repository": {
     "type": "git",

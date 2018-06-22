@@ -1647,10 +1647,12 @@ var ObservableModel = function (_Events) {
         value: function set(path, value) {
             var _this4 = this;
 
+            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
             if (isPlainObject(path)) {
                 Object.keys(path).forEach(function (key) {
                     var val = path[key];
-                    _this4.set(key, val);
+                    _this4.set(key, val, value);
                 });
                 return;
             }
@@ -1675,7 +1677,7 @@ var ObservableModel = function (_Events) {
             } else {
                 this[path] = value;
             }
-            if (currentValue !== value && !nested) {
+            if ((currentValue !== value || options.forceUpdate) && !nested) {
                 this.trigger('change', {
                     key: path
                 });
@@ -4623,8 +4625,8 @@ var Store = function (_Events) {
         }
     }, {
         key: 'set',
-        value: function set(key, value) {
-            return this.model.set(key, value);
+        value: function set(key, value, options) {
+            return this.model.set(key, value, options);
         }
     }, {
         key: 'find',
