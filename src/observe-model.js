@@ -115,11 +115,11 @@ class ObservableModel extends Events {
         });
         return val;
     }
-    set(path, value) {
+    set(path, value, options = {}) {
         if (isPlainObject(path)) {
             Object.keys(path).forEach(key => {
                 let val = path[key];
-                this.set(key, val);
+                this.set(key, val, value);
             });
             return;
         }
@@ -141,7 +141,7 @@ class ObservableModel extends Events {
         } else {
             this[path] = value;
         }
-        if (currentValue !== value && !nested) {
+        if ((currentValue !== value || options.forceUpdate)&& !nested) {
             this.trigger('change', {
                 key: path
             });

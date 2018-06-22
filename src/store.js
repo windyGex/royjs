@@ -35,8 +35,8 @@ class Store extends Events {
     get(key) {
         return this.model.get(key);
     }
-    set(key, value) {
-        return this.model.set(key, value);
+    set(key, value, options) {
+        return this.model.set(key, value, options);
     }
     find(params) {
         this.set('loading', true);
