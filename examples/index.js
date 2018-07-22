@@ -18,6 +18,21 @@ const logger = function(store) {
     });
 }
 
+const devtools = function(store) {
+    let tool;
+    store.subscribe(obj => {
+        if (window.hasOwnProperty('__REDUX_DEVTOOLS_EXTENSION__') && !tool) {
+            tool = window.__REDUX_DEVTOOLS_EXTENSION__.connect();
+            // tool.subscribe(message => {
+            //     if (message.type === 'DISPATCH' && message.state) {
+            //         store.set(JSON.parse(message.state));
+            //     }
+            // });
+        }
+        tool.send(obj.type, obj.state.toJSON());
+    })
+}
+
 const store = new Roy.Store({
     state: {
         name: "test",
@@ -33,7 +48,7 @@ const store = new Roy.Store({
         }
     }
 }, {
-    plugins: [logger]
+    plugins: [logger, devtools]
 });
 
 const mapStateToProps = (state) => state;

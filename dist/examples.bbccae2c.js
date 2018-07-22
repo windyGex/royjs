@@ -41012,7 +41012,9 @@ var ObservableModel = function (_Events) {
 
             var ret = {};
             Object.keys(this).forEach(function (key) {
-                ret[key] = _this2[key];
+                if (key.charAt(0) != '_') {
+                    ret[key] = _this2[key];
+                }
             });
             return ret;
         }
@@ -41528,6 +41530,21 @@ var logger = function logger(store) {
     });
 };
 
+var devtools = function devtools(store) {
+    var tool = void 0;
+    store.subscribe(function (obj) {
+        if (window.hasOwnProperty('__REDUX_DEVTOOLS_EXTENSION__') && !tool) {
+            tool = window.__REDUX_DEVTOOLS_EXTENSION__.connect();
+            // tool.subscribe(message => {
+            //     if (message.type === 'DISPATCH' && message.state) {
+            //         store.set(JSON.parse(message.state));
+            //     }
+            // });
+        }
+        tool.send(obj.type, obj.state.toJSON());
+    });
+};
+
 var store = new _src2.default.Store({
     state: {
         name: "test",
@@ -41569,7 +41586,7 @@ var store = new _src2.default.Store({
         }()
     }
 }, {
-    plugins: [logger]
+    plugins: [logger, devtools]
 });
 
 var mapStateToProps = function mapStateToProps(state) {
