@@ -1,4 +1,4 @@
 {
   "presets": ["env","es2015","react","stage-0"],
-  "plugins": ["babel-plugin-add-module-exports"]
+  "plugins": ["babel-plugin-add-module-exports", "transform-class-properties", "transform-async-generator-functions", "transform-async-to-generator"]
 }

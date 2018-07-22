@@ -1,18 +1,26 @@
 import Events from './events';
-import DataSource from './data-source';
 import ObservableModel from './observe-model';
 
+let globalStore;
+
 class Store extends Events {
-    url = '';
-    constructor(state) {
-        super(state);
-        state = {
-            loading: false,
-            data: [],
-            record: {},
-            total: 0,
-            ...state
-        };
+    static create = function (params) {
+        const { name, state, actions } = params;
+        Object.keys(state).forEach(key => {
+            globalStore.set(`${name}.${key}`, state[key]);
+        });
+        globalStore._wrapActions(actions, globalStore.get(name), name);
+        return globalStore.get(name);
+    }
+    static get = function () {
+        return globalStore;
+    }
+    // state
+    // actions
+    constructor(params, options = {}) {
+        super(params, options);
+        const { state, actions } = params;
+        const { strict, plugins = [] } = options;
         this.model = new ObservableModel(state);
         this.model.on('get', args => {
             this.trigger('get', args);
@@ -21,83 +29,59 @@ class Store extends Events {
             args.value = this.model.get(args.key);
             this.trigger('change', args);
         });
-        this._dataMaps = {};
         this.state = state;
-    }
-    get primaryKey() {
-        return 'id';
-    }
-    get ds() {
-        return new DataSource({
-            url: this.url
+        this.actions = {};
+        this._strictMode = strict;
+        this._wrapActions(actions, this.model);
+        plugins.forEach(plugin => {
+            plugin(this);
         });
+        if (!globalStore) {
+            globalStore = this;
+        }
     }
     get(key) {
         return this.model.get(key);
     }
     set(key, value, options) {
+        if (this._strictMode && !this._allowModelSet) {
+            throw new Error('Can only set model by actions');
+        }
         return this.model.set(key, value, options);
     }
-    find(params) {
-        this.set('loading', true);
-        return this.ds.find(params).then(ret => {
-            this.set({
-                total: ret.paginator.items,
-                data: ret.result,
-                loading: false
-            });
-            this._setDataToCache(ret.result);
+    _wrapActions(actions, state, prefix) {
+        Object.keys(actions).forEach(type => {
+            const actionType = prefix ? `${prefix}.${type}` : type;
+            this.actions[actionType] = (payload) => {
+                const action = actions[type];
+                const ret = action(state, payload, { put: this.put });
+                this.trigger('actions', {
+                    type,
+                    payload,
+                    state: this.model
+                });
+                return ret;
+            };
         });
     }
-    findById(id, cache = true) {
-        const matched = this.findByIdFromCache(id);
-        let promise;
-        if (matched && cache) {
-            promise = new Promise((resolve, reject) => {
-                resolve(matched);
-            });
-        } else {
-            promise = this.ds.get(id);
+    dispatch(type, payload) {
+        const action = this.actions[type];
+        action(payload);
+    }
+    put = (type, payload) =>{
+        this._allowModelSet = true;
+        const action = this.actions[type];
+        if (typeof action === 'function') {
+            action(payload);
         }
-        return promise.then(ret => {
-            this.set('record', ret);
-            return ret;
-        });
+        this._allowModelSet = false;
     }
-    findByIdFromCache(id) {
-        return this._dataMaps[id];
-    }
-    findIndexFromId(id) {
-        let matched = -1;
-        this.state.data.forEach((item, index) => {
-            if (item[this.primaryKey] === id) {
-                matched = index;
-            }
-        });
-        return matched;
-    }
-    modifyById(id) {
-        this.findById(id, false).then(ret => {
-            const index = this.findIndexFromId(id);
-            this.state.data.splice(index, 1, ret);
-            this.set({
-                data: this.state.data,
-                record: ret
-            });
-        });
-    }
-    mapActionTo(target, methods) {
-        methods.forEach(method => {
-            if (typeof this[method] === 'function') {
-                target[method] = this[method].bind(this);
-            }
-        });
-    }
-    _setDataToCache(data) {
-        data.forEach(item => {
-            this._dataMaps[item[this.primaryKey]] = item;
+    subscribe(callback) {
+        this.on('actions', function({type, payload, state}) {
+            callback({type, payload, state});
         });
     }
 }
+
 
 export default Store;

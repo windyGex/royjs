@@ -8,6 +8,7 @@ function DataSource(props) {
 DataSource.prototype = {
     url: '',
     req,
+    request: req,
     get(id, params) {
         return req.get(`${this.url}/${id}`, params);
     },
