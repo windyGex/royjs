@@ -25684,7 +25684,114 @@ module.exports = ReactDOM;
 
 module.exports = require('./lib/ReactDOM');
 
-},{"./lib/ReactDOM":"../node_modules/react-dom/lib/ReactDOM.js"}],"../node_modules/prop-types/node_modules/object-assign/index.js":[function(require,module,exports) {
+},{"./lib/ReactDOM":"../node_modules/react-dom/lib/ReactDOM.js"}],"../src/inject.jsx":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// inject(listStore)
+// inject('listStore', listStore)
+// inject({
+// listStore,
+// noticeStore
+// })
+var inject = function inject(key, value) {
+    var length = arguments.length;
+    var defaultProps = {};
+    if (length === 1) {
+        if (key.primaryKey) {
+            defaultProps = {
+                store: key
+            };
+        } else {
+            defaultProps = key;
+        }
+    } else if (length === 2) {
+        defaultProps[key] = value;
+    }
+    return function withStore(Component) {
+        var StoreWrapper = function (_React$Component) {
+            _inherits(StoreWrapper, _React$Component);
+
+            function StoreWrapper(props) {
+                _classCallCheck(this, StoreWrapper);
+
+                var _this = _possibleConstructorReturn(this, (StoreWrapper.__proto__ || Object.getPrototypeOf(StoreWrapper)).call(this, props));
+
+                _this._deps = {};
+                _this._change = function (obj) {
+                    var state = {};
+                    if (_this._deps[obj.key]) {
+                        state[obj.key] = obj.value;
+                        _this.setState(state);
+                    }
+                };
+                _this._get = function (data) {
+                    _this._deps[data.key] = true;
+                };
+                Object.keys(defaultProps).forEach(function (key) {
+                    _this[key] = defaultProps[key];
+                    _this[key].on('change', _this._change);
+                    _this[key].on('get', _this._get);
+                    Component.prototype[key] = _this[key];
+                });
+                return _this;
+            }
+
+            _createClass(StoreWrapper, [{
+                key: 'componentWillUnmount',
+                value: function componentWillUnmount() {
+                    var _this2 = this;
+
+                    Object.keys(defaultProps).forEach(function (key) {
+                        _this2[key].off('change', _this2._change);
+                    });
+                }
+            }, {
+                key: 'componentDidMount',
+                value: function componentDidMount() {
+                    var node = _reactDom2.default.findDOMNode(this);
+                    node._instance = this;
+                }
+            }, {
+                key: 'render',
+                value: function render() {
+                    return _react2.default.createElement(Component, this.props);
+                }
+            }]);
+
+            return StoreWrapper;
+        }(_react2.default.Component);
+
+        StoreWrapper.defaultProps = defaultProps;
+
+        return StoreWrapper;
+    };
+};
+
+exports.default = inject;
+module.exports = exports['default'];
+},{"react":"../node_modules/react/react.js","react-dom":"../node_modules/react-dom/index.js"}],"../node_modules/prop-types/node_modules/object-assign/index.js":[function(require,module,exports) {
 /*
 object-assign
 (c) Sindre Sorhus
@@ -26747,7 +26854,52 @@ var ObservableModel = function (_Events) {
 
 exports.default = ObservableModel;
 module.exports = exports['default'];
-},{"./events":"../src/events.js"}],"../src/store.js":[function(require,module,exports) {
+},{"./events":"../src/events.js"}],"../src/data-source.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _sRequest = require('@alife/s-request');
+
+var _sRequest2 = _interopRequireDefault(_sRequest);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function DataSource(props) {
+    var _this = this;
+
+    Object.keys(props).forEach(function (key) {
+        _this[key] = props[key];
+    });
+}
+DataSource.prototype = {
+    url: '',
+    req: _sRequest2.default,
+    request: _sRequest2.default,
+    get: function get(id, params) {
+        return _sRequest2.default.get(this.url + '/' + id, params);
+    },
+    patch: function patch(id, params) {
+        return _sRequest2.default.patch(this.url + '/' + id, params);
+    },
+    put: function put(id, params) {
+        return _sRequest2.default.put(this.url + '/' + id, params);
+    },
+    post: function post(params) {
+        return _sRequest2.default.post(this.url, params);
+    },
+    find: function find(params) {
+        return _sRequest2.default.get(this.url, params);
+    },
+    remove: function remove(id) {
+        return _sRequest2.default.delete(this.url + '/' + id);
+    }
+};
+exports.default = DataSource;
+module.exports = exports['default'];
+},{"@alife/s-request":"../node_modules/@alife/s-request/lib/index.js"}],"../src/store.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26763,6 +26915,8 @@ var _events2 = _interopRequireDefault(_events);
 var _observeModel = require('./observe-model');
 
 var _observeModel2 = _interopRequireDefault(_observeModel);
+
+var _dataSource = require('./data-source');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26818,6 +26972,9 @@ var Store = function (_Events) {
     }
 
     _createClass(Store, [{
+        key: 'request',
+        value: function request() {}
+    }, {
         key: 'get',
         value: function get(key) {
             return this.model.get(key);
@@ -26871,6 +27028,13 @@ var Store = function (_Events) {
         get: function get() {
             return this.model;
         }
+    }, {
+        key: 'dataSource',
+        get: function get() {
+            return new _dataSource.DataSource({
+                url: this.url
+            });
+        }
     }]);
 
     return Store;
@@ -26895,6 +27059,8 @@ Store.get = function () {
 var _initialiseProps = function _initialiseProps() {
     var _this3 = this;
 
+    this.url = '';
+
     this.put = function (type, payload) {
         _this3._allowModelSet = true;
         var action = _this3.actions[type];
@@ -26907,7 +27073,7 @@ var _initialiseProps = function _initialiseProps() {
 
 exports.default = Store;
 module.exports = exports['default'];
-},{"./events":"../src/events.js","./observe-model":"../src/observe-model.js"}],"../src/inject.jsx":[function(require,module,exports) {
+},{"./events":"../src/events.js","./observe-model":"../src/observe-model.js","./data-source":"../src/data-source.js"}],"../src/connect.jsx":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26942,7 +27108,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var inject = function inject(mapStateToProps) {
+var connect = function connect(mapStateToProps) {
     return function withStore(Component) {
         var StoreWrapper = function (_React$Component) {
             _inherits(StoreWrapper, _React$Component);
@@ -27000,43 +27166,9 @@ var inject = function inject(mapStateToProps) {
     };
 };
 
-exports.default = inject;
+exports.default = connect;
 module.exports = exports['default'];
-},{"react":"../node_modules/react/react.js","react-dom":"../node_modules/react-dom/index.js","prop-types":"../node_modules/prop-types/index.js","./store":"../src/store.js"}],"../src/index.js":[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _sRequest = require('@alife/s-request');
-
-var _sRequest2 = _interopRequireDefault(_sRequest);
-
-var _inject = require('./inject');
-
-var _inject2 = _interopRequireDefault(_inject);
-
-var _observeModel = require('./observe-model');
-
-var _observeModel2 = _interopRequireDefault(_observeModel);
-
-var _store = require('./store');
-
-var _store2 = _interopRequireDefault(_store);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    DataSource: _sRequest.DataSource,
-    inject: _inject2.default,
-    Observer: _observeModel2.default,
-    Store: _store2.default,
-    request: _sRequest2.default,
-    withRequest: _sRequest.withRequest
-};
-module.exports = exports['default'];
-},{"@alife/s-request":"../node_modules/@alife/s-request/lib/index.js","./inject":"../src/inject.jsx","./observe-model":"../src/observe-model.js","./store":"../src/store.js"}],"../src/provider.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/react.js","react-dom":"../node_modules/react-dom/index.js","prop-types":"../node_modules/prop-types/index.js","./store":"../src/store.js"}],"../src/provider.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27095,7 +27227,51 @@ Provider.propTypes = {
 };
 exports.default = Provider;
 module.exports = exports['default'];
-},{"react":"../node_modules/react/react.js","prop-types":"../node_modules/prop-types/index.js"}],"index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/react.js","prop-types":"../node_modules/prop-types/index.js"}],"../src/index.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _sRequest = require('@alife/s-request');
+
+var _sRequest2 = _interopRequireDefault(_sRequest);
+
+var _inject = require('./inject');
+
+var _inject2 = _interopRequireDefault(_inject);
+
+var _connect = require('./connect');
+
+var _connect2 = _interopRequireDefault(_connect);
+
+var _provider = require('./provider');
+
+var _provider2 = _interopRequireDefault(_provider);
+
+var _observeModel = require('./observe-model');
+
+var _observeModel2 = _interopRequireDefault(_observeModel);
+
+var _store = require('./store');
+
+var _store2 = _interopRequireDefault(_store);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    DataSource: _sRequest.DataSource,
+    inject: _inject2.default,
+    connect: _connect2.default,
+    Observer: _observeModel2.default,
+    Store: _store2.default,
+    request: _sRequest2.default,
+    withRequest: _sRequest.withRequest,
+    Provider: _provider2.default
+};
+module.exports = exports['default'];
+},{"@alife/s-request":"../node_modules/@alife/s-request/lib/index.js","./inject":"../src/inject.jsx","./connect":"../src/connect.jsx","./provider":"../src/provider.js","./observe-model":"../src/observe-model.js","./store":"../src/store.js"}],"index.js":[function(require,module,exports) {
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -27255,7 +27431,7 @@ var App = function (_React$Component) {
     return App;
 }(_react2.default.Component);
 
-var AppStore = _src2.default.inject(mapStateToProps)(App);
+var AppStore = _src2.default.connect(mapStateToProps)(App);
 
 var globalStore = new _src2.default.Store({
     state: {

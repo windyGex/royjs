@@ -1,9 +1,11 @@
 import Events from './events';
 import ObservableModel from './observe-model';
+import { DataSource } from './data-source';
 
 let globalStore;
 
 class Store extends Events {
+    url = '';
     static create = function (params) {
         const { name, state, actions } = params;
         Object.keys(state).forEach(key => {
@@ -41,6 +43,14 @@ class Store extends Events {
     }
     get state() {
         return this.model;
+    }
+    get dataSource() {
+        return new DataSource({
+            url: this.url
+        });
+    }
+    request() {
+        
     }
     get(key) {
         return this.model.get(key);

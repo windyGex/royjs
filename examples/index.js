@@ -76,7 +76,7 @@ class App extends React.Component {
     }
 }
 
-const AppStore = Roy.inject(mapStateToProps)(App);
+const AppStore = Roy.connect(mapStateToProps)(App);
 
 const globalStore = new Roy.Store({
     state: {

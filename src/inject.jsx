@@ -1,17 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import T from 'prop-types';
-import Store from './store';
 
-const inject = function (mapStateToProps) {
+// inject(listStore)
+// inject('listStore', listStore)
+// inject({
+// listStore,
+// noticeStore
+// })
+const inject = function (key, value) {
+    const length = arguments.length;
+    let defaultProps = {};
+    if (length === 1) {
+        if (key.primaryKey) {
+            defaultProps = {
+                store: key
+            };
+        } else {
+            defaultProps = key;
+        }
+    } else if (length === 2) {
+        defaultProps[key] = value;
+    }
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
-            static contextTypes = {
-                store: T.any
-            }
-            store = this.context.store || Store.get();
-            constructor(props, context) {
-                super(props, context);
+            static defaultProps = defaultProps;
+            constructor(props) {
+                super(props);
                 this._deps = {};
                 this._change = (obj) => {
                     const state = {};
@@ -23,19 +37,24 @@ const inject = function (mapStateToProps) {
                 this._get = (data) => {
                     this._deps[data.key] = true;
                 };
-                this.store.on('change', this._change);
-                this.store.on('get', this._get);
+                Object.keys(defaultProps).forEach(key => {
+                    this[key] = defaultProps[key];
+                    this[key].on('change', this._change);
+                    this[key].on('get', this._get);
+                    Component.prototype[key] = this[key];
+                });
             }
             componentWillUnmount() {
-                this.store.off('change', this._change);
+                Object.keys(defaultProps).forEach(key => {
+                    this[key].off('change', this._change);
+                });
             }
             componentDidMount() {
                 const node = ReactDOM.findDOMNode(this);
                 node._instance = this;
             }
             render() {
-                const props = mapStateToProps(this.store.state);
-                return <Component {...this.props} {...props}/>;
+                return <Component {...this.props} />;
             }
         }
         return StoreWrapper;
