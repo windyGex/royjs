@@ -19,7 +19,7 @@ class Store extends Events {
     // actions
     constructor(params, options = {}) {
         super(params, options);
-        const { state, actions } = params;
+        const { state, actions = {} } = params;
         const { strict, plugins = [] } = options;
         this.model = new ObservableModel(state);
         this.model.on('get', args => {

@@ -1,6 +1,7 @@
 import Roy from '../src/';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Provider from '../src/provider';
 
 const mock = function () {
     return new Promise((resolve, reject) => {
@@ -77,4 +78,30 @@ class App extends React.Component {
 
 const AppStore = Roy.inject(mapStateToProps)(App);
 
-ReactDOM.render(<AppStore/>, document.getElementById('root'));
+const globalStore = new Roy.Store({
+    state: {
+        subModule: {
+            name: 'globalStore'
+        }
+    }
+});
+
+class Demo extends React.Component {
+    state = {
+
+    }
+    render() {
+        return <div>
+            <button onClick={() => this.setState({
+                global: true
+            })}>change to global</button>
+            {this.state.global ?
+            <Provider store={globalStore}>
+                <AppStore/>
+            </Provider> : <AppStore/>
+        }
+        </div>;
+    }
+}
+
+ReactDOM.render(<Demo/>, document.getElementById('root'));

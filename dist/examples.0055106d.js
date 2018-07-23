@@ -26789,7 +26789,8 @@ var Store = function (_Events) {
         _initialiseProps.call(_this);
 
         var state = params.state,
-            actions = params.actions;
+            _params$actions = params.actions,
+            actions = _params$actions === undefined ? {} : _params$actions;
         var strict = options.strict,
             _options$plugins = options.plugins,
             plugins = _options$plugins === undefined ? [] : _options$plugins;
@@ -27035,7 +27036,66 @@ exports.default = {
     withRequest: _sRequest.withRequest
 };
 module.exports = exports['default'];
-},{"@alife/s-request":"../node_modules/@alife/s-request/lib/index.js","./inject":"../src/inject.jsx","./observe-model":"../src/observe-model.js","./store":"../src/store.js"}],"index.js":[function(require,module,exports) {
+},{"@alife/s-request":"../node_modules/@alife/s-request/lib/index.js","./inject":"../src/inject.jsx","./observe-model":"../src/observe-model.js","./store":"../src/store.js"}],"../src/provider.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Provider = function (_React$Component) {
+    _inherits(Provider, _React$Component);
+
+    function Provider() {
+        _classCallCheck(this, Provider);
+
+        return _possibleConstructorReturn(this, (Provider.__proto__ || Object.getPrototypeOf(Provider)).apply(this, arguments));
+    }
+
+    _createClass(Provider, [{
+        key: 'getChildContext',
+        value: function getChildContext() {
+            return {
+                store: this.props.store
+            };
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return this.props.children;
+        }
+    }]);
+
+    return Provider;
+}(_react2.default.Component);
+
+Provider.childContextTypes = {
+    store: _propTypes2.default.any
+};
+Provider.propTypes = {
+    store: _propTypes2.default.any
+};
+exports.default = Provider;
+module.exports = exports['default'];
+},{"react":"../node_modules/react/react.js","prop-types":"../node_modules/prop-types/index.js"}],"index.js":[function(require,module,exports) {
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -27051,6 +27111,10 @@ var _react2 = _interopRequireDefault(_react);
 var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _provider = require('../src/provider');
+
+var _provider2 = _interopRequireDefault(_provider);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27193,8 +27257,62 @@ var App = function (_React$Component) {
 
 var AppStore = _src2.default.inject(mapStateToProps)(App);
 
-_reactDom2.default.render(_react2.default.createElement(AppStore, null), document.getElementById('root'));
-},{"../src/":"../src/index.js","react":"../node_modules/react/react.js","react-dom":"../node_modules/react-dom/index.js"}],"../node_modules/_parcel@1.9.7@parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+var globalStore = new _src2.default.Store({
+    state: {
+        subModule: {
+            name: 'globalStore'
+        }
+    }
+});
+
+var Demo = function (_React$Component2) {
+    _inherits(Demo, _React$Component2);
+
+    function Demo() {
+        var _ref3;
+
+        var _temp, _this2, _ret;
+
+        _classCallCheck(this, Demo);
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this2 = _possibleConstructorReturn(this, (_ref3 = Demo.__proto__ || Object.getPrototypeOf(Demo)).call.apply(_ref3, [this].concat(args))), _this2), _this2.state = {}, _temp), _possibleConstructorReturn(_this2, _ret);
+    }
+
+    _createClass(Demo, [{
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'button',
+                    { onClick: function onClick() {
+                            return _this3.setState({
+                                global: true
+                            });
+                        } },
+                    'change to global'
+                ),
+                this.state.global ? _react2.default.createElement(
+                    _provider2.default,
+                    { store: globalStore },
+                    _react2.default.createElement(AppStore, null)
+                ) : _react2.default.createElement(AppStore, null)
+            );
+        }
+    }]);
+
+    return Demo;
+}(_react2.default.Component);
+
+_reactDom2.default.render(_react2.default.createElement(Demo, null), document.getElementById('root'));
+},{"../src/":"../src/index.js","react":"../node_modules/react/react.js","react-dom":"../node_modules/react-dom/index.js","../src/provider":"../src/provider.js"}],"../node_modules/_parcel@1.9.7@parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
