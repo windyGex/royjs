@@ -29,7 +29,6 @@ class Store extends Events {
             args.value = this.model.get(args.key);
             this.trigger('change', args);
         });
-        this.state = state;
         this.actions = {};
         this._strictMode = strict;
         this._wrapActions(actions, this.model);
@@ -39,6 +38,9 @@ class Store extends Events {
         if (!globalStore) {
             globalStore = this;
         }
+    }
+    get state() {
+        return this.model;
     }
     get(key) {
         return this.model.get(key);
@@ -56,7 +58,7 @@ class Store extends Events {
                 const action = actions[type];
                 const ret = action(state, payload, { put: this.put });
                 this.trigger('actions', {
-                    type,
+                    type: actionType,
                     payload,
                     state: this.model
                 });
@@ -77,11 +79,10 @@ class Store extends Events {
         this._allowModelSet = false;
     }
     subscribe(callback) {
-        this.on('actions', function({type, payload, state}) {
+        this.on('actions', function ({type, payload, state}) {
             callback({type, payload, state});
         });
     }
 }
-
 
 export default Store;

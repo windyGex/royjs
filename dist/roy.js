@@ -1364,15 +1364,20 @@ var Store = function (_Events) {
 
     // state
     // actions
-    function Store(params, options) {
+    function Store(params) {
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
         _classCallCheck(this, Store);
 
         var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this, params, options));
 
+        _initialiseProps.call(_this);
+
         var state = params.state,
             actions = params.actions;
         var strict = options.strict,
-            plugins = options.plugins;
+            _options$plugins = options.plugins,
+            plugins = _options$plugins === undefined ? [] : _options$plugins;
 
         _this.model = new _observeModel2.default(state);
         _this.model.on('get', function (args) {
@@ -1387,7 +1392,7 @@ var Store = function (_Events) {
         _this.state = state;
         _this.actions = {};
         _this._strictMode = strict;
-        _this._wrapActions(actions, state);
+        _this._wrapActions(actions, _this.model);
         plugins.forEach(function (plugin) {
             plugin(_this);
         });
@@ -1416,13 +1421,16 @@ var Store = function (_Events) {
             var _this2 = this;
 
             Object.keys(actions).forEach(function (type) {
-                _this2.actions[prefix + '.' + type] = function (payload) {
+                var actionType = prefix ? prefix + '.' + type : type;
+                _this2.actions[actionType] = function (payload) {
                     var action = actions[type];
-                    /* eslint-disable no-use-before-define */
-                    if (isAsyncFunction(action)) {
-                        return action({ put: _this2.put }, state, payload);
-                    }
-                    return actions[type](state, payload);
+                    var ret = action(state, payload, { put: _this2.put });
+                    _this2.trigger('actions', {
+                        type: type,
+                        payload: payload,
+                        state: _this2.model
+                    });
+                    return ret;
                 };
             });
         }
@@ -1433,14 +1441,15 @@ var Store = function (_Events) {
             action(payload);
         }
     }, {
-        key: 'put',
-        value: function put(type, payload) {
-            this._allowModelSet = true;
-            var action = this.actions[type];
-            if (typeof action === 'function') {
-                action(payload);
-            }
-            this._allowModelSet = false;
+        key: 'subscribe',
+        value: function subscribe(callback) {
+            this.on('actions', function (_ref) {
+                var type = _ref.type,
+                    payload = _ref.payload,
+                    state = _ref.state;
+
+                callback({ type: type, payload: payload, state: state });
+            });
         }
     }]);
 
@@ -1463,9 +1472,18 @@ Store.get = function () {
     return globalStore;
 };
 
-function isAsyncFunction(func) {
-    return Object.prototype.toString.call(func) === '[object AsyncFunction]';
-}
+var _initialiseProps = function _initialiseProps() {
+    var _this3 = this;
+
+    this.put = function (type, payload) {
+        _this3._allowModelSet = true;
+        var action = _this3.actions[type];
+        if (typeof action === 'function') {
+            action(payload);
+        }
+        _this3._allowModelSet = false;
+    };
+};
 
 exports.default = Store;
 module.exports = exports['default'];
@@ -1606,7 +1624,9 @@ var ObservableModel = function (_Events) {
 
             var ret = {};
             Object.keys(this).forEach(function (key) {
-                ret[key] = _this2[key];
+                if (key.charAt(0) != '_') {
+                    ret[key] = _this2[key];
+                }
             });
             return ret;
         }
