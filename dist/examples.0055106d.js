@@ -26926,6 +26926,8 @@ var _dataSource = require('./data-source');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -26950,8 +26952,8 @@ var Store = function (_Events) {
         _initialiseProps.call(_this);
 
         var state = params.state,
-            _params$actions = params.actions,
-            actions = _params$actions === undefined ? {} : _params$actions;
+            actions = _objectWithoutProperties(params, ['state']);
+
         var strict = options.strict,
             _options$plugins = options.plugins,
             plugins = _options$plugins === undefined ? [] : _options$plugins;
@@ -27001,11 +27003,12 @@ var Store = function (_Events) {
         value: function _wrapActions(actions, state, prefix) {
             var _this2 = this;
 
+            var that = this;
             Object.keys(actions).forEach(function (type) {
                 var actionType = prefix ? prefix + '.' + type : type;
                 _this2.actions[actionType] = function (payload) {
                     var action = actions[type];
-                    var ret = action(state, payload, { put: _this2.put });
+                    var ret = action.call(_this2, state, payload, { put: _this2.put });
                     _this2.trigger('actions', {
                         type: actionType,
                         payload: payload,
@@ -27013,6 +27016,11 @@ var Store = function (_Events) {
                     });
                     return ret;
                 };
+                Object.defineProperty(_this2, actionType, {
+                    get: function get() {
+                        return that.actions[actionType];
+                    }
+                });
             });
         }
     }, {
@@ -27056,7 +27064,7 @@ var Store = function (_Events) {
 Store.create = function (params) {
     var name = params.name,
         state = params.state,
-        actions = params.actions;
+        actions = _objectWithoutProperties(params, ['name', 'state']);
 
     Object.keys(state).forEach(function (key) {
         globalStore.set(name + '.' + key, state[key]);
@@ -27354,41 +27362,39 @@ var store = new _src2.default.Store({
         name: 'test',
         password: 'test1234'
     },
-    actions: {
-        changeName: function changeName(state, payload) {
-            state.set('name', payload);
-        },
-        fetch: function () {
-            var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(state, payload, _ref) {
-                var put = _ref.put;
-                var ret;
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                    while (1) {
-                        switch (_context.prev = _context.next) {
-                            case 0:
-                                _context.next = 2;
-                                return mock();
+    changeName: function changeName(state, payload) {
+        state.set('name', payload);
+    },
+    fetch: function () {
+        var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(state, payload, _ref) {
+            var put = _ref.put;
+            var ret;
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                    switch (_context.prev = _context.next) {
+                        case 0:
+                            _context.next = 2;
+                            return mock();
 
-                            case 2:
-                                ret = _context.sent;
+                        case 2:
+                            ret = _context.sent;
 
-                                put('changeName', ret.name);
+                            put('changeName', ret.name);
 
-                            case 4:
-                            case 'end':
-                                return _context.stop();
-                        }
+                        case 4:
+                        case 'end':
+                            return _context.stop();
                     }
-                }, _callee, this);
-            }));
+                }
+            }, _callee, this);
+        }));
 
-            function fetch(_x, _x2, _x3) {
-                return _ref2.apply(this, arguments);
-            }
+        function fetch(_x, _x2, _x3) {
+            return _ref2.apply(this, arguments);
+        }
 
-            return fetch;
-        }()
-    }
+        return fetch;
+    }()
 }, {
     plugins: [logger, devtools]
 });
@@ -27399,10 +27405,8 @@ _src2.default.Store.create({
         name: 'subModule',
         password: 'test1234'
     },
-    actions: {
-        changeSubModule: function changeSubModule(state, payload) {
-            state.set('name', payload);
-        }
+    changeSubModule: function changeSubModule(state, payload) {
+        state.set('name', payload);
     }
 });
 
@@ -27503,33 +27507,15 @@ var Demo = function (_React$Component2) {
 
 _reactDom2.default.render(_react2.default.createElement(Demo, null), document.getElementById('root'));
 
-var RemoteStore = function (_Roy$Store) {
-    _inherits(RemoteStore, _Roy$Store);
-
-    function RemoteStore() {
-        var _ref4;
-
-        var _temp2, _this4, _ret2;
-
-        _classCallCheck(this, RemoteStore);
-
-        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-            args[_key2] = arguments[_key2];
-        }
-
-        return _ret2 = (_temp2 = (_this4 = _possibleConstructorReturn(this, (_ref4 = RemoteStore.__proto__ || Object.getPrototypeOf(RemoteStore)).call.apply(_ref4, [this].concat(args))), _this4), _this4.open = function () {
-            _this4.set('visible', true);
-        }, _this4.close = function () {
-            _this4.set('visible', false);
-        }, _temp2), _possibleConstructorReturn(_this4, _ret2);
-    }
-
-    return RemoteStore;
-}(_src2.default.Store);
-
-var remoteStore = new RemoteStore({
+var remoteStore = new _src2.default.Store({
     state: {
         visible: false
+    },
+    open: function open() {
+        this.set('visible', true);
+    },
+    close: function close() {
+        this.set('visible', false);
     }
 });
 

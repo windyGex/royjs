@@ -8,7 +8,7 @@ class Store extends Events {
     url = '';
     primaryKey = 'id';
     static create = function (params) {
-        const { name, state, actions } = params;
+        const { name, state, ...actions } = params;
         Object.keys(state).forEach(key => {
             globalStore.set(`${name}.${key}`, state[key]);
         });
@@ -22,7 +22,7 @@ class Store extends Events {
     // actions
     constructor(params = {}, options = {}) {
         super(params, options);
-        let { state, actions = {} } = params;
+        let { state, ...actions } = params;
         const { strict, plugins = [] } = options;
         state = {
             ...this.state,
@@ -67,11 +67,12 @@ class Store extends Events {
         return this.model.set(key, value, options);
     }
     _wrapActions(actions, state, prefix) {
+        const that = this;
         Object.keys(actions).forEach(type => {
             const actionType = prefix ? `${prefix}.${type}` : type;
             this.actions[actionType] = (payload) => {
                 const action = actions[type];
-                const ret = action(state, payload, { put: this.put });
+                const ret = action.call(this, state, payload, { put: this.put });
                 this.trigger('actions', {
                     type: actionType,
                     payload,
@@ -79,6 +80,11 @@ class Store extends Events {
                 });
                 return ret;
             };
+            Object.defineProperty(this, actionType, {
+                get() {
+                    return that.actions[actionType];
+                }
+            });
         });
     }
     dispatch(type, payload) {

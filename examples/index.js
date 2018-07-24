@@ -39,14 +39,12 @@ const store = new Roy.Store({
         name: 'test',
         password: 'test1234'
     },
-    actions: {
-        changeName(state, payload) {
-            state.set('name', payload);
-        },
-        async fetch(state, payload, {put}) {
-            const ret = await mock();
-            put('changeName', ret.name);
-        }
+    changeName(state, payload) {
+        state.set('name', payload);
+    },
+    async fetch(state, payload, {put}) {
+        const ret = await mock();
+        put('changeName', ret.name);
     }
 }, {
     plugins: [logger, devtools]
@@ -58,10 +56,8 @@ Roy.Store.create({
         name: 'subModule',
         password: 'test1234'
     },
-    actions: {
-        changeSubModule(state, payload) {
-            state.set('name', payload);
-        }
+    changeSubModule(state, payload) {
+        state.set('name', payload);
     }
 });
 
@@ -106,18 +102,16 @@ class Demo extends React.Component {
 
 ReactDOM.render(<Demo/>, document.getElementById('root'));
 
-class RemoteStore extends Roy.Store {
-    open = () => {
-        this.set('visible', true);
-    }
-    close = () => {
-        this.set('visible', false);
-    }
-}
 
-const remoteStore = new RemoteStore({
+const remoteStore = new Roy.Store({
     state: {
         visible: false
+    },
+    open() {
+        this.set('visible', true);
+    },
+    close() {
+        this.set('visible', false);
     }
 });
 
