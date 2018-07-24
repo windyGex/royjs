@@ -6,6 +6,7 @@ let globalStore;
 
 class Store extends Events {
     url = '';
+    primaryKey = 'id';
     static create = function (params) {
         const { name, state, actions } = params;
         Object.keys(state).forEach(key => {
@@ -19,11 +20,15 @@ class Store extends Events {
     }
     // state
     // actions
-    constructor(params, options = {}) {
+    constructor(params = {}, options = {}) {
         super(params, options);
-        const { state, actions = {} } = params;
+        let { state, actions = {} } = params;
         const { strict, plugins = [] } = options;
-        this.model = new ObservableModel(state);
+        state = {
+            ...this.state,
+            ...state
+        };
+        this.model = new ObservableModel(state, this);
         this.model.on('get', args => {
             this.trigger('get', args);
         });
@@ -34,6 +39,7 @@ class Store extends Events {
         this.actions = {};
         this._strictMode = strict;
         this._wrapActions(actions, this.model);
+        this.state = this.model;
         plugins.forEach(plugin => {
             plugin(this);
         });
@@ -41,23 +47,31 @@ class Store extends Events {
             globalStore = this;
         }
     }
-    get state() {
-        return this.model;
-    }
     get dataSource() {
         return new DataSource({
-            url: this.url
+            url: this.url,
+            primaryKey: this.primaryKey
         });
     }
-    request() {
-        
+    request(controller, params) {
+        window.ROUTER_SCHEMA = window.ROUTER_SCHEMA || {};
+        const meta = window.ROUTER_SCHEMA[controller];
+        const {rule, method} = meta;
+        const url = rule.replace(/:(\w+)/g, function (all, key) {
+            const value = params[key];
+            delete params[key];
+            return value;
+        });
+        const invoke = this.dataSource.req[method] || this.dataSource.req.get;
+        return invoke(url, params);
     }
     get(key) {
         return this.model.get(key);
     }
-    set(key, value, options) {
+    set(key, value, options = {}) {
         if (this._strictMode && !this._allowModelSet) {
-            throw new Error('Can only set model by actions');
+            // throw new Error('Can only set model by actions');
+            this.strict = true;
         }
         return this.model.set(key, value, options);
     }
@@ -78,6 +92,9 @@ class Store extends Events {
     }
     dispatch(type, payload) {
         const action = this.actions[type];
+        if (!action || typeof action !== 'function') {
+            throw new Error('Cant find ${type} action');
+        }
         action(payload);
     }
     put = (type, payload) =>{

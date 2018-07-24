@@ -23,7 +23,6 @@ const inject = function (key, value) {
     }
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
-            static defaultProps = defaultProps;
             constructor(props) {
                 super(props);
                 this._deps = {};
@@ -54,7 +53,7 @@ const inject = function (key, value) {
                 node._instance = this;
             }
             render() {
-                return <Component {...this.props} />;
+                return <Component {...defaultProps} {...this.props} />;
             }
         }
         return StoreWrapper;

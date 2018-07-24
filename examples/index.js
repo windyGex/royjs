@@ -65,8 +65,8 @@ Roy.Store.create({
     }
 });
 
-const mapStateToProps = (state) => state.subModule;
 
+@Roy.connect(state => state.subModule)
 class App extends React.Component {
     render() {
         return <div>{this.props.name}
@@ -76,7 +76,6 @@ class App extends React.Component {
     }
 }
 
-const AppStore = Roy.connect(mapStateToProps)(App);
 
 const globalStore = new Roy.Store({
     state: {
@@ -92,16 +91,45 @@ class Demo extends React.Component {
     }
     render() {
         return <div>
+            Redux style write
             <button onClick={() => this.setState({
                 global: true
             })}>change to global</button>
             {this.state.global ?
             <Provider store={globalStore}>
-                <AppStore/>
-            </Provider> : <AppStore/>
+                <App/>
+            </Provider> : <App/>
         }
         </div>;
     }
 }
 
 ReactDOM.render(<Demo/>, document.getElementById('root'));
+
+class RemoteStore extends Roy.Store {
+    open = () => {
+        this.set('visible', true);
+    }
+    close = () => {
+        this.set('visible', false);
+    }
+}
+
+const remoteStore = new RemoteStore({
+    state: {
+        visible: false
+    }
+});
+
+@Roy.inject(remoteStore)
+class View extends React.Component {
+    render() {
+        const {visible} = this.store.state;
+        return <div>
+            <button onClick={this.store.open}>Open</button>
+            {visible ? 'visible' : ''}
+        </div>
+    }
+}
+
+ReactDOM.render(<View/>, document.getElementById('test'));

@@ -25691,6 +25691,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -25776,14 +25778,12 @@ var inject = function inject(key, value) {
             }, {
                 key: 'render',
                 value: function render() {
-                    return _react2.default.createElement(Component, this.props);
+                    return _react2.default.createElement(Component, _extends({}, defaultProps, this.props));
                 }
             }]);
 
             return StoreWrapper;
         }(_react2.default.Component);
-
-        StoreWrapper.defaultProps = defaultProps;
 
         return StoreWrapper;
     };
@@ -26647,12 +26647,13 @@ function ObservableArray(data, parent) {
 var ObservableModel = function (_Events) {
     _inherits(ObservableModel, _Events);
 
-    function ObservableModel(object) {
+    function ObservableModel(object, from) {
         _classCallCheck(this, ObservableModel);
 
         var _this = _possibleConstructorReturn(this, (ObservableModel.__proto__ || Object.getPrototypeOf(ObservableModel)).call(this, object));
 
         _this._wrapAll(object, _this);
+        _this.from = from;
         return _this;
     }
 
@@ -26755,6 +26756,9 @@ var ObservableModel = function (_Events) {
 
             var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
+            if (this.strict) {
+                throw new Error('Can only set model by actions');
+            }
             if (isPlainObject(path)) {
                 Object.keys(path).forEach(function (key) {
                     var val = path[key];
@@ -26906,6 +26910,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _events = require('./events');
@@ -26933,7 +26939,8 @@ var Store = function (_Events) {
 
     // state
     // actions
-    function Store(params) {
+    function Store() {
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
         _classCallCheck(this, Store);
@@ -26949,7 +26956,8 @@ var Store = function (_Events) {
             _options$plugins = options.plugins,
             plugins = _options$plugins === undefined ? [] : _options$plugins;
 
-        _this.model = new _observeModel2.default(state);
+        state = _extends({}, _this.state, state);
+        _this.model = new _observeModel2.default(state, _this);
         _this.model.on('get', function (args) {
             _this.trigger('get', args);
         });
@@ -26962,6 +26970,7 @@ var Store = function (_Events) {
         _this.actions = {};
         _this._strictMode = strict;
         _this._wrapActions(actions, _this.model);
+        _this.state = _this.model;
         plugins.forEach(function (plugin) {
             plugin(_this);
         });
@@ -26973,7 +26982,20 @@ var Store = function (_Events) {
 
     _createClass(Store, [{
         key: 'request',
-        value: function request() {}
+        value: function request(controller, params) {
+            window.ROUTER_SCHEMA = window.ROUTER_SCHEMA || {};
+            var meta = window.ROUTER_SCHEMA[controller];
+            var rule = meta.rule,
+                method = meta.method;
+
+            var url = rule.replace(/:(\w+)/g, function (all, key) {
+                var value = params[key];
+                delete params[key];
+                return value;
+            });
+            var invoke = this.dataSource.req[method] || this.dataSource.req.get;
+            return invoke(url, params);
+        }
     }, {
         key: 'get',
         value: function get(key) {
@@ -26981,9 +27003,12 @@ var Store = function (_Events) {
         }
     }, {
         key: 'set',
-        value: function set(key, value, options) {
+        value: function set(key, value) {
+            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
             if (this._strictMode && !this._allowModelSet) {
-                throw new Error('Can only set model by actions');
+                // throw new Error('Can only set model by actions');
+                this.strict = true;
             }
             return this.model.set(key, value, options);
         }
@@ -27010,6 +27035,9 @@ var Store = function (_Events) {
         key: 'dispatch',
         value: function dispatch(type, payload) {
             var action = this.actions[type];
+            if (!action || typeof action !== 'function') {
+                throw new Error('Cant find ${type} action');
+            }
             action(payload);
         }
     }, {
@@ -27024,15 +27052,11 @@ var Store = function (_Events) {
             });
         }
     }, {
-        key: 'state',
-        get: function get() {
-            return this.model;
-        }
-    }, {
         key: 'dataSource',
         get: function get() {
             return new _dataSource.DataSource({
-                url: this.url
+                url: this.url,
+                primaryKey: this.primaryKey
             });
         }
     }]);
@@ -27060,6 +27084,7 @@ var _initialiseProps = function _initialiseProps() {
     var _this3 = this;
 
     this.url = '';
+    this.primaryKey = 'id';
 
     this.put = function (type, payload) {
         _this3._allowModelSet = true;
@@ -27276,6 +27301,8 @@ module.exports = exports['default'];
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _dec, _class, _dec2, _class2;
+
 var _src = require('../src/');
 
 var _src2 = _interopRequireDefault(_src);
@@ -27390,11 +27417,9 @@ _src2.default.Store.create({
     }
 });
 
-var mapStateToProps = function mapStateToProps(state) {
+var App = (_dec = _src2.default.connect(function (state) {
     return state.subModule;
-};
-
-var App = function (_React$Component) {
+}), _dec(_class = function (_React$Component) {
     _inherits(App, _React$Component);
 
     function App() {
@@ -27429,9 +27454,8 @@ var App = function (_React$Component) {
     }]);
 
     return App;
-}(_react2.default.Component);
+}(_react2.default.Component)) || _class);
 
-var AppStore = _src2.default.connect(mapStateToProps)(App);
 
 var globalStore = new _src2.default.Store({
     state: {
@@ -27466,6 +27490,7 @@ var Demo = function (_React$Component2) {
             return _react2.default.createElement(
                 'div',
                 null,
+                'Redux style write',
                 _react2.default.createElement(
                     'button',
                     { onClick: function onClick() {
@@ -27478,8 +27503,8 @@ var Demo = function (_React$Component2) {
                 this.state.global ? _react2.default.createElement(
                     _provider2.default,
                     { store: globalStore },
-                    _react2.default.createElement(AppStore, null)
-                ) : _react2.default.createElement(AppStore, null)
+                    _react2.default.createElement(App, null)
+                ) : _react2.default.createElement(App, null)
             );
         }
     }]);
@@ -27488,6 +27513,69 @@ var Demo = function (_React$Component2) {
 }(_react2.default.Component);
 
 _reactDom2.default.render(_react2.default.createElement(Demo, null), document.getElementById('root'));
+
+var RemoteStore = function (_Roy$Store) {
+    _inherits(RemoteStore, _Roy$Store);
+
+    function RemoteStore() {
+        var _ref4;
+
+        var _temp2, _this4, _ret2;
+
+        _classCallCheck(this, RemoteStore);
+
+        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args[_key2] = arguments[_key2];
+        }
+
+        return _ret2 = (_temp2 = (_this4 = _possibleConstructorReturn(this, (_ref4 = RemoteStore.__proto__ || Object.getPrototypeOf(RemoteStore)).call.apply(_ref4, [this].concat(args))), _this4), _this4.open = function () {
+            _this4.set('visible', true);
+        }, _this4.close = function () {
+            _this4.set('visible', false);
+        }, _temp2), _possibleConstructorReturn(_this4, _ret2);
+    }
+
+    return RemoteStore;
+}(_src2.default.Store);
+
+var remoteStore = new RemoteStore({
+    state: {
+        visible: false
+    }
+});
+
+var View = (_dec2 = _src2.default.inject(remoteStore), _dec2(_class2 = function (_React$Component3) {
+    _inherits(View, _React$Component3);
+
+    function View() {
+        _classCallCheck(this, View);
+
+        return _possibleConstructorReturn(this, (View.__proto__ || Object.getPrototypeOf(View)).apply(this, arguments));
+    }
+
+    _createClass(View, [{
+        key: 'render',
+        value: function render() {
+            var visible = this.store.state.visible;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.store.open },
+                    'Open'
+                ),
+                visible ? 'visible' : ''
+            );
+        }
+    }]);
+
+    return View;
+}(_react2.default.Component)) || _class2);
+
+
+_reactDom2.default.render(_react2.default.createElement(View, null), document.getElementById('test'));
 },{"../src/":"../src/index.js","react":"../node_modules/react/react.js","react-dom":"../node_modules/react-dom/index.js","../src/provider":"../src/provider.js"}],"../node_modules/_parcel@1.9.7@parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -27517,7 +27605,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '54965' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '50425' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

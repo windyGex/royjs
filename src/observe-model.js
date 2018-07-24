@@ -36,9 +36,10 @@ function ObservableArray(data, parent) {
 
 
 class ObservableModel extends Events {
-    constructor(object) {
+    constructor(object, from) {
         super(object);
         this._wrapAll(object, this);
+        this.from = from;
     }
     toJSON() {
         const ret = {};
@@ -118,6 +119,9 @@ class ObservableModel extends Events {
         return val;
     }
     set(path, value, options = {}) {
+        if(this.strict) {
+            throw new Error('Can only set model by actions');
+        }
         if (isPlainObject(path)) {
             Object.keys(path).forEach(key => {
                 let val = path[key];
