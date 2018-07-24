@@ -5,8 +5,6 @@ import { DataSource } from './data-source';
 let globalStore;
 
 class Store extends Events {
-    url = '';
-    primaryKey = 'id';
     static create = function (params) {
         const { name, state, ...actions } = params;
         Object.keys(state).forEach(key => {
@@ -40,6 +38,8 @@ class Store extends Events {
         this._strictMode = strict;
         this._wrapActions(actions, this.model);
         this.state = this.model;
+        this.url = options.url;
+        this.primaryKey = options.primaryKey || 'id';
         plugins.forEach(plugin => {
             plugin(this);
         });

@@ -7,15 +7,12 @@ A simple mvvm library for react.
 ```js
 import {Store, inject} from '@alife/roy';
 
-class Message extends Store {
-    change() {
-        this.set('message', 'changed');
-    }
-}
-
 const message = new Message({
     state: {
         message: 'message'
+    },
+    change() {
+        this.set('message', 'changed');
     }
 });
 
@@ -36,17 +33,14 @@ ReactDOM.render(<App/>, document.getElementById('test'));
 ```js
 import {Store, inject} from '@alife/roy';
 
-class Message extends Store {
+const message = new Store({
+    state: {
+        message: 'message'
+    },
     change() {
         this.request.get('/mock.json').then(ret => {
             this.set('message', ret.data);
         });
-    }
-}
-
-const message = new Message({
-    state: {
-        message: 'message'
     }
 });
 

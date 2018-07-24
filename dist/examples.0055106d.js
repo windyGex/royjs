@@ -26973,6 +26973,8 @@ var Store = function (_Events) {
         _this._strictMode = strict;
         _this._wrapActions(actions, _this.model);
         _this.state = _this.model;
+        _this.url = options.url;
+        _this.primaryKey = options.primaryKey || 'id';
         plugins.forEach(function (plugin) {
             plugin(_this);
         });
@@ -27079,9 +27081,6 @@ Store.get = function () {
 
 var _initialiseProps = function _initialiseProps() {
     var _this3 = this;
-
-    this.url = '';
-    this.primaryKey = 'id';
 
     this.put = function (type, payload) {
         _this3._allowModelSet = true;
