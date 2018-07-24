@@ -53,17 +53,8 @@ class Store extends Events {
             primaryKey: this.primaryKey
         });
     }
-    request(controller, params) {
-        window.ROUTER_SCHEMA = window.ROUTER_SCHEMA || {};
-        const meta = window.ROUTER_SCHEMA[controller];
-        const {rule, method} = meta;
-        const url = rule.replace(/:(\w+)/g, function (all, key) {
-            const value = params[key];
-            delete params[key];
-            return value;
-        });
-        const invoke = this.dataSource.req[method] || this.dataSource.req.get;
-        return invoke(url, params);
+    get request() {
+        return this.dataSource.request;
     }
     get(key) {
         return this.model.get(key);

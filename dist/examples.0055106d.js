@@ -26981,22 +26981,6 @@ var Store = function (_Events) {
     }
 
     _createClass(Store, [{
-        key: 'request',
-        value: function request(controller, params) {
-            window.ROUTER_SCHEMA = window.ROUTER_SCHEMA || {};
-            var meta = window.ROUTER_SCHEMA[controller];
-            var rule = meta.rule,
-                method = meta.method;
-
-            var url = rule.replace(/:(\w+)/g, function (all, key) {
-                var value = params[key];
-                delete params[key];
-                return value;
-            });
-            var invoke = this.dataSource.req[method] || this.dataSource.req.get;
-            return invoke(url, params);
-        }
-    }, {
         key: 'get',
         value: function get(key) {
             return this.model.get(key);
@@ -27058,6 +27042,11 @@ var Store = function (_Events) {
                 url: this.url,
                 primaryKey: this.primaryKey
             });
+        }
+    }, {
+        key: 'request',
+        get: function get() {
+            return this.dataSource.request;
         }
     }]);
 
