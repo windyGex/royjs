@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://gitlab.alibaba-inc.com/xing.gex/roy.git"
+    "url": "https://github.com/windyGex/roy.git"
   },
   "files": [
     "dist",
@@ -37,9 +37,9 @@
   "author": "xing.gex",
   "license": "MIT",
   "bugs": {
-    "url": "http://gitlab.alibaba-inc.com/xing.gex/roy/issues"
+    "url": "https://github.com/windyGex/roy/issues"
   },
-  "homepage": "http://gitlab.alibaba-inc.com/xing.gex/roy",
+  "homepage": "https://github.com/windyGex/roy",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -68,8 +68,5 @@
   },
   "dependencies": {
     "axios": "^0.18.0"
-  },
-  "publishConfig": {
-    "registry": "http://registry.npm.alibaba-inc.com"
   }
 }
