@@ -1,5 +1,5 @@
 {
-  "name": "roy",
+  "name": "roy.js",
   "version": "0.2.1",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
