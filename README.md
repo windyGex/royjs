@@ -2,6 +2,12 @@
 
 A simple mvvm library for react.
 
+## Motive
+
+![image](https://img.alicdn.com/tfs/TB1rzpgGHGYBuNjy0FoXXciBFXa-627-241.png)
+
+The state management is nothing more than changing the state from partial to partial sharing, so in an application, each component can be managed corresponding to a state, and only when this part needs to be shared, it is extracted.
+
 ## Basic Usage
 
 ```js

@@ -39,12 +39,12 @@ const store = new Roy.Store({
         name: 'test',
         password: 'test1234'
     },
-    changeName(state, payload) {
+    changeName(payload, state) {
         state.set('name', payload);
     },
-    async fetch(state, payload, {put}) {
+    async fetch(payload, state) {
         const ret = await mock();
-        put('changeName', ret.name);
+        this.dispatch('changeName', ret.name);
     }
 }, {
     plugins: [logger, devtools]
@@ -56,7 +56,7 @@ Roy.Store.create({
         name: 'subModule',
         password: 'test1234'
     },
-    changeSubModule(state, payload) {
+    changeSubModule(payload, state) {
         state.set('name', payload);
     }
 });
@@ -71,8 +71,6 @@ class App extends React.Component {
         </div>;
     }
 }
-
-
 const globalStore = new Roy.Store({
     state: {
         subModule: {

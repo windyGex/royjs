@@ -1,4 +1,4 @@
-import req from '@alife/s-request';
+import request from 'axios';
 
 function DataSource(props) {
     Object.keys(props).forEach(key => {
@@ -7,25 +7,24 @@ function DataSource(props) {
 }
 DataSource.prototype = {
     url: '',
-    req,
-    request: req,
+    request,
     get(id, params) {
-        return req.get(`${this.url}/${id}`, params);
+        return request.get(`${this.url}/${id}`, params);
     },
     patch(id, params) {
-        return req.patch(`${this.url}/${id}`, params);
+        return request.patch(`${this.url}/${id}`, params);
     },
     put(id, params) {
-        return req.put(`${this.url}/${id}`, params);
+        return request.put(`${this.url}/${id}`, params);
     },
     post(params) {
-        return req.post(this.url, params);
+        return request.post(this.url, params);
     },
     find(params) {
-        return req.get(this.url, params);
+        return request.get(this.url, params);
     },
     remove(id) {
-        return req.delete(`${this.url}/${id}`);
+        return request.delete(`${this.url}/${id}`);
     }
 };
 export default DataSource;

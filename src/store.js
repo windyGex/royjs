@@ -1,6 +1,6 @@
 import Events from './events';
 import ObservableModel from './observe-model';
-import { DataSource } from './data-source';
+import DataSource from './data-source';
 
 let globalStore;
 
@@ -72,7 +72,7 @@ class Store extends Events {
             const actionType = prefix ? `${prefix}.${type}` : type;
             this.actions[actionType] = (payload) => {
                 const action = actions[type];
-                const ret = action.call(this, state, payload, { put: this.put });
+                const ret = action.call(this, payload, state);
                 this.trigger('actions', {
                     type: actionType,
                     payload,
@@ -92,15 +92,10 @@ class Store extends Events {
         if (!action || typeof action !== 'function') {
             throw new Error('Cant find ${type} action');
         }
-        action(payload);
-    }
-    put = (type, payload) =>{
         this._allowModelSet = true;
-        const action = this.actions[type];
-        if (typeof action === 'function') {
-            action(payload);
-        }
+        const ret = action(payload);
         this._allowModelSet = false;
+        return ret;
     }
     subscribe(callback) {
         this.on('actions', function ({type, payload, state}) {

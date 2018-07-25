@@ -1,8 +1,9 @@
-import request, {DataSource, withRequest} from '@alife/s-request';
+import request from 'axios';
 import inject from './inject';
 import connect from './connect';
 import Provider from './provider';
 import Observer from './observe-model';
+import DataSource from './data-source';
 import Store from './store';
 
 export default {
@@ -12,6 +13,5 @@ export default {
     Observer,
     Store,
     request,
-    withRequest,
     Provider
 };

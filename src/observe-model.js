@@ -39,7 +39,6 @@ class ObservableModel extends Events {
     constructor(object, from) {
         super(object);
         this._wrapAll(object, this);
-        this.from = from;
     }
     toJSON() {
         const ret = {};
