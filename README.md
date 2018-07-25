@@ -1,6 +1,12 @@
-# Roy
+# Roy.js
 
 A simple mvvm library for react.
+
+## Install
+
+```shell
+npm install roy.js --save
+```
 
 ## Motive
 
@@ -11,7 +17,7 @@ The state management is nothing more than changing the state from partial to par
 ## Basic Usage
 
 ```js
-import {Store, inject} from '@alife/roy';
+import {Store, inject} from 'roy.js';
 
 const message = new Message({
     state: {
@@ -37,7 +43,7 @@ ReactDOM.render(<App/>, document.getElementById('test'));
 ## Get data from remote server.
 
 ```js
-import {Store, inject} from '@alife/roy';
+import {Store, inject} from 'roy.js';
 
 const message = new Store({
     state: {
