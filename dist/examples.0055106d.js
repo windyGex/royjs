@@ -24691,7 +24691,10 @@ Events.prototype = {
     off: function off(type, callback) {
         var cache = this.__events;
         if (cache && cache[type]) {
-            cache[type].splice(cache[type].indexOf(callback) >>> 0, 1);
+            var index = cache[type].indexOf(callback);
+            if (index !== -1) {
+                cache[type].splice(index, 1);
+            }
         }
         return this;
     },

@@ -23,8 +23,10 @@ const message = new Store({
     state: {
         message: 'message'
     },
-    change() {
-        this.set('message', 'changed');
+    actions: {
+         change() {
+            this.set('message', 'changed');
+        }
     }
 });
 
@@ -49,10 +51,12 @@ const message = new Store({
     state: {
         message: 'message'
     },
-    change() {
-        this.request.get('/mock.json').then(ret => {
-            this.set('message', ret.data);
-        });
+    actions: {
+        change() {
+            this.request.get('/mock.json').then(ret => {
+                this.set('message', ret.data);
+            });
+        }
     }
 });
 
