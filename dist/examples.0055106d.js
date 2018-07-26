@@ -25074,6 +25074,10 @@ var Store = function (_Events) {
 
     // state
     // actions
+
+    // mount({})
+    // mount(name, {})
+    // mount(target, name, store)
     function Store() {
         var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -25116,6 +25120,10 @@ var Store = function (_Events) {
         }
         return _this;
     }
+    // create({})
+    // create(name, {})
+    // create(store, name, params);
+
 
     _createClass(Store, [{
         key: 'get',
@@ -25178,40 +25186,22 @@ var Store = function (_Events) {
                     payload = _ref.payload,
                     state = _ref.state;
 
-                callback({ type: type, payload: payload, state: state });
+                callback({
+                    type: type,
+                    payload: payload,
+                    state: state
+                });
             });
         }
     }, {
         key: 'create',
-        value: function create(params) {
-            return Store.create(this, params);
+        value: function create(name, params) {
+            return Store.create(this, name, params);
         }
     }, {
         key: 'mount',
         value: function mount(name, store) {
-            var _this3 = this;
-
-            if (!store) {
-                store = name;
-                name = store.name;
-            }
-            var _store = store,
-                state = _store.state,
-                actions = _store.actions;
-
-            store.on('change', function (args) {
-                _this3.set(name + '.' + args.key, args.value);
-            });
-            store.on('get', function (args) {
-                var obj = _extends({}, args);
-                obj.key = name + '.' + obj.key;
-                _this3.trigger('get', obj);
-            });
-            return Store.create(this, {
-                name: name,
-                state: state.toJSON(),
-                actions: actions
-            });
+            return Store.mount(this, name, store);
         }
     }, {
         key: 'dataSource',
@@ -25231,16 +25221,23 @@ var Store = function (_Events) {
     return Store;
 }(_events2.default);
 
-Store.create = function (store, params) {
-    if (!params) {
+Store.create = function (store, name, params) {
+    if (arguments.length === 1) {
         params = store;
+        store = globalStore;
+        name = params.name;
+    } else if (arguments.length === 2) {
+        params = name;
+        name = store;
         store = globalStore;
     }
     var _params = params,
-        name = _params.name,
         state = _params.state,
         actions = _params.actions;
 
+    if (!globalStore) {
+        console.warn('The store has not been initialized yet!');
+    }
     Object.keys(state).forEach(function (key) {
         store.set(name + '.' + key, state[key]);
     });
@@ -25248,7 +25245,33 @@ Store.create = function (store, params) {
     return store.get(name);
 };
 
-Store.mount = function (name, store) {};
+Store.mount = function (target, name, store) {
+    if (arguments.length === 1) {
+        store = target;
+        target = globalStore;
+        name = store.name;
+    } else if (arguments.length === 2) {
+        store = name;
+        name = target;
+        target = globalStore;
+    }
+    var _store = store,
+        state = _store.state,
+        actions = _store.actions;
+
+    store.on('change', function (args) {
+        target.set(name + '.' + args.key, args.value);
+    });
+    store.on('get', function (args) {
+        var obj = _extends({}, args);
+        obj.key = name + '.' + obj.key;
+        target.trigger('get', obj);
+    });
+    return Store.create(target, name, {
+        state: state.toJSON(),
+        actions: actions
+    });
+};
 
 Store.get = function () {
     return globalStore;
@@ -25574,8 +25597,7 @@ var store = new _src2.default.Store({
     plugins: [logger, devtools]
 });
 
-store.create({
-    name: 'subModule',
+_src2.default.Store.create('subModule', {
     state: {
         name: 'subModule',
         password: 'subModule'
@@ -25763,7 +25785,7 @@ var View = (_dec3 = _src2.default.inject(remoteStore), _dec3(_class3 = function 
 }(_react2.default.Component)) || _class3);
 
 
-store.mount('remote', remoteStore);
+_src2.default.Store.mount('remote', remoteStore);
 
 var RemoteView = (_dec4 = _src2.default.connect(function (state) {
     return state.remote;
@@ -25830,7 +25852,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59457' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '60498' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

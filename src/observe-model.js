@@ -27,7 +27,7 @@ function ObservableArray(data, parent) {
         }
         return item;
     }
-    data.parent = parent || function(){};
+    data.parent = parent || function () {};
     data.forEach((item, index) => {
         const parent = () => data;
         wrap(item, index, parent);
@@ -118,7 +118,7 @@ class ObservableModel extends Events {
         return val;
     }
     set(path, value, options = {}) {
-        if(this.strict) {
+        if (this.strict) {
             throw new Error('Can only set model by actions');
         }
         if (isPlainObject(path)) {
@@ -146,7 +146,7 @@ class ObservableModel extends Events {
         } else {
             this[path] = value;
         }
-        if ((currentValue !== value || options.forceUpdate)&& !nested) {
+        if ((currentValue !== value || options.forceUpdate) && !nested) {
             this.trigger('change', {
                 key: path
             });
@@ -189,7 +189,7 @@ class ObservableModel extends Events {
             }
             item.parent = parent;
         } else if (isArray(item) || item instanceof ObservableArray) {
-            if(!item.__events) {
+            if (!item.__events) {
                 ObservableArray(item)
             }
             if (item.parent() !== parent()) {

@@ -52,8 +52,7 @@ const store = new Roy.Store({
     plugins: [logger, devtools]
 });
 
-store.create({
-    name: 'subModule',
+Roy.Store.create('subModule', {
     state: {
         name: 'subModule',
         password: 'subModule'
@@ -138,7 +137,7 @@ class View extends React.Component {
     }
 }
 
-store.mount('remote', remoteStore);
+Roy.Store.mount('remote', remoteStore);
 
 @Roy.connect(state => state.remote)
 class RemoteView extends React.Component {

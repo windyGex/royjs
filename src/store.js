@@ -5,19 +5,62 @@ import DataSource from './data-source';
 let globalStore;
 
 class Store extends Events {
-    static create = function (store, params) {
-        if (!params) {
+    // create({})
+    // create(name, {})
+    // create(store, name, params);
+    static create = function (store, name, params) {
+        if (arguments.length === 1) {
             params = store;
             store = globalStore;
+            name = params.name;
+        } else if (arguments.length === 2) {
+            params = name;
+            name = store;
+            store = globalStore;
         }
-        const { name, state, actions } = params;
+        const {
+            state,
+            actions
+        } = params;
+        if (!globalStore) {
+            console.warn('The store has not been initialized yet!');
+        }
         Object.keys(state).forEach(key => {
             store.set(`${name}.${key}`, state[key]);
         });
         store._wrapActions(actions, store.get(name), name);
         return store.get(name);
     }
-    static mount = function (name, store) {
+    // mount({})
+    // mount(name, {})
+    // mount(target, name, store)
+    static mount = function (target, name, store) {
+        if (arguments.length === 1) {
+            store = target;
+            target = globalStore;
+            name = store.name;
+        } else if (arguments.length === 2) {
+            store = name;
+            name = target;
+            target = globalStore;
+        }
+        let {
+            state,
+            actions
+        } = store;
+        store.on('change', args => {
+            target.set(`${name}.${args.key}`, args.value);
+        });
+        store.on('get', args => {
+            const obj = { ...args
+            };
+            obj.key = `${name}.${obj.key}`;
+            target.trigger('get', obj);
+        });
+        return Store.create(target, name, {
+            state: state.toJSON(),
+            actions
+        });
 
     }
     static get = function () {
@@ -27,8 +70,15 @@ class Store extends Events {
     // actions
     constructor(params = {}, options = {}) {
         super(params, options);
-        let { name, state, actions = {} } = params;
-        const { strict, plugins = [] } = options;
+        let {
+            name,
+            state,
+            actions = {}
+        } = params;
+        const {
+            strict,
+            plugins = []
+        } = options;
         state = {
             ...this.state,
             ...state
@@ -106,32 +156,23 @@ class Store extends Events {
         return ret;
     }
     subscribe(callback) {
-        this.on('actions', function ({type, payload, state}) {
-            callback({type, payload, state});
+        this.on('actions', function ({
+            type,
+            payload,
+            state
+        }) {
+            callback({
+                type,
+                payload,
+                state
+            });
         });
     }
-    create(params) {
-        return Store.create(this, params);
+    create(name, params) {
+        return Store.create(this, name, params);
     }
     mount(name, store) {
-        if (!store) {
-            store = name;
-            name = store.name;
-        }
-        let {state, actions} = store;
-        store.on('change', args => {
-            this.set(`${name}.${args.key}`, args.value);
-        });
-        store.on('get', args => {
-            const obj = {...args};
-            obj.key = `${name}.${obj.key}`;
-            this.trigger('get', obj);
-        });
-        return Store.create(this, {
-            name,
-            state: state.toJSON(),
-            actions
-        });
+        return Store.mount(this, name, store);
     }
 }
 
