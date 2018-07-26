@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import T from 'prop-types';
 import Store from './store';
 
-const connect = function (mapStateToProps) {
+const connect = function (mapStateToProps = state => state, mapActionToProps = () => {}) {
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
             static contextTypes = {
@@ -25,9 +25,11 @@ const connect = function (mapStateToProps) {
                 };
                 this.store.on('change', this._change);
                 this.store.on('get', this._get);
+                Component.prototype.store = this.store;
             }
             componentWillUnmount() {
                 this.store.off('change', this._change);
+                this.store.off('get', this._get);
             }
             componentDidMount() {
                 const node = ReactDOM.findDOMNode(this);
@@ -35,7 +37,8 @@ const connect = function (mapStateToProps) {
             }
             render() {
                 const props = mapStateToProps(this.store.state);
-                return <Component {...this.props} {...props}/>;
+                const actions = mapActionToProps(this.store.actions);
+                return <Component {...this.props} {...props} {...actions}/>;
             }
         }
         return StoreWrapper;

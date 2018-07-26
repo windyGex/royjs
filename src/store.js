@@ -5,13 +5,20 @@ import DataSource from './data-source';
 let globalStore;
 
 class Store extends Events {
-    static create = function (params) {
-        const { name, state, ...actions } = params;
+    static create = function (store, params) {
+        if (!params) {
+            params = store;
+            store = globalStore;
+        }
+        const { name, state, actions } = params;
         Object.keys(state).forEach(key => {
-            globalStore.set(`${name}.${key}`, state[key]);
+            store.set(`${name}.${key}`, state[key]);
         });
-        globalStore._wrapActions(actions, globalStore.get(name), name);
-        return globalStore.get(name);
+        store._wrapActions(actions, store.get(name), name);
+        return store.get(name);
+    }
+    static mount = function (name, store) {
+
     }
     static get = function () {
         return globalStore;
@@ -20,7 +27,7 @@ class Store extends Events {
     // actions
     constructor(params = {}, options = {}) {
         super(params, options);
-        let { state, ...actions } = params;
+        let { name, state, actions = {} } = params;
         const { strict, plugins = [] } = options;
         state = {
             ...this.state,
@@ -39,6 +46,7 @@ class Store extends Events {
         this._wrapActions(actions, this.model);
         this.state = this.model;
         this.url = options.url;
+        this.name = name;
         this.primaryKey = options.primaryKey || 'id';
         plugins.forEach(plugin => {
             plugin(this);
@@ -102,6 +110,33 @@ class Store extends Events {
             callback({type, payload, state});
         });
     }
+    create(params) {
+        return Store.create(this, params);
+    }
+    mount(name, store) {
+        if (!store) {
+            store = name;
+            name = store.name;
+        }
+        let {state, actions} = store;
+        store.on('change', args => {
+            this.set(`${name}.${args.key}`, args.value);
+        });
+        store.on('get', args => {
+            const obj = {...args};
+            obj.key = `${name}.${obj.key}`;
+            this.trigger('get', obj);
+        });
+        return Store.create(this, {
+            name,
+            state: state.toJSON(),
+            actions
+        });
+    }
 }
 
 export default Store;
+
+export const create = Store.create;
+
+export const get = Store.get;

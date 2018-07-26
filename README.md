@@ -19,7 +19,7 @@ The state management is nothing more than changing the state from partial to par
 ```js
 import {Store, inject} from 'roy.js';
 
-const message = new Message({
+const message = new Store({
     state: {
         message: 'message'
     },

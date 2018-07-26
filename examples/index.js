@@ -37,27 +37,32 @@ const devtools = function (store) {
 const store = new Roy.Store({
     state: {
         name: 'test',
-        password: 'test1234'
+        password: 'hello1234'
     },
-    changeName(payload, state) {
-        state.set('name', payload);
-    },
-    async fetch(payload, state) {
-        const ret = await mock();
-        this.dispatch('changeName', ret.name);
+    actions: {
+        changeName(payload, state) {
+            state.set('name', payload);
+        },
+        async fetch(payload, state) {
+            const ret = await mock();
+            this.dispatch('changeName', ret.name);
+        }
     }
 }, {
     plugins: [logger, devtools]
 });
 
-Roy.Store.create({
+store.create({
     name: 'subModule',
     state: {
         name: 'subModule',
-        password: 'test1234'
+        password: 'subModule'
     },
-    changeSubModule(payload, state) {
-        state.set('name', payload);
+    actions: {
+        changeSubModule(payload, state) {
+            state.set('name', payload);
+            this.dispatch('changeName', 'change name from submodule.');
+        }
     }
 });
 
@@ -65,10 +70,17 @@ Roy.Store.create({
 @Roy.connect(state => state.subModule)
 class App extends React.Component {
     render() {
-        return <div>{this.props.name}
+        return <div>
+            {this.props.name}
             <button onClick={() => store.dispatch('subModule.changeSubModule', 'changed')}>click</button>
             <button onClick={() => store.dispatch('fetch')}>async click</button>
         </div>;
+    }
+}
+@Roy.connect(state => state)
+class App2 extends React.Component {
+    render() {
+        return <div>{this.props.name}</div>
     }
 }
 const globalStore = new Roy.Store({
@@ -92,7 +104,8 @@ class Demo extends React.Component {
             {this.state.global ?
             <Provider store={globalStore}>
                 <App/>
-            </Provider> : <App/>
+                <App2/>
+            </Provider> : <div><App/><App2/></div>
         }
         </div>;
     }
@@ -100,16 +113,17 @@ class Demo extends React.Component {
 
 ReactDOM.render(<Demo/>, document.getElementById('root'));
 
-
 const remoteStore = new Roy.Store({
     state: {
         visible: false
     },
-    open() {
-        this.set('visible', true);
-    },
-    close() {
-        this.set('visible', false);
+    actions: {
+        open(payload, state) {
+            state.set('visible', true);
+        },
+        close(payload, state) {
+            state.set('visible', false);
+        }
     }
 });
 
@@ -118,10 +132,19 @@ class View extends React.Component {
     render() {
         const {visible} = this.store.state;
         return <div>
-            <button onClick={this.store.open}>Open</button>
+            <button onClick={() => this.store.dispatch('open')}>Open</button>
             {visible ? 'visible' : ''}
         </div>
     }
 }
 
-ReactDOM.render(<View/>, document.getElementById('test'));
+store.mount('remote', remoteStore);
+
+@Roy.connect(state => state.remote)
+class RemoteView extends React.Component {
+    render() {
+        return <div onClick={() => this.store.dispatch('remote.close')}>{this.props.visible ? 'true' : 'false'}</div>;
+    }
+}
+
+ReactDOM.render(<div><View/><RemoteView/></div>, document.getElementById('test'));

@@ -23900,6 +23900,7 @@ var inject = function inject(key, value) {
 
                     Object.keys(defaultProps).forEach(function (key) {
                         _this2[key].off('change', _this2._change);
+                        _this2[key].off('get', _this2._get);
                     });
                 }
             }, {
@@ -25040,6 +25041,7 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.get = exports.create = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -25058,8 +25060,6 @@ var _dataSource = require('./data-source');
 var _dataSource2 = _interopRequireDefault(_dataSource);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -25082,9 +25082,10 @@ var Store = function (_Events) {
 
         var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this, params, options));
 
-        var state = params.state,
-            actions = _objectWithoutProperties(params, ['state']);
-
+        var name = params.name,
+            state = params.state,
+            _params$actions = params.actions,
+            actions = _params$actions === undefined ? {} : _params$actions;
         var strict = options.strict,
             _options$plugins = options.plugins,
             plugins = _options$plugins === undefined ? [] : _options$plugins;
@@ -25105,6 +25106,7 @@ var Store = function (_Events) {
         _this._wrapActions(actions, _this.model);
         _this.state = _this.model;
         _this.url = options.url;
+        _this.name = name;
         _this.primaryKey = options.primaryKey || 'id';
         plugins.forEach(function (plugin) {
             plugin(_this);
@@ -25180,6 +25182,38 @@ var Store = function (_Events) {
             });
         }
     }, {
+        key: 'create',
+        value: function create(params) {
+            return Store.create(this, params);
+        }
+    }, {
+        key: 'mount',
+        value: function mount(name, store) {
+            var _this3 = this;
+
+            if (!store) {
+                store = name;
+                name = store.name;
+            }
+            var _store = store,
+                state = _store.state,
+                actions = _store.actions;
+
+            store.on('change', function (args) {
+                _this3.set(name + '.' + args.key, args.value);
+            });
+            store.on('get', function (args) {
+                var obj = _extends({}, args);
+                obj.key = name + '.' + obj.key;
+                _this3.trigger('get', obj);
+            });
+            return Store.create(this, {
+                name: name,
+                state: state.toJSON(),
+                actions: actions
+            });
+        }
+    }, {
         key: 'dataSource',
         get: function get() {
             return new _dataSource2.default({
@@ -25197,24 +25231,33 @@ var Store = function (_Events) {
     return Store;
 }(_events2.default);
 
-Store.create = function (params) {
-    var name = params.name,
-        state = params.state,
-        actions = _objectWithoutProperties(params, ['name', 'state']);
+Store.create = function (store, params) {
+    if (!params) {
+        params = store;
+        store = globalStore;
+    }
+    var _params = params,
+        name = _params.name,
+        state = _params.state,
+        actions = _params.actions;
 
     Object.keys(state).forEach(function (key) {
-        globalStore.set(name + '.' + key, state[key]);
+        store.set(name + '.' + key, state[key]);
     });
-    globalStore._wrapActions(actions, globalStore.get(name), name);
-    return globalStore.get(name);
+    store._wrapActions(actions, store.get(name), name);
+    return store.get(name);
 };
+
+Store.mount = function (name, store) {};
 
 Store.get = function () {
     return globalStore;
 };
 
 exports.default = Store;
-module.exports = exports['default'];
+var create = exports.create = Store.create;
+
+var get = exports.get = Store.get;
 },{"./events":"../src/events.js","./observe-model":"../src/observe-model.js","./data-source":"../src/data-source.js"}],"../src/connect.jsx":[function(require,module,exports) {
 'use strict';
 
@@ -25250,7 +25293,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var connect = function connect(mapStateToProps) {
+var connect = function connect() {
+    var mapStateToProps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function (state) {
+        return state;
+    };
+    var mapActionToProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
     return function withStore(Component) {
         var StoreWrapper = function (_React$Component) {
             _inherits(StoreWrapper, _React$Component);
@@ -25275,6 +25323,7 @@ var connect = function connect(mapStateToProps) {
                 };
                 _this.store.on('change', _this._change);
                 _this.store.on('get', _this._get);
+                Component.prototype.store = _this.store;
                 return _this;
             }
 
@@ -25282,6 +25331,7 @@ var connect = function connect(mapStateToProps) {
                 key: 'componentWillUnmount',
                 value: function componentWillUnmount() {
                     this.store.off('change', this._change);
+                    this.store.off('get', this._get);
                 }
             }, {
                 key: 'componentDidMount',
@@ -25293,7 +25343,8 @@ var connect = function connect(mapStateToProps) {
                 key: 'render',
                 value: function render() {
                     var props = mapStateToProps(this.store.state);
-                    return _react2.default.createElement(Component, _extends({}, this.props, props));
+                    var actions = mapActionToProps(this.store.actions);
+                    return _react2.default.createElement(Component, _extends({}, this.props, props, actions));
                 }
             }]);
 
@@ -25421,7 +25472,7 @@ module.exports = exports['default'];
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _dec, _class, _dec2, _class2;
+var _dec, _class, _dec2, _class2, _dec3, _class3, _dec4, _class4;
 
 var _src = require('../src/');
 
@@ -25483,52 +25534,57 @@ var devtools = function devtools(store) {
 var store = new _src2.default.Store({
     state: {
         name: 'test',
-        password: 'test1234'
+        password: 'hello1234'
     },
-    changeName: function changeName(payload, state) {
-        state.set('name', payload);
-    },
-    fetch: function () {
-        var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(payload, state) {
-            var ret;
-            return regeneratorRuntime.wrap(function _callee$(_context) {
-                while (1) {
-                    switch (_context.prev = _context.next) {
-                        case 0:
-                            _context.next = 2;
-                            return mock();
+    actions: {
+        changeName: function changeName(payload, state) {
+            state.set('name', payload);
+        },
+        fetch: function () {
+            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(payload, state) {
+                var ret;
+                return regeneratorRuntime.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                _context.next = 2;
+                                return mock();
 
-                        case 2:
-                            ret = _context.sent;
+                            case 2:
+                                ret = _context.sent;
 
-                            this.dispatch('changeName', ret.name);
+                                this.dispatch('changeName', ret.name);
 
-                        case 4:
-                        case 'end':
-                            return _context.stop();
+                            case 4:
+                            case 'end':
+                                return _context.stop();
+                        }
                     }
-                }
-            }, _callee, this);
-        }));
+                }, _callee, this);
+            }));
 
-        function fetch(_x, _x2) {
-            return _ref.apply(this, arguments);
-        }
+            function fetch(_x, _x2) {
+                return _ref.apply(this, arguments);
+            }
 
-        return fetch;
-    }()
+            return fetch;
+        }()
+    }
 }, {
     plugins: [logger, devtools]
 });
 
-_src2.default.Store.create({
+store.create({
     name: 'subModule',
     state: {
         name: 'subModule',
-        password: 'test1234'
+        password: 'subModule'
     },
-    changeSubModule: function changeSubModule(payload, state) {
-        state.set('name', payload);
+    actions: {
+        changeSubModule: function changeSubModule(payload, state) {
+            state.set('name', payload);
+            this.dispatch('changeName', 'change name from submodule.');
+        }
     }
 });
 
@@ -25570,6 +25626,30 @@ var App = (_dec = _src2.default.connect(function (state) {
 
     return App;
 }(_react2.default.Component)) || _class);
+var App2 = (_dec2 = _src2.default.connect(function (state) {
+    return state;
+}), _dec2(_class2 = function (_React$Component2) {
+    _inherits(App2, _React$Component2);
+
+    function App2() {
+        _classCallCheck(this, App2);
+
+        return _possibleConstructorReturn(this, (App2.__proto__ || Object.getPrototypeOf(App2)).apply(this, arguments));
+    }
+
+    _createClass(App2, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                this.props.name
+            );
+        }
+    }]);
+
+    return App2;
+}(_react2.default.Component)) || _class2);
 
 var globalStore = new _src2.default.Store({
     state: {
@@ -25579,13 +25659,13 @@ var globalStore = new _src2.default.Store({
     }
 });
 
-var Demo = function (_React$Component2) {
-    _inherits(Demo, _React$Component2);
+var Demo = function (_React$Component3) {
+    _inherits(Demo, _React$Component3);
 
     function Demo() {
         var _ref2;
 
-        var _temp, _this2, _ret;
+        var _temp, _this3, _ret;
 
         _classCallCheck(this, Demo);
 
@@ -25593,13 +25673,13 @@ var Demo = function (_React$Component2) {
             args[_key] = arguments[_key];
         }
 
-        return _ret = (_temp = (_this2 = _possibleConstructorReturn(this, (_ref2 = Demo.__proto__ || Object.getPrototypeOf(Demo)).call.apply(_ref2, [this].concat(args))), _this2), _this2.state = {}, _temp), _possibleConstructorReturn(_this2, _ret);
+        return _ret = (_temp = (_this3 = _possibleConstructorReturn(this, (_ref2 = Demo.__proto__ || Object.getPrototypeOf(Demo)).call.apply(_ref2, [this].concat(args))), _this3), _this3.state = {}, _temp), _possibleConstructorReturn(_this3, _ret);
     }
 
     _createClass(Demo, [{
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this4 = this;
 
             return _react2.default.createElement(
                 'div',
@@ -25608,7 +25688,7 @@ var Demo = function (_React$Component2) {
                 _react2.default.createElement(
                     'button',
                     { onClick: function onClick() {
-                            return _this3.setState({
+                            return _this4.setState({
                                 global: true
                             });
                         } },
@@ -25617,8 +25697,14 @@ var Demo = function (_React$Component2) {
                 this.state.global ? _react2.default.createElement(
                     _provider2.default,
                     { store: globalStore },
-                    _react2.default.createElement(App, null)
-                ) : _react2.default.createElement(App, null)
+                    _react2.default.createElement(App, null),
+                    _react2.default.createElement(App2, null)
+                ) : _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(App, null),
+                    _react2.default.createElement(App2, null)
+                )
             );
         }
     }]);
@@ -25632,16 +25718,18 @@ var remoteStore = new _src2.default.Store({
     state: {
         visible: false
     },
-    open: function open() {
-        this.set('visible', true);
-    },
-    close: function close() {
-        this.set('visible', false);
+    actions: {
+        open: function open(payload, state) {
+            state.set('visible', true);
+        },
+        close: function close(payload, state) {
+            state.set('visible', false);
+        }
     }
 });
 
-var View = (_dec2 = _src2.default.inject(remoteStore), _dec2(_class2 = function (_React$Component3) {
-    _inherits(View, _React$Component3);
+var View = (_dec3 = _src2.default.inject(remoteStore), _dec3(_class3 = function (_React$Component4) {
+    _inherits(View, _React$Component4);
 
     function View() {
         _classCallCheck(this, View);
@@ -25652,6 +25740,8 @@ var View = (_dec2 = _src2.default.inject(remoteStore), _dec2(_class2 = function 
     _createClass(View, [{
         key: 'render',
         value: function render() {
+            var _this6 = this;
+
             var visible = this.store.state.visible;
 
             return _react2.default.createElement(
@@ -25659,7 +25749,9 @@ var View = (_dec2 = _src2.default.inject(remoteStore), _dec2(_class2 = function 
                 null,
                 _react2.default.createElement(
                     'button',
-                    { onClick: this.store.open },
+                    { onClick: function onClick() {
+                            return _this6.store.dispatch('open');
+                        } },
                     'Open'
                 ),
                 visible ? 'visible' : ''
@@ -25668,10 +25760,47 @@ var View = (_dec2 = _src2.default.inject(remoteStore), _dec2(_class2 = function 
     }]);
 
     return View;
-}(_react2.default.Component)) || _class2);
+}(_react2.default.Component)) || _class3);
 
 
-_reactDom2.default.render(_react2.default.createElement(View, null), document.getElementById('test'));
+store.mount('remote', remoteStore);
+
+var RemoteView = (_dec4 = _src2.default.connect(function (state) {
+    return state.remote;
+}), _dec4(_class4 = function (_React$Component5) {
+    _inherits(RemoteView, _React$Component5);
+
+    function RemoteView() {
+        _classCallCheck(this, RemoteView);
+
+        return _possibleConstructorReturn(this, (RemoteView.__proto__ || Object.getPrototypeOf(RemoteView)).apply(this, arguments));
+    }
+
+    _createClass(RemoteView, [{
+        key: 'render',
+        value: function render() {
+            var _this8 = this;
+
+            return _react2.default.createElement(
+                'div',
+                { onClick: function onClick() {
+                        return _this8.store.dispatch('remote.close');
+                    } },
+                this.props.visible ? 'true' : 'false'
+            );
+        }
+    }]);
+
+    return RemoteView;
+}(_react2.default.Component)) || _class4);
+
+
+_reactDom2.default.render(_react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(View, null),
+    _react2.default.createElement(RemoteView, null)
+), document.getElementById('test'));
 },{"../src/":"../src/index.js","react":"../node_modules/react/react.js","react-dom":"../node_modules/react-dom/index.js","../src/provider":"../src/provider.js"}],"../node_modules/_parcel@1.9.7@parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -25701,7 +25830,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '52455' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59457' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

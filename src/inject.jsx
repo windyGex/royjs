@@ -46,6 +46,7 @@ const inject = function (key, value) {
             componentWillUnmount() {
                 Object.keys(defaultProps).forEach(key => {
                     this[key].off('change', this._change);
+                    this[key].off('get', this._get);
                 });
             }
             componentDidMount() {
