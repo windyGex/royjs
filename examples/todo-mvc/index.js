@@ -1,7 +1,6 @@
 import {Store, inject, devtools} from '../../src/';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { timingSafeEqual } from 'crypto';
 
 const logger = function (store) {
     store.subscribe(obj => {

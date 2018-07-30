@@ -21,10 +21,12 @@
     "dist",
     "docs",
     "lib",
-    "src",
     "test",
     "HISTORY.md",
-    "README.md"
+    "README.md",
+    "index.js",
+    "router.js",
+    "request.js"
   ],
   "keywords": [
     "mvvm",
@@ -68,6 +70,7 @@
     "yargs": "^10.0.3"
   },
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "react-router-dom": "^4.3.1"
   }
 }

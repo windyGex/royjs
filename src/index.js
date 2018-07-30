@@ -1,4 +1,3 @@
-import request from 'axios';
 import inject from './inject';
 import connect from './connect';
 import Provider from './provider';
@@ -13,7 +12,6 @@ export default {
     connect,
     Observer,
     Store,
-    request,
     Provider,
     devtools
 };
