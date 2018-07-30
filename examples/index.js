@@ -40,10 +40,10 @@ const store = new Roy.Store({
         password: 'hello1234'
     },
     actions: {
-        changeName(payload, state) {
+        changeName(state, payload) {
             state.set('name', payload);
         },
-        async fetch(payload, state) {
+        async fetch(state, payload) {
             const ret = await mock();
             this.dispatch('changeName', ret.name);
         }
@@ -58,7 +58,7 @@ Roy.Store.create('subModule', {
         password: 'subModule'
     },
     actions: {
-        changeSubModule(payload, state) {
+        changeSubModule(state, payload) {
             state.set('name', payload);
             this.dispatch('changeName', 'change name from submodule.');
         }
@@ -117,10 +117,10 @@ const remoteStore = new Roy.Store({
         visible: false
     },
     actions: {
-        open(payload, state) {
+        open(state, payload) {
             state.set('visible', true);
         },
-        close(payload, state) {
+        close(state, payload) {
             state.set('visible', false);
         }
     }

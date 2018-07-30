@@ -36,7 +36,7 @@ const message = new Store({
 class App extends React.Component {
     render() {
         const {message} = this.store.state;
-        return <div onClick={this.store.change}>{message}</div>;
+        return <div onClick={() => this.store.dispatch('change')}>{message}</div>;
     }
 }
 

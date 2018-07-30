@@ -12,12 +12,12 @@ const isArray = function (item) {
     return checkType(item) === 'Array';
 };
 
-function ObservableArray(data, parent) {
+function ObservableArray(data, parent, from) {
     Events.mixTo(data);
     const wrap = (item, index, parent) => {
         if (isPlainObject(item)) {
             if (!(item instanceof ObservableModel)) {
-                item = new ObservableModel(item);
+                item = new ObservableModel(item, from);
             }
             item.parent = parent;
             item.on('change', args => {
@@ -39,6 +39,7 @@ class ObservableModel extends Events {
     constructor(object, from) {
         super(object);
         this._wrapAll(object, this);
+        this._from = from;
     }
     toJSON() {
         const ret = {};
@@ -118,7 +119,7 @@ class ObservableModel extends Events {
         return val;
     }
     set(path, value, options = {}) {
-        if (this.strict) {
+        if (!this._from.allowModelSet) {
             throw new Error('Can only set model by actions');
         }
         if (isPlainObject(path)) {
@@ -169,7 +170,7 @@ class ObservableModel extends Events {
     _wrap(item, key, parent) {
         if (isPlainObject(item)) {
             if (!(item instanceof ObservableModel)) {
-                item = new ObservableModel(item);
+                item = new ObservableModel(item, this._from);
             }
             if (item.parent() !== parent()) {
                 item.on('get', (args) => {
@@ -190,7 +191,7 @@ class ObservableModel extends Events {
             item.parent = parent;
         } else if (isArray(item) || item instanceof ObservableArray) {
             if (!item.__events) {
-                ObservableArray(item)
+                ObservableArray(item, () => this, this._from);
             }
             if (item.parent() !== parent()) {
                 item.on('change', (args) => {

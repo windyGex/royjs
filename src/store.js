@@ -76,7 +76,7 @@ class Store extends Events {
             actions = {}
         } = params;
         const {
-            strict,
+            strict = false,
             plugins = []
         } = options;
         state = {
@@ -92,7 +92,8 @@ class Store extends Events {
             this.trigger('change', args);
         });
         this.actions = {};
-        this._strictMode = strict;
+        this.strict = strict;
+        this.allowModelSet = !strict;
         this._wrapActions(actions, this.model);
         this.state = this.model;
         this.url = options.url;
@@ -118,19 +119,14 @@ class Store extends Events {
         return this.model.get(key);
     }
     set(key, value, options = {}) {
-        if (this._strictMode && !this._allowModelSet) {
-            // throw new Error('Can only set model by actions');
-            this.strict = true;
-        }
         return this.model.set(key, value, options);
     }
     _wrapActions(actions, state, prefix) {
-        const that = this;
         Object.keys(actions).forEach(type => {
             const actionType = prefix ? `${prefix}.${type}` : type;
             this.actions[actionType] = (payload) => {
                 const action = actions[type];
-                const ret = action.call(this, payload, state);
+                const ret = action.call(this, state, payload);
                 this.trigger('actions', {
                     type: actionType,
                     payload,
@@ -138,21 +134,18 @@ class Store extends Events {
                 });
                 return ret;
             };
-            Object.defineProperty(this, actionType, {
-                get() {
-                    return that.actions[actionType];
-                }
-            });
         });
     }
-    dispatch(type, payload) {
+    dispatch = (type, payload) => {
         const action = this.actions[type];
         if (!action || typeof action !== 'function') {
             throw new Error('Cant find ${type} action');
         }
-        this._allowModelSet = true;
+        this.allowModelSet = true;
         const ret = action(payload);
-        this._allowModelSet = false;
+        if (this.strict) {
+            this.allowModelSet = false;
+        }
         return ret;
     }
     subscribe(callback) {
