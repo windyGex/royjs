@@ -1,4 +1,6 @@
 import {Store, inject, devtools} from '../../src/';
+import route from '../../src/route';
+import {HashRouter, Link} from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -34,6 +36,7 @@ const store = new Store({
     plugins: [logger, devtools]
 });
 
+@route('/:filter')
 @inject(store)
 class App extends React.Component {
     onAdd = (e) => {
@@ -47,7 +50,13 @@ class App extends React.Component {
     }
     renderList() {
         const todoList = this.store.get('todoList');
-        return todoList.map((todo, index)=> {
+        const {params} = this.props.match;
+        const filters = {
+            'all': todo => todo,
+            'active': todo => todo.completed,
+            'completed': todo => !todo.completed
+        };
+        return todoList.filter(todo => filters[params.filter]).map((todo, index)=> {
             return <li className={{ completed: todo.completed }} key={index}>
                 <div className="view">
                     <input
@@ -89,9 +98,14 @@ class App extends React.Component {
                     {todoCount > 0 ? <strong>剩余任务数量{todoList.length}个</strong> : null}
                     {todoCount <= 0 ? '没有需要完成的任务' : null}
                 </span>
+                <ul className="filters">
+                    <li><Link to="/all">All</Link></li>
+                    <li><Link to="/active">Active</Link></li>
+                    <li><Link to="/complete">Complete</Link></li>
+                </ul>
             </footer>
         </section>);
     }
 }
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(<HashRouter><App/></HashRouter>, document.getElementById('root'));
