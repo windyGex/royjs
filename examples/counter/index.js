@@ -1,25 +1,10 @@
-import {Store, inject} from '../../src/';
+import {Store, inject, devtools} from '../../src/';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 const logger = function (store) {
     store.subscribe(obj => {
         console.log(obj.type, obj.payload, obj.state.toJSON());
-    });
-};
-
-const devtools = function (store) {
-    let tool;
-    store.subscribe(obj => {
-        if (window.hasOwnProperty('__REDUX_DEVTOOLS_EXTENSION__') && !tool) {
-            tool = window.__REDUX_DEVTOOLS_EXTENSION__.connect();
-            // tool.subscribe(message => {
-            //     if (message.type === 'DISPATCH' && message.state) {
-            //         store.set(JSON.parse(message.state));
-            //     }
-            // });
-        }
-        tool.send(obj.type, obj.state.toJSON());
     });
 };
 

@@ -24759,6 +24759,8 @@ var isArray = function isArray(item) {
 };
 
 function ObservableArray(data, parent, from) {
+    var _this = this;
+
     _events2.default.mixTo(data);
     var wrap = function wrap(item, index, parent) {
         if (isPlainObject(item)) {
@@ -24779,6 +24781,17 @@ function ObservableArray(data, parent, from) {
         };
         wrap(item, index, parent);
     });
+    ['unshift', 'shift', 'pop', 'push', 'splice', 'sort'].forEach(function (method) {
+        var oldM = data[method];
+        data[method] = function () {
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+
+            oldM.apply(data, args);
+            _this.trigger('change');
+        };
+    });
 }
 
 var ObservableModel = function (_Events) {
@@ -24787,22 +24800,22 @@ var ObservableModel = function (_Events) {
     function ObservableModel(object, from) {
         _classCallCheck(this, ObservableModel);
 
-        var _this = _possibleConstructorReturn(this, (ObservableModel.__proto__ || Object.getPrototypeOf(ObservableModel)).call(this, object));
+        var _this2 = _possibleConstructorReturn(this, (ObservableModel.__proto__ || Object.getPrototypeOf(ObservableModel)).call(this, object));
 
-        _this._wrapAll(object, _this);
-        _this._from = from;
-        return _this;
+        _this2._wrapAll(object, _this2);
+        _this2._from = from;
+        return _this2;
     }
 
     _createClass(ObservableModel, [{
         key: 'toJSON',
         value: function toJSON() {
-            var _this2 = this;
+            var _this3 = this;
 
             var ret = {};
             Object.keys(this).forEach(function (key) {
                 if (key.charAt(0) != '_') {
-                    ret[key] = _this2[key];
+                    ret[key] = _this3[key];
                 }
             });
             return ret;
@@ -24810,19 +24823,19 @@ var ObservableModel = function (_Events) {
     }, {
         key: '_wrapAll',
         value: function _wrapAll(object, target) {
-            var _this3 = this;
+            var _this4 = this;
 
             var parent = function parent() {
-                return _this3;
+                return _this4;
             };
             Object.keys(object).forEach(function (key) {
-                target[key] = _this3._wrap(object[key], key, parent);
+                target[key] = _this4._wrap(object[key], key, parent);
                 Object.defineProperty(object, key, {
                     get: function get() {
-                        return _this3.get(key);
+                        return _this4.get(key);
                     },
                     set: function set(value) {
-                        return _this3.set(key, value);
+                        return _this4.set(key, value);
                     }
                 });
             });
@@ -24889,7 +24902,7 @@ var ObservableModel = function (_Events) {
     }, {
         key: 'set',
         value: function set(path, value) {
-            var _this4 = this;
+            var _this5 = this;
 
             var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
@@ -24899,7 +24912,7 @@ var ObservableModel = function (_Events) {
             if (isPlainObject(path)) {
                 Object.keys(path).forEach(function (key) {
                     var val = path[key];
-                    _this4.set(key, val, value);
+                    _this5.set(key, val, value);
                 });
                 return;
             }
@@ -24909,7 +24922,7 @@ var ObservableModel = function (_Events) {
                 nested = true;
             }
             value = this._wrap(value, path, function () {
-                return _this4;
+                return _this5;
             });
             if (nested) {
                 this._set(this, path, value);
@@ -24951,7 +24964,7 @@ var ObservableModel = function (_Events) {
     }, {
         key: '_wrap',
         value: function _wrap(item, key, parent) {
-            var _this5 = this;
+            var _this6 = this;
 
             if (isPlainObject(item)) {
                 if (!(item instanceof ObservableModel)) {
@@ -24960,13 +24973,13 @@ var ObservableModel = function (_Events) {
                 if (item.parent() !== parent()) {
                     item.on('get', function (args) {
                         var currentKey = key + '.' + args.key;
-                        _this5.trigger('get', {
+                        _this6.trigger('get', {
                             key: currentKey
                         });
                     });
                     item.on('change', function (args) {
                         var currentKey = key + '.' + args.key;
-                        _this5.trigger('change', _extends({}, args, {
+                        _this6.trigger('change', _extends({}, args, {
                             key: currentKey
                         }));
                     });
@@ -24975,7 +24988,7 @@ var ObservableModel = function (_Events) {
             } else if (isArray(item) || item instanceof ObservableArray) {
                 if (!item.__events) {
                     ObservableArray(item, function () {
-                        return _this5;
+                        return _this6;
                     }, this._from);
                 }
                 if (item.parent() !== parent()) {
@@ -24983,7 +24996,7 @@ var ObservableModel = function (_Events) {
                         if (!args.key) {
                             args.key = key;
                         }
-                        _this5.trigger('change', _extends({}, args));
+                        _this6.trigger('change', _extends({}, args));
                     });
                 }
                 item.parent = parent;
@@ -25448,7 +25461,30 @@ Provider.propTypes = {
 };
 exports.default = Provider;
 module.exports = exports['default'];
-},{"react":"../../node_modules/react/react.js","prop-types":"../../node_modules/prop-types/index.js"}],"../../src/index.js":[function(require,module,exports) {
+},{"react":"../../node_modules/react/react.js","prop-types":"../../node_modules/prop-types/index.js"}],"../../src/devtools.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var devtools = function devtools(store) {
+    var tool = void 0;
+    store.subscribe(function (obj) {
+        if (window.hasOwnProperty('__REDUX_DEVTOOLS_EXTENSION__') && !tool) {
+            tool = window.__REDUX_DEVTOOLS_EXTENSION__.connect();
+            tool.subscribe(function (message) {
+                if (message.type === 'DISPATCH' && message.state) {
+                    store.set(JSON.parse(message.state));
+                }
+            });
+        }
+        tool.send(obj.type, obj.state.toJSON());
+    });
+};
+
+exports.default = devtools;
+module.exports = exports['default'];
+},{}],"../../src/index.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25483,6 +25519,10 @@ var _store = require('./store');
 
 var _store2 = _interopRequireDefault(_store);
 
+var _devtools = require('./devtools');
+
+var _devtools2 = _interopRequireDefault(_devtools);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
@@ -25492,10 +25532,11 @@ exports.default = {
     Observer: _observeModel2.default,
     Store: _store2.default,
     request: _axios2.default,
-    Provider: _provider2.default
+    Provider: _provider2.default,
+    devtools: _devtools2.default
 };
 module.exports = exports['default'];
-},{"axios":"../../node_modules/axios/index.js","./inject":"../../src/inject.jsx","./connect":"../../src/connect.jsx","./provider":"../../src/provider.js","./observe-model":"../../src/observe-model.js","./data-source":"../../src/data-source.js","./store":"../../src/store.js"}],"index.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js","./inject":"../../src/inject.jsx","./connect":"../../src/connect.jsx","./provider":"../../src/provider.js","./observe-model":"../../src/observe-model.js","./data-source":"../../src/data-source.js","./store":"../../src/store.js","./devtools":"../../src/devtools.js"}],"index.js":[function(require,module,exports) {
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -25526,21 +25567,6 @@ var logger = function logger(store) {
     });
 };
 
-var devtools = function devtools(store) {
-    var tool = void 0;
-    store.subscribe(function (obj) {
-        if (window.hasOwnProperty('__REDUX_DEVTOOLS_EXTENSION__') && !tool) {
-            tool = window.__REDUX_DEVTOOLS_EXTENSION__.connect();
-            // tool.subscribe(message => {
-            //     if (message.type === 'DISPATCH' && message.state) {
-            //         store.set(JSON.parse(message.state));
-            //     }
-            // });
-        }
-        tool.send(obj.type, obj.state.toJSON());
-    });
-};
-
 var store = new _src.Store({
     state: {
         count: 0
@@ -25565,7 +25591,7 @@ var store = new _src.Store({
         }
     }
 }, {
-    plugins: [logger, devtools]
+    plugins: [logger, _src.devtools]
 });
 
 var App = (_dec = (0, _src.inject)(store), _dec(_class = function (_React$Component) {

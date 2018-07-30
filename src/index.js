@@ -5,6 +5,7 @@ import Provider from './provider';
 import Observer from './observe-model';
 import DataSource from './data-source';
 import Store from './store';
+import devtools from './devtools';
 
 export default {
     DataSource,
@@ -13,5 +14,6 @@ export default {
     Observer,
     Store,
     request,
-    Provider
+    Provider,
+    devtools
 };
