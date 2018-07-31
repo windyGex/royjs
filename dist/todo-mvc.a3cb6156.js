@@ -22382,115 +22382,7 @@ module.exports = ReactDOM;
 
 module.exports = require('./lib/ReactDOM');
 
-},{"./lib/ReactDOM":"../../node_modules/react-dom/lib/ReactDOM.js"}],"../../src/inject.jsx":[function(require,module,exports) {
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// inject(listStore)
-// inject('listStore', listStore)
-// inject({
-// listStore,
-// noticeStore
-// })
-var inject = function inject(key, value) {
-    var length = arguments.length;
-    var defaultProps = {};
-    if (length === 1) {
-        if (key.primaryKey) {
-            defaultProps = {
-                store: key
-            };
-        } else {
-            defaultProps = key;
-        }
-    } else if (length === 2) {
-        defaultProps[key] = value;
-    }
-    return function withStore(Component) {
-        var StoreWrapper = function (_React$Component) {
-            _inherits(StoreWrapper, _React$Component);
-
-            function StoreWrapper(props) {
-                _classCallCheck(this, StoreWrapper);
-
-                var _this = _possibleConstructorReturn(this, (StoreWrapper.__proto__ || Object.getPrototypeOf(StoreWrapper)).call(this, props));
-
-                _this._deps = {};
-                _this._change = function (obj) {
-                    var state = {};
-                    if (_this._deps[obj.key]) {
-                        state[obj.key] = obj.value;
-                        _this.setState(state);
-                    }
-                };
-                _this._get = function (data) {
-                    _this._deps[data.key] = true;
-                };
-                Object.keys(defaultProps).forEach(function (key) {
-                    _this[key] = defaultProps[key];
-                    _this[key].on('change', _this._change);
-                    _this[key].on('get', _this._get);
-                    Component.prototype[key] = _this[key];
-                });
-                return _this;
-            }
-
-            _createClass(StoreWrapper, [{
-                key: 'componentWillUnmount',
-                value: function componentWillUnmount() {
-                    var _this2 = this;
-
-                    Object.keys(defaultProps).forEach(function (key) {
-                        _this2[key].off('change', _this2._change);
-                        _this2[key].off('get', _this2._get);
-                    });
-                }
-            }, {
-                key: 'componentDidMount',
-                value: function componentDidMount() {
-                    var node = _reactDom2.default.findDOMNode(this);
-                    node._instance = this;
-                }
-            }, {
-                key: 'render',
-                value: function render() {
-                    return _react2.default.createElement(Component, _extends({}, defaultProps, this.props));
-                }
-            }]);
-
-            return StoreWrapper;
-        }(_react2.default.Component);
-
-        return StoreWrapper;
-    };
-};
-
-exports.default = inject;
-module.exports = exports['default'];
-},{"react":"../../node_modules/react/react.js","react-dom":"../../node_modules/react-dom/index.js"}],"../../node_modules/prop-types/node_modules/object-assign/index.js":[function(require,module,exports) {
+},{"./lib/ReactDOM":"../../node_modules/react-dom/lib/ReactDOM.js"}],"../../node_modules/prop-types/node_modules/object-assign/index.js":[function(require,module,exports) {
 /*
 object-assign
 (c) Sindre Sorhus
@@ -23235,7 +23127,126 @@ if ('development' !== 'production') {
   // http://fb.me/prop-types-in-prod
   module.exports = require('./factoryWithThrowingShims')();
 }
-},{"./factoryWithTypeCheckers":"../../node_modules/prop-types/factoryWithTypeCheckers.js"}],"../../src/events.js":[function(require,module,exports) {
+},{"./factoryWithTypeCheckers":"../../node_modules/prop-types/factoryWithTypeCheckers.js"}],"../../src/inject.jsx":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// inject(listStore)
+// inject('listStore', listStore)
+// inject({
+// listStore,
+// noticeStore
+// })
+var inject = function inject(key, value) {
+    var length = arguments.length;
+    var defaultProps = {};
+    if (length === 1) {
+        if (key.primaryKey) {
+            defaultProps = {
+                store: key
+            };
+        } else {
+            defaultProps = key;
+        }
+    } else if (length === 2) {
+        defaultProps[key] = value;
+    }
+    return function withStore(Component) {
+        var StoreWrapper = function (_React$Component) {
+            _inherits(StoreWrapper, _React$Component);
+
+            function StoreWrapper(props, context) {
+                _classCallCheck(this, StoreWrapper);
+
+                var _this = _possibleConstructorReturn(this, (StoreWrapper.__proto__ || Object.getPrototypeOf(StoreWrapper)).call(this, props, context));
+
+                _this._deps = {};
+                _this._change = function (obj) {
+                    var state = {};
+                    if (_this._deps[obj.key]) {
+                        state[obj.key] = obj.value;
+                        _this.setState(state);
+                    }
+                };
+                _this._get = function (data) {
+                    _this._deps[data.key] = true;
+                };
+                Object.keys(defaultProps).forEach(function (key) {
+                    _this[key] = defaultProps[key];
+                    _this[key].on('change', _this._change);
+                    _this[key].on('get', _this._get);
+                    if (_this[key].name) {
+                        _this.context.store && _this.context.store.mount(_this[key].name, _this[key]);
+                    }
+                    Component.prototype[key] = _this[key];
+                });
+                return _this;
+            }
+
+            _createClass(StoreWrapper, [{
+                key: 'componentWillUnmount',
+                value: function componentWillUnmount() {
+                    var _this2 = this;
+
+                    Object.keys(defaultProps).forEach(function (key) {
+                        _this2[key].off('change', _this2._change);
+                        _this2[key].off('get', _this2._get);
+                    });
+                }
+            }, {
+                key: 'componentDidMount',
+                value: function componentDidMount() {
+                    var node = _reactDom2.default.findDOMNode(this);
+                    node._instance = this;
+                }
+            }, {
+                key: 'render',
+                value: function render() {
+                    return _react2.default.createElement(Component, _extends({}, defaultProps, this.props));
+                }
+            }]);
+
+            return StoreWrapper;
+        }(_react2.default.Component);
+
+        StoreWrapper.contextTypes = {
+            store: _propTypes2.default.any
+        };
+
+        return StoreWrapper;
+    };
+};
+
+exports.default = inject;
+module.exports = exports['default'];
+},{"react":"../../node_modules/react/react.js","react-dom":"../../node_modules/react-dom/index.js","prop-types":"../../node_modules/prop-types/index.js"}],"../../src/events.js":[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

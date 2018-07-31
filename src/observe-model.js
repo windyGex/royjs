@@ -66,16 +66,7 @@ class ObservableModel extends Events {
     _wrapAll(object, target) {
         const parent = () => this;
         Object.keys(object).forEach(key => {
-            const ret = this._wrap(object[key], key, parent);
-            target[key] = ret;
-            Object.defineProperty(object, key, {
-                get: () => {
-                    return this.get(key);
-                },
-                set: (value) => {
-                    this.set(key, value);
-                }
-            });
+            target[key] = this._wrap(object[key], key, parent);
         });
     }
     parent() {}

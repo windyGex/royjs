@@ -7,7 +7,7 @@
 		exports["roy"] = factory(require("react"), require("react-dom"));
 	else
 		root["roy"] = factory(root["react"], root["react-dom"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_11__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_6__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 17);
+/******/ 	return __webpack_require__(__webpack_require__.s = 16);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -80,8 +80,8 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-var bind = __webpack_require__(6);
-var isBuffer = __webpack_require__(19);
+var bind = __webpack_require__(11);
+var isBuffer = __webpack_require__(25);
 
 /*global toString:true*/
 
@@ -575,13 +575,73 @@ process.umask = function() { return 0; };
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (process.env.NODE_ENV !== 'production') {
+  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+    Symbol.for &&
+    Symbol.for('react.element')) ||
+    0xeac7;
+
+  var isValidElement = function(object) {
+    return typeof object === 'object' &&
+      object !== null &&
+      object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = __webpack_require__(18)(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = __webpack_require__(21)();
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+module.exports = ReactPropTypesSecret;
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(21);
+var normalizeHeaderName = __webpack_require__(27);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -597,10 +657,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(7);
+    adapter = __webpack_require__(12);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(7);
+    adapter = __webpack_require__(12);
   }
   return adapter;
 }
@@ -678,38 +738,669 @@ module.exports = defaults;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 3 */
+/* 6 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_6__;
 
 /***/ }),
-/* 4 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
 
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.get = exports.create = undefined;
 
-var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-module.exports = ReactPropTypesSecret;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _events = __webpack_require__(8);
+
+var _events2 = _interopRequireDefault(_events);
+
+var _observeModel = __webpack_require__(9);
+
+var _observeModel2 = _interopRequireDefault(_observeModel);
+
+var _dataSource = __webpack_require__(10);
+
+var _dataSource2 = _interopRequireDefault(_dataSource);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var globalStore = void 0;
+
+var Store = function (_Events) {
+    _inherits(Store, _Events);
+
+    // state
+    // actions
+
+    // mount({})
+    // mount(name, {})
+    // mount(target, name, store)
+    function Store() {
+        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        _classCallCheck(this, Store);
+
+        var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this, params, options));
+
+        _initialiseProps.call(_this);
+
+        var name = params.name,
+            state = params.state,
+            _params$actions = params.actions,
+            actions = _params$actions === undefined ? {} : _params$actions;
+        var _options$strict = options.strict,
+            strict = _options$strict === undefined ? false : _options$strict,
+            _options$plugins = options.plugins,
+            plugins = _options$plugins === undefined ? [] : _options$plugins;
+
+        state = _extends({}, _this.state, state);
+        _this.model = new _observeModel2.default(state, _this);
+        _this.model.on('get', function (args) {
+            _this.trigger('get', args);
+        });
+        _this.model.on('change', function () {
+            var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+            args.value = _this.model.get(args.key);
+            _this.trigger('change', args);
+        });
+        _this.actions = {};
+        _this.strict = strict;
+        _this.allowModelSet = !strict;
+        _this._wrapActions(actions, _this.model);
+        _this.state = _this.model;
+        _this.url = options.url;
+        _this.name = name;
+        _this.primaryKey = options.primaryKey || 'id';
+        plugins.forEach(function (plugin) {
+            plugin(_this);
+        });
+        if (!globalStore) {
+            globalStore = _this;
+        }
+        return _this;
+    }
+    // create({})
+    // create(name, {})
+    // create(store, name, params);
+
+
+    _createClass(Store, [{
+        key: 'get',
+        value: function get(key) {
+            return this.model.get(key);
+        }
+    }, {
+        key: 'set',
+        value: function set(key, value) {
+            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+            return this.model.set(key, value, options);
+        }
+    }, {
+        key: '_wrapActions',
+        value: function _wrapActions(actions, state, prefix) {
+            var _this2 = this;
+
+            Object.keys(actions).forEach(function (type) {
+                var actionType = prefix ? prefix + '.' + type : type;
+                _this2.actions[actionType] = function (payload) {
+                    var action = actions[type];
+                    var ret = action.call(_this2, state, payload);
+                    _this2.trigger('actions', {
+                        type: actionType,
+                        payload: payload,
+                        state: _this2.model
+                    });
+                    return ret;
+                };
+            });
+        }
+    }, {
+        key: 'subscribe',
+        value: function subscribe(callback) {
+            this.on('actions', function (_ref) {
+                var type = _ref.type,
+                    payload = _ref.payload,
+                    state = _ref.state;
+
+                callback({
+                    type: type,
+                    payload: payload,
+                    state: state
+                });
+            });
+        }
+    }, {
+        key: 'create',
+        value: function create(name, params) {
+            return Store.create(this, name, params);
+        }
+    }, {
+        key: 'mount',
+        value: function mount(name, store) {
+            return Store.mount(this, name, store);
+        }
+    }, {
+        key: 'dataSource',
+        get: function get() {
+            return new _dataSource2.default({
+                url: this.url,
+                primaryKey: this.primaryKey
+            });
+        }
+    }, {
+        key: 'request',
+        get: function get() {
+            return this.dataSource.request;
+        }
+    }]);
+
+    return Store;
+}(_events2.default);
+
+Store.create = function (store, name, params) {
+    if (arguments.length === 1) {
+        params = store;
+        store = globalStore;
+        name = params.name;
+    } else if (arguments.length === 2) {
+        params = name;
+        name = store;
+        store = globalStore;
+    }
+    var _params = params,
+        state = _params.state,
+        actions = _params.actions;
+
+    if (!globalStore) {
+        console.warn('The store has not been initialized yet!');
+    }
+    Object.keys(state).forEach(function (key) {
+        store.set(name + '.' + key, state[key]);
+    });
+    store._wrapActions(actions, store.get(name), name);
+    return store.get(name);
+};
+
+Store.mount = function (target, name, store) {
+    if (arguments.length === 1) {
+        store = target;
+        target = globalStore;
+        name = store.name;
+    } else if (arguments.length === 2) {
+        store = name;
+        name = target;
+        target = globalStore;
+    }
+    var _store = store,
+        state = _store.state,
+        actions = _store.actions;
+
+    store.on('change', function (args) {
+        target.set(name + '.' + args.key, args.value);
+    });
+    store.on('get', function (args) {
+        var obj = _extends({}, args);
+        obj.key = name + '.' + obj.key;
+        target.trigger('get', obj);
+    });
+    return Store.create(target, name, {
+        state: state.toJSON(),
+        actions: actions
+    });
+};
+
+Store.get = function () {
+    return globalStore;
+};
+
+var _initialiseProps = function _initialiseProps() {
+    var _this3 = this;
+
+    this.dispatch = function (type, payload) {
+        var action = _this3.actions[type];
+        if (!action || typeof action !== 'function') {
+            throw new Error('Cant find ${type} action');
+        }
+        _this3.allowModelSet = true;
+        var ret = action(payload);
+        if (_this3.strict) {
+            _this3.allowModelSet = false;
+        }
+        return ret;
+    };
+};
+
+exports.default = Store;
+var create = exports.create = Store.create;
+
+var get = exports.get = Store.get;
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(18);
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/* eslint-disable no-cond-assign */
+
+function Events() {}
+
+Events.prototype = {
+    on: function on(type, callback) {
+        var cache = void 0;
+        if (!callback) return this;
+        cache = this.__events || (this.__events = {});
+        (cache[type] || (cache[type] = [])).push(callback);
+        return this;
+    },
+    off: function off(type, callback) {
+        var cache = this.__events;
+        if (cache && cache[type]) {
+            var index = cache[type].indexOf(callback);
+            if (index !== -1) {
+                cache[type].splice(index, 1);
+            }
+        }
+        return this;
+    },
+    trigger: function trigger(type, evt) {
+        var cache = this.__events;
+        if (cache && cache[type]) {
+            cache[type].forEach(function (callback) {
+                return callback(evt);
+            });
+        }
+    }
+};
+
+// Mix `Events` to object instance or Class function.
+Events.mixTo = function (receiver) {
+    receiver = typeof receiver === 'function' ? receiver.prototype : receiver;
+    var proto = Events.prototype;
+    for (var p in proto) {
+        if (proto.hasOwnProperty(p)) {
+            receiver[p] = proto[p];
+        }
+    }
+};
+
+exports.default = Events;
+module.exports = exports['default'];
 
 /***/ }),
-/* 6 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* eslint-disable */
+
+
+var _events = __webpack_require__(8);
+
+var _events2 = _interopRequireDefault(_events);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var checkType = function checkType(item) {
+    return Object.prototype.toString.call(item).replace(/\[object\s(.*)\]/, function (all, matched) {
+        return matched;
+    });
+};
+
+var isPlainObject = function isPlainObject(item) {
+    return checkType(item) === 'Object';
+};
+var isArray = function isArray(item) {
+    return checkType(item) === 'Array';
+};
+
+function ObservableArray(data, parent, from) {
+    _events2.default.mixTo(data);
+    data.parent = parent || function () {};
+    var wrap = function wrap(item, parent, from) {
+        if (isPlainObject(item)) {
+            if (!(item instanceof ObservableModel)) {
+                item = new ObservableModel(item, from);
+            }
+            item.parent = parent;
+            item.on('change', function (args) {
+                data.trigger('change', _extends({}, args));
+            });
+        }
+        return item;
+    };
+    data.forEach(function (item) {
+        var parent = function parent() {
+            return data;
+        };
+        wrap(item, parent, from);
+    });
+    ['unshift', 'push', 'shift', 'pop', 'sort', 'splice'].forEach(function (method) {
+        var oldM = data[method];
+        data[method] = function () {
+            for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                args[_key] = arguments[_key];
+            }
+
+            if (['unshift', 'push'].indexOf(method) > -1) {
+                args = args.map(function (item) {
+                    return wrap(item, parent, from);
+                });
+            } else if (method === 'splice') {
+                var items = args.slice(2).map(function (item) {
+                    return wrap(item, parent, from);
+                });
+                args = args.slice(0, 2).concat(items);
+            }
+            oldM.apply(data, args);
+            data.trigger('change', {});
+        };
+    });
+}
+
+var ObservableModel = function (_Events) {
+    _inherits(ObservableModel, _Events);
+
+    function ObservableModel(object, from) {
+        _classCallCheck(this, ObservableModel);
+
+        var _this = _possibleConstructorReturn(this, (ObservableModel.__proto__ || Object.getPrototypeOf(ObservableModel)).call(this, object));
+
+        _this._wrapAll(object, _this);
+        _this._from = from;
+        return _this;
+    }
+
+    _createClass(ObservableModel, [{
+        key: 'toJSON',
+        value: function toJSON() {
+            var _this2 = this;
+
+            var ret = {};
+            Object.keys(this).forEach(function (key) {
+                if (key.charAt(0) != '_') {
+                    ret[key] = _this2[key];
+                }
+            });
+            return ret;
+        }
+    }, {
+        key: '_wrapAll',
+        value: function _wrapAll(object, target) {
+            var _this3 = this;
+
+            var parent = function parent() {
+                return _this3;
+            };
+            Object.keys(object).forEach(function (key) {
+                var ret = _this3._wrap(object[key], key, parent);
+                target[key] = ret;
+                Object.defineProperty(object, key, {
+                    get: function get() {
+                        return _this3.get(key);
+                    },
+                    set: function set(value) {
+                        _this3.set(key, value);
+                    }
+                });
+            });
+        }
+    }, {
+        key: 'parent',
+        value: function parent() {}
+    }, {
+        key: 'get',
+        value: function get(path) {
+            if (!path) {
+                return;
+            }
+            var field = path.split('.');
+            var val = void 0,
+                key = void 0;
+            if (field.length) {
+                key = field[0];
+                // lists[1].name
+                if (key.indexOf('[') >= 0) {
+                    key = key.match(/(.*)\[(.*)\]/);
+                    if (key) {
+                        val = this[key[1]][key[2]];
+                    }
+                    // lists().name
+                } else if (key.indexOf('(') >= 0) {
+                    key = key.match(/(.*)\((.*)\)/);
+                    if (key) {
+                        if (typeof this[key[1]] === 'function') {
+                            key[2] = key[2].replace(/['"]/g, '');
+                            //need invoke
+                            if (field.length > 1) {
+                                val = this[key[1]].apply(self, key[2].split(','));
+                            } else {
+                                val = this[key[1]];
+                                val._args = key[2].split(',');
+                            }
+                        } else {
+                            throw new Error('不存在的方法：[ ' + key[1] + ' ]');
+                        }
+                    }
+                } else {
+                    val = this[field[0]];
+                }
+                if (val) {
+                    for (var i = 1; i < field.length; i++) {
+                        if (val instanceof ObservableModel) {
+                            val = val.get(field[i]);
+                        } else {
+                            val = val[field[i]];
+                        }
+                        /* eslint-disable */
+                        if (val == null) {
+                            break;
+                        }
+                    }
+                }
+            }
+            this.trigger('get', {
+                key: path
+            });
+            return val;
+        }
+    }, {
+        key: 'set',
+        value: function set(path, value) {
+            var _this4 = this;
+
+            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+            if (this._from && !this._from.allowModelSet) {
+                throw new Error('Can only set model by actions');
+            }
+            if (isPlainObject(path)) {
+                Object.keys(path).forEach(function (key) {
+                    var val = path[key];
+                    _this4.set(key, val, value);
+                });
+                return;
+            }
+            var nested = void 0,
+                currentValue = this.get(path);
+            if (path.indexOf('.') > 0) {
+                nested = true;
+            }
+            value = this._wrap(value, path, function () {
+                return _this4;
+            });
+            if (nested) {
+                this._set(this, path, value);
+            } else if (path.indexOf('[') >= 0) {
+                var key = path.match(/(.*)\[(.*)\]/);
+                if (key) {
+                    this[key[1]].splice(key[2], 1, value);
+                    return;
+                } else {
+                    throw new Error('Not right key' + path);
+                }
+            } else {
+                this[path] = value;
+            }
+            if ((currentValue !== value || options.forceUpdate) && !nested) {
+                this.trigger('change', {
+                    key: path
+                });
+            }
+        }
+    }, {
+        key: '_set',
+        value: function _set(object, path, value) {
+            var keyNames = path.split('.'),
+                keyName = keyNames[0],
+                oldObject = object;
+            object = object.get(keyName);
+            if (typeof object == 'undefined') {
+                object = this._wrap({}, keyName, function () {
+                    return oldObject;
+                });
+                oldObject[keyName] = object;
+            }
+            if (isPlainObject(object)) {
+                keyNames.splice(0, 1);
+                return object.set(keyNames.join('.'), value);
+            }
+        }
+    }, {
+        key: '_wrap',
+        value: function _wrap(item, key, parent) {
+            var _this5 = this;
+
+            if (isPlainObject(item)) {
+                if (!(item instanceof ObservableModel)) {
+                    item = new ObservableModel(item, this._from);
+                }
+                if (item.parent() !== parent()) {
+                    item.on('get', function (args) {
+                        var currentKey = key + '.' + args.key;
+                        _this5.trigger('get', {
+                            key: currentKey
+                        });
+                    });
+                    item.on('change', function (args) {
+                        var currentKey = key + '.' + args.key;
+                        _this5.trigger('change', _extends({}, args, {
+                            key: currentKey
+                        }));
+                    });
+                }
+                item.parent = parent;
+            } else if (isArray(item) || item instanceof ObservableArray) {
+                if (!item.__events) {
+                    ObservableArray(item, function () {}, this._from);
+                }
+                if (item.parent() !== parent()) {
+                    item.on('change', function (args) {
+                        if (!args.key) {
+                            args.key = key;
+                        }
+                        _this5.trigger('change', _extends({}, args));
+                    });
+                }
+                item.parent = parent;
+            }
+            return item;
+        }
+    }]);
+
+    return ObservableModel;
+}(_events2.default);
+
+exports.default = ObservableModel;
+module.exports = exports['default'];
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _axios = __webpack_require__(23);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function DataSource(props) {
+    var _this = this;
+
+    Object.keys(props).forEach(function (key) {
+        _this[key] = props[key];
+    });
+}
+DataSource.prototype = {
+    url: '',
+    request: _axios2.default,
+    get: function get(id, params) {
+        return _axios2.default.get(this.url + '/' + id, params);
+    },
+    patch: function patch(id, params) {
+        return _axios2.default.patch(this.url + '/' + id, params);
+    },
+    put: function put(id, params) {
+        return _axios2.default.put(this.url + '/' + id, params);
+    },
+    post: function post(params) {
+        return _axios2.default.post(this.url, params);
+    },
+    find: function find(params) {
+        return _axios2.default.get(this.url, params);
+    },
+    remove: function remove(id) {
+        return _axios2.default.delete(this.url + '/' + id);
+    }
+};
+exports.default = DataSource;
+module.exports = exports['default'];
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -727,19 +1418,19 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 7 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(22);
-var buildURL = __webpack_require__(24);
-var parseHeaders = __webpack_require__(25);
-var isURLSameOrigin = __webpack_require__(26);
-var createError = __webpack_require__(8);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(27);
+var settle = __webpack_require__(28);
+var buildURL = __webpack_require__(30);
+var parseHeaders = __webpack_require__(31);
+var isURLSameOrigin = __webpack_require__(32);
+var createError = __webpack_require__(13);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(33);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -836,7 +1527,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(28);
+      var cookies = __webpack_require__(34);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -915,13 +1606,13 @@ module.exports = function xhrAdapter(config) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 8 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(23);
+var enhanceError = __webpack_require__(29);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -940,7 +1631,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 9 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -952,7 +1643,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 10 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -978,564 +1669,6 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_11__;
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-if (process.env.NODE_ENV !== 'production') {
-  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
-    Symbol.for &&
-    Symbol.for('react.element')) ||
-    0xeac7;
-
-  var isValidElement = function(object) {
-    return typeof object === 'object' &&
-      object !== null &&
-      object.$$typeof === REACT_ELEMENT_TYPE;
-  };
-
-  // By explicitly using `prop-types` you are opting into new development behavior.
-  // http://fb.me/prop-types-in-prod
-  var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(38)(isValidElement, throwOnDirectAccess);
-} else {
-  // By explicitly using `prop-types` you are opting into new production behavior.
-  // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(41)();
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _events = __webpack_require__(14);
-
-var _events2 = _interopRequireDefault(_events);
-
-var _observeModel = __webpack_require__(15);
-
-var _observeModel2 = _interopRequireDefault(_observeModel);
-
-var _dataSource = __webpack_require__(16);
-
-var _dataSource2 = _interopRequireDefault(_dataSource);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var globalStore = void 0;
-
-var Store = function (_Events) {
-    _inherits(Store, _Events);
-
-    // state
-    // actions
-    function Store() {
-        var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-        _classCallCheck(this, Store);
-
-        var _this = _possibleConstructorReturn(this, (Store.__proto__ || Object.getPrototypeOf(Store)).call(this, params, options));
-
-        var state = params.state,
-            actions = _objectWithoutProperties(params, ['state']);
-
-        var strict = options.strict,
-            _options$plugins = options.plugins,
-            plugins = _options$plugins === undefined ? [] : _options$plugins;
-
-        state = _extends({}, _this.state, state);
-        _this.model = new _observeModel2.default(state, _this);
-        _this.model.on('get', function (args) {
-            _this.trigger('get', args);
-        });
-        _this.model.on('change', function () {
-            var args = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-            args.value = _this.model.get(args.key);
-            _this.trigger('change', args);
-        });
-        _this.actions = {};
-        _this._strictMode = strict;
-        _this._wrapActions(actions, _this.model);
-        _this.state = _this.model;
-        _this.url = options.url;
-        _this.primaryKey = options.primaryKey || 'id';
-        plugins.forEach(function (plugin) {
-            plugin(_this);
-        });
-        if (!globalStore) {
-            globalStore = _this;
-        }
-        return _this;
-    }
-
-    _createClass(Store, [{
-        key: 'get',
-        value: function get(key) {
-            return this.model.get(key);
-        }
-    }, {
-        key: 'set',
-        value: function set(key, value) {
-            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-            if (this._strictMode && !this._allowModelSet) {
-                // throw new Error('Can only set model by actions');
-                this.strict = true;
-            }
-            return this.model.set(key, value, options);
-        }
-    }, {
-        key: '_wrapActions',
-        value: function _wrapActions(actions, state, prefix) {
-            var _this2 = this;
-
-            var that = this;
-            Object.keys(actions).forEach(function (type) {
-                var actionType = prefix ? prefix + '.' + type : type;
-                _this2.actions[actionType] = function (payload) {
-                    var action = actions[type];
-                    var ret = action.call(_this2, payload, state);
-                    _this2.trigger('actions', {
-                        type: actionType,
-                        payload: payload,
-                        state: _this2.model
-                    });
-                    return ret;
-                };
-                Object.defineProperty(_this2, actionType, {
-                    get: function get() {
-                        return that.actions[actionType];
-                    }
-                });
-            });
-        }
-    }, {
-        key: 'dispatch',
-        value: function dispatch(type, payload) {
-            var action = this.actions[type];
-            if (!action || typeof action !== 'function') {
-                throw new Error('Cant find ${type} action');
-            }
-            this._allowModelSet = true;
-            var ret = action(payload);
-            this._allowModelSet = false;
-            return ret;
-        }
-    }, {
-        key: 'subscribe',
-        value: function subscribe(callback) {
-            this.on('actions', function (_ref) {
-                var type = _ref.type,
-                    payload = _ref.payload,
-                    state = _ref.state;
-
-                callback({ type: type, payload: payload, state: state });
-            });
-        }
-    }, {
-        key: 'dataSource',
-        get: function get() {
-            return new _dataSource2.default({
-                url: this.url,
-                primaryKey: this.primaryKey
-            });
-        }
-    }, {
-        key: 'request',
-        get: function get() {
-            return this.dataSource.request;
-        }
-    }]);
-
-    return Store;
-}(_events2.default);
-
-Store.create = function (params) {
-    var name = params.name,
-        state = params.state,
-        actions = _objectWithoutProperties(params, ['name', 'state']);
-
-    Object.keys(state).forEach(function (key) {
-        globalStore.set(name + '.' + key, state[key]);
-    });
-    globalStore._wrapActions(actions, globalStore.get(name), name);
-    return globalStore.get(name);
-};
-
-Store.get = function () {
-    return globalStore;
-};
-
-exports.default = Store;
-module.exports = exports['default'];
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-/* eslint-disable no-cond-assign */
-
-function Events() {}
-
-Events.prototype = {
-    on: function on(type, callback) {
-        var cache = void 0;
-        if (!callback) return this;
-        cache = this.__events || (this.__events = {});
-        (cache[type] || (cache[type] = [])).push(callback);
-        return this;
-    },
-    off: function off(type, callback) {
-        var cache = this.__events;
-        if (cache && cache[type]) {
-            cache[type].splice(cache[type].indexOf(callback) >>> 0, 1);
-        }
-        return this;
-    },
-    trigger: function trigger(type, evt) {
-        var cache = this.__events;
-        if (cache && cache[type]) {
-            cache[type].forEach(function (callback) {
-                return callback(evt);
-            });
-        }
-    }
-};
-
-// Mix `Events` to object instance or Class function.
-Events.mixTo = function (receiver) {
-    receiver = typeof receiver === 'function' ? receiver.prototype : receiver;
-    var proto = Events.prototype;
-    for (var p in proto) {
-        if (proto.hasOwnProperty(p)) {
-            receiver[p] = proto[p];
-        }
-    }
-};
-
-exports.default = Events;
-module.exports = exports['default'];
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* eslint-disable */
-
-
-var _events = __webpack_require__(14);
-
-var _events2 = _interopRequireDefault(_events);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var checkType = function checkType(item) {
-    return Object.prototype.toString.call(item).replace(/\[object\s(.*)\]/, function (all, matched) {
-        return matched;
-    });
-};
-
-var isPlainObject = function isPlainObject(item) {
-    return checkType(item) === 'Object';
-};
-var isArray = function isArray(item) {
-    return checkType(item) === 'Array';
-};
-
-function ObservableArray(data, parent) {
-    _events2.default.mixTo(data);
-    var wrap = function wrap(item, index, parent) {
-        if (isPlainObject(item)) {
-            if (!(item instanceof ObservableModel)) {
-                item = new ObservableModel(item);
-            }
-            item.parent = parent;
-            item.on('change', function (args) {
-                data.trigger('change', _extends({}, args));
-            });
-        }
-        return item;
-    };
-    data.parent = parent || function () {};
-    data.forEach(function (item, index) {
-        var parent = function parent() {
-            return data;
-        };
-        wrap(item, index, parent);
-    });
-}
-
-var ObservableModel = function (_Events) {
-    _inherits(ObservableModel, _Events);
-
-    function ObservableModel(object, from) {
-        _classCallCheck(this, ObservableModel);
-
-        var _this = _possibleConstructorReturn(this, (ObservableModel.__proto__ || Object.getPrototypeOf(ObservableModel)).call(this, object));
-
-        _this._wrapAll(object, _this);
-        return _this;
-    }
-
-    _createClass(ObservableModel, [{
-        key: 'toJSON',
-        value: function toJSON() {
-            var _this2 = this;
-
-            var ret = {};
-            Object.keys(this).forEach(function (key) {
-                if (key.charAt(0) != '_') {
-                    ret[key] = _this2[key];
-                }
-            });
-            return ret;
-        }
-    }, {
-        key: '_wrapAll',
-        value: function _wrapAll(object, target) {
-            var _this3 = this;
-
-            var parent = function parent() {
-                return _this3;
-            };
-            Object.keys(object).forEach(function (key) {
-                target[key] = _this3._wrap(object[key], key, parent);
-                Object.defineProperty(object, key, {
-                    get: function get() {
-                        return _this3.get(key);
-                    },
-                    set: function set(value) {
-                        return _this3.set(key, value);
-                    }
-                });
-            });
-        }
-    }, {
-        key: 'parent',
-        value: function parent() {}
-    }, {
-        key: 'get',
-        value: function get(path) {
-            if (!path) {
-                return;
-            }
-            var field = path.split('.');
-            var val = void 0,
-                key = void 0;
-            if (field.length) {
-                key = field[0];
-                // lists[1].name
-                if (key.indexOf('[') >= 0) {
-                    key = key.match(/(.*)\[(.*)\]/);
-                    if (key) {
-                        val = this[key[1]][key[2]];
-                    }
-                    // lists().name
-                } else if (key.indexOf('(') >= 0) {
-                    key = key.match(/(.*)\((.*)\)/);
-                    if (key) {
-                        if (typeof this[key[1]] === 'function') {
-                            key[2] = key[2].replace(/['"]/g, '');
-                            //need invoke
-                            if (field.length > 1) {
-                                val = this[key[1]].apply(self, key[2].split(','));
-                            } else {
-                                val = this[key[1]];
-                                val._args = key[2].split(',');
-                            }
-                        } else {
-                            throw new Error('不存在的方法：[ ' + key[1] + ' ]');
-                        }
-                    }
-                } else {
-                    val = this[field[0]];
-                }
-                if (val) {
-                    for (var i = 1; i < field.length; i++) {
-                        if (val instanceof ObservableModel) {
-                            val = val.get(field[i]);
-                        } else {
-                            val = val[field[i]];
-                        }
-                        /* eslint-disable */
-                        if (val == null) {
-                            break;
-                        }
-                    }
-                }
-            }
-            this.trigger('get', {
-                key: path
-            });
-            return val;
-        }
-    }, {
-        key: 'set',
-        value: function set(path, value) {
-            var _this4 = this;
-
-            var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-            if (this.strict) {
-                throw new Error('Can only set model by actions');
-            }
-            if (isPlainObject(path)) {
-                Object.keys(path).forEach(function (key) {
-                    var val = path[key];
-                    _this4.set(key, val, value);
-                });
-                return;
-            }
-            var nested = void 0,
-                currentValue = this.get(path);
-            if (path.indexOf('.') > 0) {
-                nested = true;
-            }
-            value = this._wrap(value, path, function () {
-                return _this4;
-            });
-            if (nested) {
-                this._set(this, path, value);
-            } else if (path.indexOf('[') >= 0) {
-                var key = path.match(/(.*)\[(.*)\]/);
-                if (key) {
-                    this[key[1]].splice(key[2], 1, value);
-                    return;
-                } else {
-                    throw new Error('Not right key' + path);
-                }
-            } else {
-                this[path] = value;
-            }
-            if ((currentValue !== value || options.forceUpdate) && !nested) {
-                this.trigger('change', {
-                    key: path
-                });
-            }
-        }
-    }, {
-        key: '_set',
-        value: function _set(object, path, value) {
-            var keyNames = path.split('.'),
-                keyName = keyNames[0],
-                oldObject = object;
-            object = object.get(keyName);
-            if (typeof object == 'undefined') {
-                object = this._wrap({}, keyName, function () {
-                    return oldObject;
-                });
-                oldObject[keyName] = object;
-            }
-            if (isPlainObject(object)) {
-                keyNames.splice(0, 1);
-                return object.set(keyNames.join('.'), value);
-            }
-        }
-    }, {
-        key: '_wrap',
-        value: function _wrap(item, key, parent) {
-            var _this5 = this;
-
-            if (isPlainObject(item)) {
-                if (!(item instanceof ObservableModel)) {
-                    item = new ObservableModel(item);
-                }
-                if (item.parent() !== parent()) {
-                    item.on('get', function (args) {
-                        var currentKey = key + '.' + args.key;
-                        _this5.trigger('get', {
-                            key: currentKey
-                        });
-                    });
-                    item.on('change', function (args) {
-                        var currentKey = key + '.' + args.key;
-                        _this5.trigger('change', _extends({}, args, {
-                            key: currentKey
-                        }));
-                    });
-                }
-                item.parent = parent;
-            } else if (isArray(item) || item instanceof ObservableArray) {
-                if (!item.__events) {
-                    ObservableArray(item);
-                }
-                if (item.parent() !== parent()) {
-                    item.on('change', function (args) {
-                        if (!args.key) {
-                            args.key = key;
-                        }
-                        _this5.trigger('change', _extends({}, args));
-                    });
-                }
-                item.parent = parent;
-            }
-            return item;
-        }
-    }]);
-
-    return ObservableModel;
-}(_events2.default);
-
-exports.default = ObservableModel;
-module.exports = exports['default'];
-
-/***/ }),
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1546,42 +1679,45 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _axios = __webpack_require__(5);
+var _inject = __webpack_require__(17);
 
-var _axios2 = _interopRequireDefault(_axios);
+var _inject2 = _interopRequireDefault(_inject);
+
+var _connect = __webpack_require__(22);
+
+var _connect2 = _interopRequireDefault(_connect);
+
+var _provider = __webpack_require__(42);
+
+var _provider2 = _interopRequireDefault(_provider);
+
+var _observeModel = __webpack_require__(9);
+
+var _observeModel2 = _interopRequireDefault(_observeModel);
+
+var _dataSource = __webpack_require__(10);
+
+var _dataSource2 = _interopRequireDefault(_dataSource);
+
+var _store = __webpack_require__(7);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _devtools = __webpack_require__(43);
+
+var _devtools2 = _interopRequireDefault(_devtools);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function DataSource(props) {
-    var _this = this;
-
-    Object.keys(props).forEach(function (key) {
-        _this[key] = props[key];
-    });
-}
-DataSource.prototype = {
-    url: '',
-    request: _axios2.default,
-    get: function get(id, params) {
-        return _axios2.default.get(this.url + '/' + id, params);
-    },
-    patch: function patch(id, params) {
-        return _axios2.default.patch(this.url + '/' + id, params);
-    },
-    put: function put(id, params) {
-        return _axios2.default.put(this.url + '/' + id, params);
-    },
-    post: function post(params) {
-        return _axios2.default.post(this.url, params);
-    },
-    find: function find(params) {
-        return _axios2.default.get(this.url, params);
-    },
-    remove: function remove(id) {
-        return _axios2.default.delete(this.url + '/' + id);
-    }
+exports.default = {
+    DataSource: _dataSource2.default,
+    inject: _inject2.default,
+    connect: _connect2.default,
+    Observer: _observeModel2.default,
+    Store: _store2.default,
+    Provider: _provider2.default,
+    devtools: _devtools2.default
 };
-exports.default = DataSource;
 module.exports = exports['default'];
 
 /***/ }),
@@ -1595,951 +1731,21 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _axios = __webpack_require__(5);
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _inject = __webpack_require__(36);
-
-var _inject2 = _interopRequireDefault(_inject);
-
-var _connect = __webpack_require__(37);
-
-var _connect2 = _interopRequireDefault(_connect);
-
-var _provider = __webpack_require__(42);
-
-var _provider2 = _interopRequireDefault(_provider);
-
-var _observeModel = __webpack_require__(15);
-
-var _observeModel2 = _interopRequireDefault(_observeModel);
-
-var _dataSource = __webpack_require__(16);
-
-var _dataSource2 = _interopRequireDefault(_dataSource);
-
-var _store = __webpack_require__(13);
-
-var _store2 = _interopRequireDefault(_store);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    DataSource: _dataSource2.default,
-    inject: _inject2.default,
-    connect: _connect2.default,
-    Observer: _observeModel2.default,
-    Store: _store2.default,
-    request: _axios2.default,
-    Provider: _provider2.default
-};
-module.exports = exports['default'];
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var bind = __webpack_require__(6);
-var Axios = __webpack_require__(20);
-var defaults = __webpack_require__(2);
-
-/**
- * Create an instance of Axios
- *
- * @param {Object} defaultConfig The default config for the instance
- * @return {Axios} A new instance of Axios
- */
-function createInstance(defaultConfig) {
-  var context = new Axios(defaultConfig);
-  var instance = bind(Axios.prototype.request, context);
-
-  // Copy axios.prototype to instance
-  utils.extend(instance, Axios.prototype, context);
-
-  // Copy context to instance
-  utils.extend(instance, context);
-
-  return instance;
-}
-
-// Create the default instance to be exported
-var axios = createInstance(defaults);
-
-// Expose Axios class to allow class inheritance
-axios.Axios = Axios;
-
-// Factory for creating new instances
-axios.create = function create(instanceConfig) {
-  return createInstance(utils.merge(defaults, instanceConfig));
-};
-
-// Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(10);
-axios.CancelToken = __webpack_require__(34);
-axios.isCancel = __webpack_require__(9);
-
-// Expose all/spread
-axios.all = function all(promises) {
-  return Promise.all(promises);
-};
-axios.spread = __webpack_require__(35);
-
-module.exports = axios;
-
-// Allow use of default import syntax in TypeScript
-module.exports.default = axios;
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-// The _isBuffer check is for Safari 5-7 support, because it's missing
-// Object.prototype.constructor. Remove this eventually
-module.exports = function (obj) {
-  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
-}
-
-function isBuffer (obj) {
-  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-// For Node v0.10 support. Remove this eventually.
-function isSlowBuffer (obj) {
-  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
-}
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var defaults = __webpack_require__(2);
-var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(29);
-var dispatchRequest = __webpack_require__(30);
-
-/**
- * Create a new instance of Axios
- *
- * @param {Object} instanceConfig The default config for the instance
- */
-function Axios(instanceConfig) {
-  this.defaults = instanceConfig;
-  this.interceptors = {
-    request: new InterceptorManager(),
-    response: new InterceptorManager()
-  };
-}
-
-/**
- * Dispatch a request
- *
- * @param {Object} config The config specific for this request (merged with this.defaults)
- */
-Axios.prototype.request = function request(config) {
-  /*eslint no-param-reassign:0*/
-  // Allow for axios('example/url'[, config]) a la fetch API
-  if (typeof config === 'string') {
-    config = utils.merge({
-      url: arguments[0]
-    }, arguments[1]);
-  }
-
-  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
-  config.method = config.method.toLowerCase();
-
-  // Hook up interceptors middleware
-  var chain = [dispatchRequest, undefined];
-  var promise = Promise.resolve(config);
-
-  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-    chain.unshift(interceptor.fulfilled, interceptor.rejected);
-  });
-
-  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
-    chain.push(interceptor.fulfilled, interceptor.rejected);
-  });
-
-  while (chain.length) {
-    promise = promise.then(chain.shift(), chain.shift());
-  }
-
-  return promise;
-};
-
-// Provide aliases for supported request methods
-utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
-  /*eslint func-names:0*/
-  Axios.prototype[method] = function(url, config) {
-    return this.request(utils.merge(config || {}, {
-      method: method,
-      url: url
-    }));
-  };
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  /*eslint func-names:0*/
-  Axios.prototype[method] = function(url, data, config) {
-    return this.request(utils.merge(config || {}, {
-      method: method,
-      url: url,
-      data: data
-    }));
-  };
-});
-
-module.exports = Axios;
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = function normalizeHeaderName(headers, normalizedName) {
-  utils.forEach(headers, function processHeader(value, name) {
-    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
-      headers[normalizedName] = value;
-      delete headers[name];
-    }
-  });
-};
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var createError = __webpack_require__(8);
-
-/**
- * Resolve or reject a Promise based on response status.
- *
- * @param {Function} resolve A function that resolves the promise.
- * @param {Function} reject A function that rejects the promise.
- * @param {object} response The response.
- */
-module.exports = function settle(resolve, reject, response) {
-  var validateStatus = response.config.validateStatus;
-  // Note: status is not exposed by XDomainRequest
-  if (!response.status || !validateStatus || validateStatus(response.status)) {
-    resolve(response);
-  } else {
-    reject(createError(
-      'Request failed with status code ' + response.status,
-      response.config,
-      null,
-      response.request,
-      response
-    ));
-  }
-};
-
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Update an Error with the specified config, error code, and response.
- *
- * @param {Error} error The error to update.
- * @param {Object} config The config.
- * @param {string} [code] The error code (for example, 'ECONNABORTED').
- * @param {Object} [request] The request.
- * @param {Object} [response] The response.
- * @returns {Error} The error.
- */
-module.exports = function enhanceError(error, config, code, request, response) {
-  error.config = config;
-  if (code) {
-    error.code = code;
-  }
-  error.request = request;
-  error.response = response;
-  return error;
-};
-
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-function encode(val) {
-  return encodeURIComponent(val).
-    replace(/%40/gi, '@').
-    replace(/%3A/gi, ':').
-    replace(/%24/g, '$').
-    replace(/%2C/gi, ',').
-    replace(/%20/g, '+').
-    replace(/%5B/gi, '[').
-    replace(/%5D/gi, ']');
-}
-
-/**
- * Build a URL by appending params to the end
- *
- * @param {string} url The base of the url (e.g., http://www.google.com)
- * @param {object} [params] The params to be appended
- * @returns {string} The formatted url
- */
-module.exports = function buildURL(url, params, paramsSerializer) {
-  /*eslint no-param-reassign:0*/
-  if (!params) {
-    return url;
-  }
-
-  var serializedParams;
-  if (paramsSerializer) {
-    serializedParams = paramsSerializer(params);
-  } else if (utils.isURLSearchParams(params)) {
-    serializedParams = params.toString();
-  } else {
-    var parts = [];
-
-    utils.forEach(params, function serialize(val, key) {
-      if (val === null || typeof val === 'undefined') {
-        return;
-      }
-
-      if (utils.isArray(val)) {
-        key = key + '[]';
-      } else {
-        val = [val];
-      }
-
-      utils.forEach(val, function parseValue(v) {
-        if (utils.isDate(v)) {
-          v = v.toISOString();
-        } else if (utils.isObject(v)) {
-          v = JSON.stringify(v);
-        }
-        parts.push(encode(key) + '=' + encode(v));
-      });
-    });
-
-    serializedParams = parts.join('&');
-  }
-
-  if (serializedParams) {
-    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
-  }
-
-  return url;
-};
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-// Headers whose duplicates are ignored by node
-// c.f. https://nodejs.org/api/http.html#http_message_headers
-var ignoreDuplicateOf = [
-  'age', 'authorization', 'content-length', 'content-type', 'etag',
-  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
-  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
-  'referer', 'retry-after', 'user-agent'
-];
-
-/**
- * Parse headers into an object
- *
- * ```
- * Date: Wed, 27 Aug 2014 08:58:49 GMT
- * Content-Type: application/json
- * Connection: keep-alive
- * Transfer-Encoding: chunked
- * ```
- *
- * @param {String} headers Headers needing to be parsed
- * @returns {Object} Headers parsed into an object
- */
-module.exports = function parseHeaders(headers) {
-  var parsed = {};
-  var key;
-  var val;
-  var i;
-
-  if (!headers) { return parsed; }
-
-  utils.forEach(headers.split('\n'), function parser(line) {
-    i = line.indexOf(':');
-    key = utils.trim(line.substr(0, i)).toLowerCase();
-    val = utils.trim(line.substr(i + 1));
-
-    if (key) {
-      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
-        return;
-      }
-      if (key === 'set-cookie') {
-        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
-      } else {
-        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-      }
-    }
-  });
-
-  return parsed;
-};
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = (
-  utils.isStandardBrowserEnv() ?
-
-  // Standard browser envs have full support of the APIs needed to test
-  // whether the request URL is of the same origin as current location.
-  (function standardBrowserEnv() {
-    var msie = /(msie|trident)/i.test(navigator.userAgent);
-    var urlParsingNode = document.createElement('a');
-    var originURL;
-
-    /**
-    * Parse a URL to discover it's components
-    *
-    * @param {String} url The URL to be parsed
-    * @returns {Object}
-    */
-    function resolveURL(url) {
-      var href = url;
-
-      if (msie) {
-        // IE needs attribute set twice to normalize properties
-        urlParsingNode.setAttribute('href', href);
-        href = urlParsingNode.href;
-      }
-
-      urlParsingNode.setAttribute('href', href);
-
-      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-      return {
-        href: urlParsingNode.href,
-        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-        host: urlParsingNode.host,
-        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-        hostname: urlParsingNode.hostname,
-        port: urlParsingNode.port,
-        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-                  urlParsingNode.pathname :
-                  '/' + urlParsingNode.pathname
-      };
-    }
-
-    originURL = resolveURL(window.location.href);
-
-    /**
-    * Determine if a URL shares the same origin as the current location
-    *
-    * @param {String} requestURL The URL to test
-    * @returns {boolean} True if URL shares the same origin, otherwise false
-    */
-    return function isURLSameOrigin(requestURL) {
-      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-      return (parsed.protocol === originURL.protocol &&
-            parsed.host === originURL.host);
-    };
-  })() :
-
-  // Non standard browser envs (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return function isURLSameOrigin() {
-      return true;
-    };
-  })()
-);
-
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
-
-var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-
-function E() {
-  this.message = 'String contains an invalid character';
-}
-E.prototype = new Error;
-E.prototype.code = 5;
-E.prototype.name = 'InvalidCharacterError';
-
-function btoa(input) {
-  var str = String(input);
-  var output = '';
-  for (
-    // initialize result and counter
-    var block, charCode, idx = 0, map = chars;
-    // if the next str index does not exist:
-    //   change the mapping table to "="
-    //   check if d has no fractional digits
-    str.charAt(idx | 0) || (map = '=', idx % 1);
-    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
-    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
-  ) {
-    charCode = str.charCodeAt(idx += 3 / 4);
-    if (charCode > 0xFF) {
-      throw new E();
-    }
-    block = block << 8 | charCode;
-  }
-  return output;
-}
-
-module.exports = btoa;
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-module.exports = (
-  utils.isStandardBrowserEnv() ?
-
-  // Standard browser envs support document.cookie
-  (function standardBrowserEnv() {
-    return {
-      write: function write(name, value, expires, path, domain, secure) {
-        var cookie = [];
-        cookie.push(name + '=' + encodeURIComponent(value));
-
-        if (utils.isNumber(expires)) {
-          cookie.push('expires=' + new Date(expires).toGMTString());
-        }
-
-        if (utils.isString(path)) {
-          cookie.push('path=' + path);
-        }
-
-        if (utils.isString(domain)) {
-          cookie.push('domain=' + domain);
-        }
-
-        if (secure === true) {
-          cookie.push('secure');
-        }
-
-        document.cookie = cookie.join('; ');
-      },
-
-      read: function read(name) {
-        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
-        return (match ? decodeURIComponent(match[3]) : null);
-      },
-
-      remove: function remove(name) {
-        this.write(name, '', Date.now() - 86400000);
-      }
-    };
-  })() :
-
-  // Non standard browser env (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return {
-      write: function write() {},
-      read: function read() { return null; },
-      remove: function remove() {}
-    };
-  })()
-);
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-function InterceptorManager() {
-  this.handlers = [];
-}
-
-/**
- * Add a new interceptor to the stack
- *
- * @param {Function} fulfilled The function to handle `then` for a `Promise`
- * @param {Function} rejected The function to handle `reject` for a `Promise`
- *
- * @return {Number} An ID used to remove interceptor later
- */
-InterceptorManager.prototype.use = function use(fulfilled, rejected) {
-  this.handlers.push({
-    fulfilled: fulfilled,
-    rejected: rejected
-  });
-  return this.handlers.length - 1;
-};
-
-/**
- * Remove an interceptor from the stack
- *
- * @param {Number} id The ID that was returned by `use`
- */
-InterceptorManager.prototype.eject = function eject(id) {
-  if (this.handlers[id]) {
-    this.handlers[id] = null;
-  }
-};
-
-/**
- * Iterate over all the registered interceptors
- *
- * This method is particularly useful for skipping over any
- * interceptors that may have become `null` calling `eject`.
- *
- * @param {Function} fn The function to call for each interceptor
- */
-InterceptorManager.prototype.forEach = function forEach(fn) {
-  utils.forEach(this.handlers, function forEachHandler(h) {
-    if (h !== null) {
-      fn(h);
-    }
-  });
-};
-
-module.exports = InterceptorManager;
-
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-var transformData = __webpack_require__(31);
-var isCancel = __webpack_require__(9);
-var defaults = __webpack_require__(2);
-var isAbsoluteURL = __webpack_require__(32);
-var combineURLs = __webpack_require__(33);
-
-/**
- * Throws a `Cancel` if cancellation has been requested.
- */
-function throwIfCancellationRequested(config) {
-  if (config.cancelToken) {
-    config.cancelToken.throwIfRequested();
-  }
-}
-
-/**
- * Dispatch a request to the server using the configured adapter.
- *
- * @param {object} config The config that is to be used for the request
- * @returns {Promise} The Promise to be fulfilled
- */
-module.exports = function dispatchRequest(config) {
-  throwIfCancellationRequested(config);
-
-  // Support baseURL config
-  if (config.baseURL && !isAbsoluteURL(config.url)) {
-    config.url = combineURLs(config.baseURL, config.url);
-  }
-
-  // Ensure headers exist
-  config.headers = config.headers || {};
-
-  // Transform request data
-  config.data = transformData(
-    config.data,
-    config.headers,
-    config.transformRequest
-  );
-
-  // Flatten headers
-  config.headers = utils.merge(
-    config.headers.common || {},
-    config.headers[config.method] || {},
-    config.headers || {}
-  );
-
-  utils.forEach(
-    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
-    function cleanHeaderConfig(method) {
-      delete config.headers[method];
-    }
-  );
-
-  var adapter = config.adapter || defaults.adapter;
-
-  return adapter(config).then(function onAdapterResolution(response) {
-    throwIfCancellationRequested(config);
-
-    // Transform response data
-    response.data = transformData(
-      response.data,
-      response.headers,
-      config.transformResponse
-    );
-
-    return response;
-  }, function onAdapterRejection(reason) {
-    if (!isCancel(reason)) {
-      throwIfCancellationRequested(config);
-
-      // Transform response data
-      if (reason && reason.response) {
-        reason.response.data = transformData(
-          reason.response.data,
-          reason.response.headers,
-          config.transformResponse
-        );
-      }
-    }
-
-    return Promise.reject(reason);
-  });
-};
-
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var utils = __webpack_require__(0);
-
-/**
- * Transform the data for a request or a response
- *
- * @param {Object|String} data The data to be transformed
- * @param {Array} headers The headers for the request or response
- * @param {Array|Function} fns A single function or Array of functions
- * @returns {*} The resulting transformed data
- */
-module.exports = function transformData(data, headers, fns) {
-  /*eslint no-param-reassign:0*/
-  utils.forEach(fns, function transform(fn) {
-    data = fn(data, headers);
-  });
-
-  return data;
-};
-
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Determines whether the specified URL is absolute
- *
- * @param {string} url The URL to test
- * @returns {boolean} True if the specified URL is absolute, otherwise false
- */
-module.exports = function isAbsoluteURL(url) {
-  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-  // by any combination of letters, digits, plus, period, or hyphen.
-  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
-};
-
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Creates a new URL by combining the specified URLs
- *
- * @param {string} baseURL The base URL
- * @param {string} relativeURL The relative URL
- * @returns {string} The combined URL
- */
-module.exports = function combineURLs(baseURL, relativeURL) {
-  return relativeURL
-    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-    : baseURL;
-};
-
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var Cancel = __webpack_require__(10);
-
-/**
- * A `CancelToken` is an object that can be used to request cancellation of an operation.
- *
- * @class
- * @param {Function} executor The executor function.
- */
-function CancelToken(executor) {
-  if (typeof executor !== 'function') {
-    throw new TypeError('executor must be a function.');
-  }
-
-  var resolvePromise;
-  this.promise = new Promise(function promiseExecutor(resolve) {
-    resolvePromise = resolve;
-  });
-
-  var token = this;
-  executor(function cancel(message) {
-    if (token.reason) {
-      // Cancellation has already been requested
-      return;
-    }
-
-    token.reason = new Cancel(message);
-    resolvePromise(token.reason);
-  });
-}
-
-/**
- * Throws a `Cancel` if cancellation has been requested.
- */
-CancelToken.prototype.throwIfRequested = function throwIfRequested() {
-  if (this.reason) {
-    throw this.reason;
-  }
-};
-
-/**
- * Returns an object that contains a new `CancelToken` and a function that, when called,
- * cancels the `CancelToken`.
- */
-CancelToken.source = function source() {
-  var cancel;
-  var token = new CancelToken(function executor(c) {
-    cancel = c;
-  });
-  return {
-    token: token,
-    cancel: cancel
-  };
-};
-
-module.exports = CancelToken;
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * Syntactic sugar for invoking a function and expanding an array for arguments.
- *
- * Common use case would be to use `Function.prototype.apply`.
- *
- *  ```js
- *  function f(x, y, z) {}
- *  var args = [1, 2, 3];
- *  f.apply(null, args);
- *  ```
- *
- * With `spread` this example can be re-written.
- *
- *  ```js
- *  spread(function(x, y, z) {})([1, 2, 3]);
- *  ```
- *
- * @param {Function} callback
- * @returns {Function}
- */
-module.exports = function spread(callback) {
-  return function wrap(arr) {
-    return callback.apply(null, arr);
-  };
-};
-
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(3);
+var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(11);
+var _reactDom = __webpack_require__(6);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _propTypes = __webpack_require__(3);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2573,10 +1779,10 @@ var inject = function inject(key, value) {
         var StoreWrapper = function (_React$Component) {
             _inherits(StoreWrapper, _React$Component);
 
-            function StoreWrapper(props) {
+            function StoreWrapper(props, context) {
                 _classCallCheck(this, StoreWrapper);
 
-                var _this = _possibleConstructorReturn(this, (StoreWrapper.__proto__ || Object.getPrototypeOf(StoreWrapper)).call(this, props));
+                var _this = _possibleConstructorReturn(this, (StoreWrapper.__proto__ || Object.getPrototypeOf(StoreWrapper)).call(this, props, context));
 
                 _this._deps = {};
                 _this._change = function (obj) {
@@ -2593,6 +1799,9 @@ var inject = function inject(key, value) {
                     _this[key] = defaultProps[key];
                     _this[key].on('change', _this._change);
                     _this[key].on('get', _this._get);
+                    if (_this[key].name) {
+                        _this.context.store && _this.context.store.mount(_this[key].name, _this[key]);
+                    }
                     Component.prototype[key] = _this[key];
                 });
                 return _this;
@@ -2605,6 +1814,7 @@ var inject = function inject(key, value) {
 
                     Object.keys(defaultProps).forEach(function (key) {
                         _this2[key].off('change', _this2._change);
+                        _this2[key].off('get', _this2._get);
                     });
                 }
             }, {
@@ -2623,102 +1833,6 @@ var inject = function inject(key, value) {
             return StoreWrapper;
         }(_react2.default.Component);
 
-        return StoreWrapper;
-    };
-};
-
-exports.default = inject;
-module.exports = exports['default'];
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = __webpack_require__(11);
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _propTypes = __webpack_require__(12);
-
-var _propTypes2 = _interopRequireDefault(_propTypes);
-
-var _store = __webpack_require__(13);
-
-var _store2 = _interopRequireDefault(_store);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var connect = function connect(mapStateToProps) {
-    return function withStore(Component) {
-        var StoreWrapper = function (_React$Component) {
-            _inherits(StoreWrapper, _React$Component);
-
-            function StoreWrapper(props, context) {
-                _classCallCheck(this, StoreWrapper);
-
-                var _this = _possibleConstructorReturn(this, (StoreWrapper.__proto__ || Object.getPrototypeOf(StoreWrapper)).call(this, props, context));
-
-                _this.store = _this.context.store || _store2.default.get();
-
-                _this._deps = {};
-                _this._change = function (obj) {
-                    var state = {};
-                    if (_this._deps[obj.key]) {
-                        state[obj.key] = obj.value;
-                        _this.setState(state);
-                    }
-                };
-                _this._get = function (data) {
-                    _this._deps[data.key] = true;
-                };
-                _this.store.on('change', _this._change);
-                _this.store.on('get', _this._get);
-                return _this;
-            }
-
-            _createClass(StoreWrapper, [{
-                key: 'componentWillUnmount',
-                value: function componentWillUnmount() {
-                    this.store.off('change', this._change);
-                }
-            }, {
-                key: 'componentDidMount',
-                value: function componentDidMount() {
-                    var node = _reactDom2.default.findDOMNode(this);
-                    node._instance = this;
-                }
-            }, {
-                key: 'render',
-                value: function render() {
-                    var props = mapStateToProps(this.store.state);
-                    return _react2.default.createElement(Component, _extends({}, this.props, props));
-                }
-            }]);
-
-            return StoreWrapper;
-        }(_react2.default.Component);
-
         StoreWrapper.contextTypes = {
             store: _propTypes2.default.any
         };
@@ -2727,11 +1841,11 @@ var connect = function connect(mapStateToProps) {
     };
 };
 
-exports.default = connect;
+exports.default = inject;
 module.exports = exports['default'];
 
 /***/ }),
-/* 38 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2744,10 +1858,10 @@ module.exports = exports['default'];
 
 
 
-var assign = __webpack_require__(39);
+var assign = __webpack_require__(19);
 
 var ReactPropTypesSecret = __webpack_require__(4);
-var checkPropTypes = __webpack_require__(40);
+var checkPropTypes = __webpack_require__(20);
 
 var printWarning = function() {};
 
@@ -3294,7 +2408,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 39 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3391,7 +2505,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 40 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3490,7 +2604,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 41 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3556,6 +2670,1002 @@ module.exports = function() {
 
 
 /***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(2);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(6);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _propTypes = __webpack_require__(3);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _store = __webpack_require__(7);
+
+var _store2 = _interopRequireDefault(_store);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var connect = function connect() {
+    var mapStateToProps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function (state) {
+        return state;
+    };
+    var mapActionToProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
+
+    return function withStore(Component) {
+        var StoreWrapper = function (_React$Component) {
+            _inherits(StoreWrapper, _React$Component);
+
+            function StoreWrapper(props, context) {
+                _classCallCheck(this, StoreWrapper);
+
+                var _this = _possibleConstructorReturn(this, (StoreWrapper.__proto__ || Object.getPrototypeOf(StoreWrapper)).call(this, props, context));
+
+                _this.store = _this.context.store || _store2.default.get();
+
+                _this._deps = {};
+                _this._change = function (obj) {
+                    var state = {};
+                    if (_this._deps[obj.key]) {
+                        state[obj.key] = obj.value;
+                        _this.setState(state);
+                    }
+                };
+                _this._get = function (data) {
+                    _this._deps[data.key] = true;
+                };
+                _this.store.on('change', _this._change);
+                _this.store.on('get', _this._get);
+                Component.prototype.store = _this.store;
+                return _this;
+            }
+
+            _createClass(StoreWrapper, [{
+                key: 'componentWillUnmount',
+                value: function componentWillUnmount() {
+                    this.store.off('change', this._change);
+                    this.store.off('get', this._get);
+                }
+            }, {
+                key: 'componentDidMount',
+                value: function componentDidMount() {
+                    var node = _reactDom2.default.findDOMNode(this);
+                    node._instance = this;
+                }
+            }, {
+                key: 'render',
+                value: function render() {
+                    var props = mapStateToProps(this.store.state);
+                    var actions = mapActionToProps(this.store.actions);
+                    return _react2.default.createElement(Component, _extends({}, this.props, props, actions));
+                }
+            }]);
+
+            return StoreWrapper;
+        }(_react2.default.Component);
+
+        StoreWrapper.contextTypes = {
+            store: _propTypes2.default.any
+        };
+
+        return StoreWrapper;
+    };
+};
+
+exports.default = connect;
+module.exports = exports['default'];
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(24);
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+var bind = __webpack_require__(11);
+var Axios = __webpack_require__(26);
+var defaults = __webpack_require__(5);
+
+/**
+ * Create an instance of Axios
+ *
+ * @param {Object} defaultConfig The default config for the instance
+ * @return {Axios} A new instance of Axios
+ */
+function createInstance(defaultConfig) {
+  var context = new Axios(defaultConfig);
+  var instance = bind(Axios.prototype.request, context);
+
+  // Copy axios.prototype to instance
+  utils.extend(instance, Axios.prototype, context);
+
+  // Copy context to instance
+  utils.extend(instance, context);
+
+  return instance;
+}
+
+// Create the default instance to be exported
+var axios = createInstance(defaults);
+
+// Expose Axios class to allow class inheritance
+axios.Axios = Axios;
+
+// Factory for creating new instances
+axios.create = function create(instanceConfig) {
+  return createInstance(utils.merge(defaults, instanceConfig));
+};
+
+// Expose Cancel & CancelToken
+axios.Cancel = __webpack_require__(15);
+axios.CancelToken = __webpack_require__(40);
+axios.isCancel = __webpack_require__(14);
+
+// Expose all/spread
+axios.all = function all(promises) {
+  return Promise.all(promises);
+};
+axios.spread = __webpack_require__(41);
+
+module.exports = axios;
+
+// Allow use of default import syntax in TypeScript
+module.exports.default = axios;
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+module.exports = function (obj) {
+  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
+}
+
+function isBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+}
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var defaults = __webpack_require__(5);
+var utils = __webpack_require__(0);
+var InterceptorManager = __webpack_require__(35);
+var dispatchRequest = __webpack_require__(36);
+
+/**
+ * Create a new instance of Axios
+ *
+ * @param {Object} instanceConfig The default config for the instance
+ */
+function Axios(instanceConfig) {
+  this.defaults = instanceConfig;
+  this.interceptors = {
+    request: new InterceptorManager(),
+    response: new InterceptorManager()
+  };
+}
+
+/**
+ * Dispatch a request
+ *
+ * @param {Object} config The config specific for this request (merged with this.defaults)
+ */
+Axios.prototype.request = function request(config) {
+  /*eslint no-param-reassign:0*/
+  // Allow for axios('example/url'[, config]) a la fetch API
+  if (typeof config === 'string') {
+    config = utils.merge({
+      url: arguments[0]
+    }, arguments[1]);
+  }
+
+  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
+  config.method = config.method.toLowerCase();
+
+  // Hook up interceptors middleware
+  var chain = [dispatchRequest, undefined];
+  var promise = Promise.resolve(config);
+
+  this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+    chain.unshift(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+    chain.push(interceptor.fulfilled, interceptor.rejected);
+  });
+
+  while (chain.length) {
+    promise = promise.then(chain.shift(), chain.shift());
+  }
+
+  return promise;
+};
+
+// Provide aliases for supported request methods
+utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url
+    }));
+  };
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  /*eslint func-names:0*/
+  Axios.prototype[method] = function(url, data, config) {
+    return this.request(utils.merge(config || {}, {
+      method: method,
+      url: url,
+      data: data
+    }));
+  };
+});
+
+module.exports = Axios;
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+module.exports = function normalizeHeaderName(headers, normalizedName) {
+  utils.forEach(headers, function processHeader(value, name) {
+    if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = value;
+      delete headers[name];
+    }
+  });
+};
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var createError = __webpack_require__(13);
+
+/**
+ * Resolve or reject a Promise based on response status.
+ *
+ * @param {Function} resolve A function that resolves the promise.
+ * @param {Function} reject A function that rejects the promise.
+ * @param {object} response The response.
+ */
+module.exports = function settle(resolve, reject, response) {
+  var validateStatus = response.config.validateStatus;
+  // Note: status is not exposed by XDomainRequest
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
+    resolve(response);
+  } else {
+    reject(createError(
+      'Request failed with status code ' + response.status,
+      response.config,
+      null,
+      response.request,
+      response
+    ));
+  }
+};
+
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Update an Error with the specified config, error code, and response.
+ *
+ * @param {Error} error The error to update.
+ * @param {Object} config The config.
+ * @param {string} [code] The error code (for example, 'ECONNABORTED').
+ * @param {Object} [request] The request.
+ * @param {Object} [response] The response.
+ * @returns {Error} The error.
+ */
+module.exports = function enhanceError(error, config, code, request, response) {
+  error.config = config;
+  if (code) {
+    error.code = code;
+  }
+  error.request = request;
+  error.response = response;
+  return error;
+};
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+function encode(val) {
+  return encodeURIComponent(val).
+    replace(/%40/gi, '@').
+    replace(/%3A/gi, ':').
+    replace(/%24/g, '$').
+    replace(/%2C/gi, ',').
+    replace(/%20/g, '+').
+    replace(/%5B/gi, '[').
+    replace(/%5D/gi, ']');
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {object} [params] The params to be appended
+ * @returns {string} The formatted url
+ */
+module.exports = function buildURL(url, params, paramsSerializer) {
+  /*eslint no-param-reassign:0*/
+  if (!params) {
+    return url;
+  }
+
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (utils.isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+
+    utils.forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === 'undefined') {
+        return;
+      }
+
+      if (utils.isArray(val)) {
+        key = key + '[]';
+      } else {
+        val = [val];
+      }
+
+      utils.forEach(val, function parseValue(v) {
+        if (utils.isDate(v)) {
+          v = v.toISOString();
+        } else if (utils.isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + '=' + encode(v));
+      });
+    });
+
+    serializedParams = parts.join('&');
+  }
+
+  if (serializedParams) {
+    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+  }
+
+  return url;
+};
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+// Headers whose duplicates are ignored by node
+// c.f. https://nodejs.org/api/http.html#http_message_headers
+var ignoreDuplicateOf = [
+  'age', 'authorization', 'content-length', 'content-type', 'etag',
+  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
+  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
+  'referer', 'retry-after', 'user-agent'
+];
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
+        return;
+      }
+      if (key === 'set-cookie') {
+        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
+      } else {
+        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+      }
+    }
+  });
+
+  return parsed;
+};
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs have full support of the APIs needed to test
+  // whether the request URL is of the same origin as current location.
+  (function standardBrowserEnv() {
+    var msie = /(msie|trident)/i.test(navigator.userAgent);
+    var urlParsingNode = document.createElement('a');
+    var originURL;
+
+    /**
+    * Parse a URL to discover it's components
+    *
+    * @param {String} url The URL to be parsed
+    * @returns {Object}
+    */
+    function resolveURL(url) {
+      var href = url;
+
+      if (msie) {
+        // IE needs attribute set twice to normalize properties
+        urlParsingNode.setAttribute('href', href);
+        href = urlParsingNode.href;
+      }
+
+      urlParsingNode.setAttribute('href', href);
+
+      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+      return {
+        href: urlParsingNode.href,
+        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+        host: urlParsingNode.host,
+        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+        hostname: urlParsingNode.hostname,
+        port: urlParsingNode.port,
+        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+                  urlParsingNode.pathname :
+                  '/' + urlParsingNode.pathname
+      };
+    }
+
+    originURL = resolveURL(window.location.href);
+
+    /**
+    * Determine if a URL shares the same origin as the current location
+    *
+    * @param {String} requestURL The URL to test
+    * @returns {boolean} True if URL shares the same origin, otherwise false
+    */
+    return function isURLSameOrigin(requestURL) {
+      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+      return (parsed.protocol === originURL.protocol &&
+            parsed.host === originURL.host);
+    };
+  })() :
+
+  // Non standard browser envs (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return function isURLSameOrigin() {
+      return true;
+    };
+  })()
+);
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
+
+var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+function E() {
+  this.message = 'String contains an invalid character';
+}
+E.prototype = new Error;
+E.prototype.code = 5;
+E.prototype.name = 'InvalidCharacterError';
+
+function btoa(input) {
+  var str = String(input);
+  var output = '';
+  for (
+    // initialize result and counter
+    var block, charCode, idx = 0, map = chars;
+    // if the next str index does not exist:
+    //   change the mapping table to "="
+    //   check if d has no fractional digits
+    str.charAt(idx | 0) || (map = '=', idx % 1);
+    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
+    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
+  ) {
+    charCode = str.charCodeAt(idx += 3 / 4);
+    if (charCode > 0xFF) {
+      throw new E();
+    }
+    block = block << 8 | charCode;
+  }
+  return output;
+}
+
+module.exports = btoa;
+
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+module.exports = (
+  utils.isStandardBrowserEnv() ?
+
+  // Standard browser envs support document.cookie
+  (function standardBrowserEnv() {
+    return {
+      write: function write(name, value, expires, path, domain, secure) {
+        var cookie = [];
+        cookie.push(name + '=' + encodeURIComponent(value));
+
+        if (utils.isNumber(expires)) {
+          cookie.push('expires=' + new Date(expires).toGMTString());
+        }
+
+        if (utils.isString(path)) {
+          cookie.push('path=' + path);
+        }
+
+        if (utils.isString(domain)) {
+          cookie.push('domain=' + domain);
+        }
+
+        if (secure === true) {
+          cookie.push('secure');
+        }
+
+        document.cookie = cookie.join('; ');
+      },
+
+      read: function read(name) {
+        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+        return (match ? decodeURIComponent(match[3]) : null);
+      },
+
+      remove: function remove(name) {
+        this.write(name, '', Date.now() - 86400000);
+      }
+    };
+  })() :
+
+  // Non standard browser env (web workers, react-native) lack needed support.
+  (function nonStandardBrowserEnv() {
+    return {
+      write: function write() {},
+      read: function read() { return null; },
+      remove: function remove() {}
+    };
+  })()
+);
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+function InterceptorManager() {
+  this.handlers = [];
+}
+
+/**
+ * Add a new interceptor to the stack
+ *
+ * @param {Function} fulfilled The function to handle `then` for a `Promise`
+ * @param {Function} rejected The function to handle `reject` for a `Promise`
+ *
+ * @return {Number} An ID used to remove interceptor later
+ */
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled: fulfilled,
+    rejected: rejected
+  });
+  return this.handlers.length - 1;
+};
+
+/**
+ * Remove an interceptor from the stack
+ *
+ * @param {Number} id The ID that was returned by `use`
+ */
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+
+/**
+ * Iterate over all the registered interceptors
+ *
+ * This method is particularly useful for skipping over any
+ * interceptors that may have become `null` calling `eject`.
+ *
+ * @param {Function} fn The function to call for each interceptor
+ */
+InterceptorManager.prototype.forEach = function forEach(fn) {
+  utils.forEach(this.handlers, function forEachHandler(h) {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+
+module.exports = InterceptorManager;
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+var transformData = __webpack_require__(37);
+var isCancel = __webpack_require__(14);
+var defaults = __webpack_require__(5);
+var isAbsoluteURL = __webpack_require__(38);
+var combineURLs = __webpack_require__(39);
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+function throwIfCancellationRequested(config) {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested();
+  }
+}
+
+/**
+ * Dispatch a request to the server using the configured adapter.
+ *
+ * @param {object} config The config that is to be used for the request
+ * @returns {Promise} The Promise to be fulfilled
+ */
+module.exports = function dispatchRequest(config) {
+  throwIfCancellationRequested(config);
+
+  // Support baseURL config
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    config.url = combineURLs(config.baseURL, config.url);
+  }
+
+  // Ensure headers exist
+  config.headers = config.headers || {};
+
+  // Transform request data
+  config.data = transformData(
+    config.data,
+    config.headers,
+    config.transformRequest
+  );
+
+  // Flatten headers
+  config.headers = utils.merge(
+    config.headers.common || {},
+    config.headers[config.method] || {},
+    config.headers || {}
+  );
+
+  utils.forEach(
+    ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
+    function cleanHeaderConfig(method) {
+      delete config.headers[method];
+    }
+  );
+
+  var adapter = config.adapter || defaults.adapter;
+
+  return adapter(config).then(function onAdapterResolution(response) {
+    throwIfCancellationRequested(config);
+
+    // Transform response data
+    response.data = transformData(
+      response.data,
+      response.headers,
+      config.transformResponse
+    );
+
+    return response;
+  }, function onAdapterRejection(reason) {
+    if (!isCancel(reason)) {
+      throwIfCancellationRequested(config);
+
+      // Transform response data
+      if (reason && reason.response) {
+        reason.response.data = transformData(
+          reason.response.data,
+          reason.response.headers,
+          config.transformResponse
+        );
+      }
+    }
+
+    return Promise.reject(reason);
+  });
+};
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(0);
+
+/**
+ * Transform the data for a request or a response
+ *
+ * @param {Object|String} data The data to be transformed
+ * @param {Array} headers The headers for the request or response
+ * @param {Array|Function} fns A single function or Array of functions
+ * @returns {*} The resulting transformed data
+ */
+module.exports = function transformData(data, headers, fns) {
+  /*eslint no-param-reassign:0*/
+  utils.forEach(fns, function transform(fn) {
+    data = fn(data, headers);
+  });
+
+  return data;
+};
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+module.exports = function isAbsoluteURL(url) {
+  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
+  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
+  // by any combination of letters, digits, plus, period, or hyphen.
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+    : baseURL;
+};
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Cancel = __webpack_require__(15);
+
+/**
+ * A `CancelToken` is an object that can be used to request cancellation of an operation.
+ *
+ * @class
+ * @param {Function} executor The executor function.
+ */
+function CancelToken(executor) {
+  if (typeof executor !== 'function') {
+    throw new TypeError('executor must be a function.');
+  }
+
+  var resolvePromise;
+  this.promise = new Promise(function promiseExecutor(resolve) {
+    resolvePromise = resolve;
+  });
+
+  var token = this;
+  executor(function cancel(message) {
+    if (token.reason) {
+      // Cancellation has already been requested
+      return;
+    }
+
+    token.reason = new Cancel(message);
+    resolvePromise(token.reason);
+  });
+}
+
+/**
+ * Throws a `Cancel` if cancellation has been requested.
+ */
+CancelToken.prototype.throwIfRequested = function throwIfRequested() {
+  if (this.reason) {
+    throw this.reason;
+  }
+};
+
+/**
+ * Returns an object that contains a new `CancelToken` and a function that, when called,
+ * cancels the `CancelToken`.
+ */
+CancelToken.source = function source() {
+  var cancel;
+  var token = new CancelToken(function executor(c) {
+    cancel = c;
+  });
+  return {
+    token: token,
+    cancel: cancel
+  };
+};
+
+module.exports = CancelToken;
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Syntactic sugar for invoking a function and expanding an array for arguments.
+ *
+ * Common use case would be to use `Function.prototype.apply`.
+ *
+ *  ```js
+ *  function f(x, y, z) {}
+ *  var args = [1, 2, 3];
+ *  f.apply(null, args);
+ *  ```
+ *
+ * With `spread` this example can be re-written.
+ *
+ *  ```js
+ *  spread(function(x, y, z) {})([1, 2, 3]);
+ *  ```
+ *
+ * @param {Function} callback
+ * @returns {Function}
+ */
+module.exports = function spread(callback) {
+  return function wrap(arr) {
+    return callback.apply(null, arr);
+  };
+};
+
+
+/***/ }),
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3568,11 +3678,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(3);
+var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = __webpack_require__(12);
+var _propTypes = __webpack_require__(3);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -3617,6 +3727,34 @@ Provider.propTypes = {
     store: _propTypes2.default.any
 };
 exports.default = Provider;
+module.exports = exports['default'];
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var devtools = function devtools(store) {
+    var tool = void 0;
+    store.subscribe(function (obj) {
+        if (window.hasOwnProperty('__REDUX_DEVTOOLS_EXTENSION__') && !tool) {
+            tool = window.__REDUX_DEVTOOLS_EXTENSION__.connect();
+            tool.subscribe(function (message) {
+                if (message.type === 'DISPATCH' && message.state) {
+                    store.set(JSON.parse(message.state));
+                }
+            });
+        }
+        tool.send(obj.type, obj.state.toJSON());
+    });
+};
+
+exports.default = devtools;
 module.exports = exports['default'];
 
 /***/ })

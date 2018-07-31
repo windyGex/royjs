@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import T from 'prop-types';
 
 // inject(listStore)
 // inject('listStore', listStore)
@@ -23,8 +24,11 @@ const inject = function (key, value) {
     }
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
-            constructor(props) {
-                super(props);
+            static contextTypes = {
+                store: T.any
+            };
+            constructor(props, context) {
+                super(props, context);
                 this._deps = {};
                 this._change = (obj) => {
                     const state = {};
@@ -40,6 +44,9 @@ const inject = function (key, value) {
                     this[key] = defaultProps[key];
                     this[key].on('change', this._change);
                     this[key].on('get', this._get);
+                    if (this[key].name) {
+                        this.context.store && this.context.store.mount(this[key].name, this[key]);
+                    }
                     Component.prototype[key] = this[key];
                 });
             }
