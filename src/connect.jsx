@@ -4,8 +4,7 @@ import T from 'prop-types';
 import Store from './store';
 
 const connect = function (
-    mapStateToProps = state => state,
-    mapActionToProps = () => {}
+    mapStateToProps = state => state
 ) {
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
@@ -40,8 +39,7 @@ const connect = function (
             }
             render() {
                 const props = mapStateToProps(this.store.state);
-                const actions = mapActionToProps(this.store.actions);
-                return <Component {...this.props} {...props} {...actions} />;
+                return <Component {...this.props} {...props} />;
             }
         }
         return StoreWrapper;

@@ -25351,7 +25351,6 @@ var connect = function connect() {
     var mapStateToProps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function (state) {
         return state;
     };
-    var mapActionToProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
 
     return function withStore(Component) {
         var StoreWrapper = function (_React$Component) {
@@ -25397,8 +25396,7 @@ var connect = function connect() {
                 key: 'render',
                 value: function render() {
                     var props = mapStateToProps(this.store.state);
-                    var actions = mapActionToProps(this.store.actions);
-                    return _react2.default.createElement(Component, _extends({}, this.props, props, actions));
+                    return _react2.default.createElement(Component, _extends({}, this.props, props));
                 }
             }]);
 
