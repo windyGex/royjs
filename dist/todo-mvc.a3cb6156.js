@@ -23325,6 +23325,7 @@ var isArray = function isArray(item) {
 
 function ObservableArray(data, parent, from) {
     _events2.default.mixTo(data);
+    data.parent = parent || function () {};
     var wrap = function wrap(item, parent, from) {
         if (isPlainObject(item)) {
             if (!(item instanceof ObservableModel)) {
@@ -23337,7 +23338,6 @@ function ObservableArray(data, parent, from) {
         }
         return item;
     };
-    data.parent = parent || function () {};
     data.forEach(function (item) {
         var parent = function parent() {
             return data;
@@ -23402,13 +23402,14 @@ var ObservableModel = function (_Events) {
                 return _this3;
             };
             Object.keys(object).forEach(function (key) {
-                target[key] = _this3._wrap(object[key], key, parent);
+                var ret = _this3._wrap(object[key], key, parent);
+                target[key] = ret;
                 Object.defineProperty(object, key, {
                     get: function get() {
                         return _this3.get(key);
                     },
                     set: function set(value) {
-                        return _this3.set(key, value);
+                        _this3.set(key, value);
                     }
                 });
             });
@@ -32401,6 +32402,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -32417,7 +32420,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var route = function route(path) {
+var route = function route(path, options) {
     return function withRoute(Component) {
         return function (_React$Component) {
             _inherits(RouterWrapper, _React$Component);
@@ -32431,7 +32434,7 @@ var route = function route(path) {
             _createClass(RouterWrapper, [{
                 key: 'render',
                 value: function render() {
-                    return _react2.default.createElement(_reactRouterDom.Route, { path: path, component: Component });
+                    return _react2.default.createElement(_reactRouterDom.Route, _extends({}, options, { path: path, component: Component }));
                 }
             }]);
 
@@ -32639,8 +32642,8 @@ var App = (_dec = (0, _route2.default)('/:filter'), _dec2 = (0, _src.inject)(sto
                             'li',
                             null,
                             _react2.default.createElement(
-                                _reactRouterDom.Link,
-                                { to: '/all' },
+                                _reactRouterDom.NavLink,
+                                { to: '/all', activeClassName: 'selected' },
                                 'All'
                             )
                         ),
@@ -32648,8 +32651,8 @@ var App = (_dec = (0, _route2.default)('/:filter'), _dec2 = (0, _src.inject)(sto
                             'li',
                             null,
                             _react2.default.createElement(
-                                _reactRouterDom.Link,
-                                { to: '/active' },
+                                _reactRouterDom.NavLink,
+                                { to: '/active', activeClassName: 'selected' },
                                 'Active'
                             )
                         ),
@@ -32657,8 +32660,8 @@ var App = (_dec = (0, _route2.default)('/:filter'), _dec2 = (0, _src.inject)(sto
                             'li',
                             null,
                             _react2.default.createElement(
-                                _reactRouterDom.Link,
-                                { to: '/complete' },
+                                _reactRouterDom.NavLink,
+                                { to: '/complete', activeClassName: 'selected' },
                                 'Complete'
                             )
                         )

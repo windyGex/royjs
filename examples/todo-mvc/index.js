@@ -1,6 +1,6 @@
 import {Store, inject, devtools} from '../../src/';
 import route from '../../src/route';
-import {HashRouter, Link} from 'react-router-dom';
+import {HashRouter, NavLink as Link} from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -99,9 +99,9 @@ class App extends React.Component {
                     {todoCount <= 0 ? '没有需要完成的任务' : null}
                 </span>
                 <ul className="filters">
-                    <li><Link to="/all">All</Link></li>
-                    <li><Link to="/active">Active</Link></li>
-                    <li><Link to="/complete">Complete</Link></li>
+                    <li><Link to="/all" activeClassName="selected">All</Link></li>
+                    <li><Link to="/active" activeClassName="selected">Active</Link></li>
+                    <li><Link to="/complete" activeClassName="selected">Complete</Link></li>
                 </ul>
             </footer>
         </section>);

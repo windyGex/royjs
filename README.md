@@ -21,56 +21,113 @@ The state management is nothing more than changing the state from partial to par
 ```js
 import {Store, inject} from 'roy.js';
 
-const message = new Store({
+const store = new Store({
     state: {
-        message: 'message'
+        count: 0
     },
     actions: {
-         change() {
-            this.set('message', 'changed');
+        add(state, payload) {
+            const {count} = state;
+            this.set('count', count + 1);
+        },
+        reduce(state, payload) {
+            const {count} = state;
+            this.set('count', count - 1);
         }
     }
 });
 
-@inject(message)
+@inject(store)
 class App extends React.Component {
     render() {
-        const {message} = this.store.state;
-        return <div onClick={() => this.store.dispatch('change')}>{message}</div>;
+        const {count} = this.store.state;
+        return <div onClick={() => this.store.dispatch('add')}>{count}</div>
     }
 }
-
-ReactDOM.render(<App/>, document.getElementById('test'));
 
 ```
 
-## Get data from remote server.
+## Centralized Store
 
 ```js
-import {Store, inject} from 'roy.js';
+import {Store, connect} from 'roy.js';
 
-const message = new Store({
+const store = new Store({}, {
+    plugins: [devtools]
+});
+
+store.create('module1', {
     state: {
-        message: 'message'
+        name: 'module1'
     },
     actions: {
-        change() {
-            this.request.get('/mock.json').then(ret => {
-                this.set('message', ret.data);
-            });
+        change(state, payload){
+            state.set('name', payload);
         }
     }
 });
 
-@inject(message)
+store.create('module2', {
+    state: {
+        name: 'module2'
+    },
+    actions: {
+        change(state, payload){
+            state.set('name', payload);
+        }
+    }
+});
+
+@connect(state => state.module1)
 class App extends React.Component {
+    onClick = () => {
+        this.store.dispatch('module2.change', 'changed name from module1');
+    }
     render() {
-        const {message} = this.store.state;
-        return <div onClick={this.store.change}>{message}</div>;
+        return <div onClick={this.onClick}>{this.props.name}</div>
     }
 }
 
-ReactDOM.render(<App/>, document.getElementById('test'));
+@connect(state => state.module2)
+class App2 extends React.Component {
+    render() {
+        return <div>{this.props.name}</div>
+    }
+}
+```
+
+## Merge localStore to globalStore
+
+```js
+import {Store, inject, connect} from 'roy.js';
+
+const store = new Store();
+
+const subModuleStore = new Store({
+    state: {
+        name: 'subModule'
+    },
+    actions: {
+        change() {
+            this.set('name', 'subModuleChanged');
+        }
+    }
+})
+@inject(subModuleStore)
+class SubModule extends React.Component {
+    render() {
+        return <div onClick={this.store.change}>{this.store.state.name}</div>
+    }
+}
+
+store.mount('subModule', subModuleStore);
+
+@connect(state => state.subModule)
+class App extends React.Component {
+    render() {
+        return <div>{this.props.name}</div>
+    }
+}
 ```
 
 

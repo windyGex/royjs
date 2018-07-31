@@ -14,6 +14,7 @@ const isArray = function (item) {
 
 function ObservableArray(data, parent, from) {
     Events.mixTo(data);
+    data.parent = parent || function () {};
     const wrap = (item, parent, from) => {
         if (isPlainObject(item)) {
             if (!(item instanceof ObservableModel)) {
@@ -27,17 +28,16 @@ function ObservableArray(data, parent, from) {
         }
         return item;
     }
-    data.parent = parent || function () {};
     data.forEach((item) => {
         const parent = () => data;
         wrap(item, parent, from);
     });
-    ['unshift',  'push', 'shift', 'pop', 'sort', 'splice'].forEach(method => {
+    ['unshift', 'push', 'shift', 'pop', 'sort', 'splice'].forEach(method => {
         const oldM = data[method];
         data[method] = (...args) => {
-            if(['unshift', 'push'].indexOf(method) > -1) {
+            if (['unshift', 'push'].indexOf(method) > -1) {
                 args = args.map(item => wrap(item, parent, from));
-            } else if(method === 'splice') {
+            } else if (method === 'splice') {
                 const items = args.slice(2).map(item => wrap(item, parent, from));
                 args = args.slice(0, 2).concat(items);
             }
@@ -66,15 +66,16 @@ class ObservableModel extends Events {
     _wrapAll(object, target) {
         const parent = () => this;
         Object.keys(object).forEach(key => {
-            target[key] = this._wrap(object[key], key, parent);
+            const ret = this._wrap(object[key], key, parent);
+            target[key] = ret;
             Object.defineProperty(object, key, {
                 get: () => {
                     return this.get(key);
                 },
                 set: (value) => {
-                    return this.set(key, value);
+                    this.set(key, value);
                 }
-            })
+            });
         });
     }
     parent() {}
@@ -132,7 +133,7 @@ class ObservableModel extends Events {
         return val;
     }
     set(path, value, options = {}) {
-        if (this._from  && !this._from.allowModelSet) {
+        if (this._from && !this._from.allowModelSet) {
             throw new Error('Can only set model by actions');
         }
         if (isPlainObject(path)) {
