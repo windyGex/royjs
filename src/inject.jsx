@@ -58,7 +58,9 @@ const inject = function (key, value) {
             }
             componentDidMount() {
                 const node = ReactDOM.findDOMNode(this);
-                node._instance = this;
+                if (node) {
+                    node._instance = this;
+                }
             }
             render() {
                 return <Component {...defaultProps} {...this.props} />;

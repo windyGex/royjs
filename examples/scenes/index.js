@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Store, inject, Provider, connect} from '../../src/';
+import {Store, inject, Provider, connect, devtools} from '../../src/';
 
 const store = new Store({
     name: 'list',
@@ -25,7 +25,9 @@ class List extends React.Component {
     }
 }
 
-const globalStore = new Store();
+const globalStore = new Store({}, {
+    plugins: [devtools]
+});
 
 globalStore.subscribe(function (state) {
     console.log(globalStore.state.toJSON());

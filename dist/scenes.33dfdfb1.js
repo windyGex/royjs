@@ -23224,7 +23224,9 @@ var inject = function inject(key, value) {
                 key: 'componentDidMount',
                 value: function componentDidMount() {
                     var node = _reactDom2.default.findDOMNode(this);
-                    node._instance = this;
+                    if (node) {
+                        node._instance = this;
+                    }
                 }
             }, {
                 key: 'render',
@@ -25609,7 +25611,9 @@ var List = (_dec = (0, _src.inject)(store), _dec(_class = function (_React$Compo
 }(_react2.default.Component)) || _class);
 
 
-var globalStore = new _src.Store();
+var globalStore = new _src.Store({}, {
+    plugins: [_src.devtools]
+});
 
 globalStore.subscribe(function (state) {
     console.log(globalStore.state.toJSON());
