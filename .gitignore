@@ -35,5 +35,6 @@ node_modules
 lib/
 
 .cache/
-./examples/test.html
-./examples/index.js
+.examples/test.html
+.examples/index.js
+dist/
