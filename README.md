@@ -1,8 +1,6 @@
-# Developing, Don't use it for production.
+# Roy.js  ![buildStatus](https://travis-ci.org/windyGex/roy.svg?branch=master)
 
-# Roy.js
-
-A simple mvvm library for react.
+A powerful mvvm framework for react.
 
 ## Install
 
