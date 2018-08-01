@@ -91,10 +91,7 @@ class Store extends Events {
             args.value = this.model.get(args.key);
             this.trigger('change', args);
         });
-        // 存储包装过的action
-        this._actions = {};
-        // 存储原先的action
-        this.actions = actions;
+        this.actions = {};
         this.strict = strict;
         this.allowModelSet = !strict;
         this._wrapActions(actions, this.model);
@@ -128,8 +125,8 @@ class Store extends Events {
         Object.keys(actions).forEach(type => {
             const actionType = prefix ? `${prefix}.${type}` : type;
             const that = this;
-            this._actions[actionType] = function actionPayload(payload) {
-                const action = actions[type];
+            const action = actions[type];
+            function actionPayload(payload) {
                 const ret = action.call(that, state, payload);
                 that.trigger('actions', {
                     type: actionType,
@@ -138,10 +135,16 @@ class Store extends Events {
                 });
                 return ret;
             };
+            if (!action._set) {
+                this.actions[actionType] = actionPayload;
+                actionPayload._set = true;
+            } else {
+                this.actions[actionType] = action;
+            }
         });
     }
     dispatch = (type, payload) => {
-        const action = this._actions[type];
+        const action = this.actions[type];
         if (!action || typeof action !== 'function') {
             throw new Error('Cant find ${type} action');
         }

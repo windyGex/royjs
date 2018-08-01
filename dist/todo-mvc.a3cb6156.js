@@ -23224,7 +23224,9 @@ var inject = function inject(key, value) {
                 key: 'componentDidMount',
                 value: function componentDidMount() {
                     var node = _reactDom2.default.findDOMNode(this);
-                    node._instance = this;
+                    if (node) {
+                        node._instance = this;
+                    }
                 }
             }, {
                 key: 'render',
@@ -23413,16 +23415,7 @@ var ObservableModel = function (_Events) {
                 return _this3;
             };
             Object.keys(object).forEach(function (key) {
-                var ret = _this3._wrap(object[key], key, parent);
-                target[key] = ret;
-                Object.defineProperty(object, key, {
-                    get: function get() {
-                        return _this3.get(key);
-                    },
-                    set: function set(value) {
-                        _this3.set(key, value);
-                    }
-                });
+                target[key] = _this3._wrap(object[key], key, parent);
             });
         }
     }, {
@@ -25145,7 +25138,10 @@ var Store = function (_Events) {
             args.value = _this.model.get(args.key);
             _this.trigger('change', args);
         });
-        _this.actions = {};
+        // 存储包装过的action
+        _this._actions = {};
+        // 存储原先的action
+        _this.actions = actions;
         _this.strict = strict;
         _this.allowModelSet = !strict;
         _this._wrapActions(actions, _this.model);
@@ -25185,13 +25181,14 @@ var Store = function (_Events) {
 
             Object.keys(actions).forEach(function (type) {
                 var actionType = prefix ? prefix + '.' + type : type;
-                _this2.actions[actionType] = function (payload) {
+                var that = _this2;
+                _this2._actions[actionType] = function actionPayload(payload) {
                     var action = actions[type];
-                    var ret = action.call(_this2, state, payload);
-                    _this2.trigger('actions', {
+                    var ret = action.call(that, state, payload);
+                    that.trigger('actions', {
                         type: actionType,
                         payload: payload,
-                        state: _this2.model
+                        state: that.model
                     });
                     return ret;
                 };
@@ -25300,7 +25297,7 @@ var _initialiseProps = function _initialiseProps() {
     var _this3 = this;
 
     this.dispatch = function (type, payload) {
-        var action = _this3.actions[type];
+        var action = _this3._actions[type];
         if (!action || typeof action !== 'function') {
             throw new Error('Cant find ${type} action');
         }
@@ -25356,7 +25353,6 @@ var connect = function connect() {
     var mapStateToProps = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function (state) {
         return state;
     };
-    var mapActionToProps = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
 
     return function withStore(Component) {
         var StoreWrapper = function (_React$Component) {
@@ -25402,8 +25398,8 @@ var connect = function connect() {
                 key: 'render',
                 value: function render() {
                     var props = mapStateToProps(this.store.state);
-                    var actions = mapActionToProps(this.store.actions);
-                    return _react2.default.createElement(Component, _extends({}, this.props, props, actions));
+                    var dispatch = this.store.dispatch;
+                    return _react2.default.createElement(Component, _extends({}, this.props, props, { dispatch: dispatch }));
                 }
             }]);
 
@@ -32720,7 +32716,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58602' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '53187' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 

@@ -39,7 +39,8 @@ const connect = function (
             }
             render() {
                 const props = mapStateToProps(this.store.state);
-                return <Component {...this.props} {...props} />;
+                const dispatch = this.store.dispatch;
+                return <Component {...this.props} {...props} dispatch={dispatch}/>;
             }
         }
         return StoreWrapper;

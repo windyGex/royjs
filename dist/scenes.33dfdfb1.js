@@ -25138,10 +25138,7 @@ var Store = function (_Events) {
             args.value = _this.model.get(args.key);
             _this.trigger('change', args);
         });
-        // 存储包装过的action
-        _this._actions = {};
-        // 存储原先的action
-        _this.actions = actions;
+        _this.actions = {};
         _this.strict = strict;
         _this.allowModelSet = !strict;
         _this._wrapActions(actions, _this.model);
@@ -25182,8 +25179,8 @@ var Store = function (_Events) {
             Object.keys(actions).forEach(function (type) {
                 var actionType = prefix ? prefix + '.' + type : type;
                 var that = _this2;
-                _this2._actions[actionType] = function actionPayload(payload) {
-                    var action = actions[type];
+                var action = actions[type];
+                function actionPayload(payload) {
                     var ret = action.call(that, state, payload);
                     that.trigger('actions', {
                         type: actionType,
@@ -25192,6 +25189,12 @@ var Store = function (_Events) {
                     });
                     return ret;
                 };
+                if (!action._set) {
+                    _this2.actions[actionType] = actionPayload;
+                    actionPayload._set = true;
+                } else {
+                    _this2.actions[actionType] = action;
+                }
             });
         }
     }, {
@@ -25297,7 +25300,7 @@ var _initialiseProps = function _initialiseProps() {
     var _this3 = this;
 
     this.dispatch = function (type, payload) {
-        var action = _this3._actions[type];
+        var action = _this3.actions[type];
         if (!action || typeof action !== 'function') {
             throw new Error('Cant find ${type} action');
         }
@@ -25398,7 +25401,8 @@ var connect = function connect() {
                 key: 'render',
                 value: function render() {
                     var props = mapStateToProps(this.store.state);
-                    return _react2.default.createElement(Component, _extends({}, this.props, props));
+                    var dispatch = this.store.dispatch;
+                    return _react2.default.createElement(Component, _extends({}, this.props, props, { dispatch: dispatch }));
                 }
             }]);
 
@@ -25692,7 +25696,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58133' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '54351' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
