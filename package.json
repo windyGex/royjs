@@ -9,7 +9,7 @@
     "dev": "webpack --progress --colors --watch --env dev",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
     "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js",
-    "prepublish": "tnpm run build && tnpm run build:umd",
+    "prepublish": "npm run build && npm run build:umd",
     "example:todo": "parcel examples/todo-mvc/index.html",
     "example:counter": "parcel examples/counter/index.html",
     "example:scene": "parcel examples/scenes/index.html"
