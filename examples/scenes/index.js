@@ -5,7 +5,10 @@ import {Store, inject, Provider, connect, devtools} from '../../src/';
 const store = new Store({
     name: 'list',
     state: {
-        dataSource: []
+        dataSource: [],
+        complex: {
+            a: 1
+        }
     },
     actions: {
         add(state, payload) {
@@ -13,6 +16,9 @@ const store = new Store({
             dataSource.push({
                 item: 'add'
             });
+        },
+        complex(state) {
+            state.set('complex.a', 2);
         }
     }
 });
@@ -20,8 +26,8 @@ const store = new Store({
 @inject(store)
 class List extends React.Component {
     render() {
-        const {dataSource} = this.store.state;
-        return <div>{dataSource.length}</div>;
+        const {dataSource, complex} = this.store.state;
+        return <div>{dataSource.length}, {complex.a}</div>;
     }
 }
 
@@ -38,8 +44,13 @@ class Button extends React.Component {
     onClick = () => {
         this.store.dispatch('list.add', 'add');
     }
+    onChange = () => {
+        this.store.dispatch('list.complex');
+    }
     render() {
-        return <button onClick={this.onClick}>Add</button>;
+        return <div><button onClick={this.onClick}>Add</button>
+            <button onClick={this.onChange}>Complex</button>
+        </div>;
     }
 }
 

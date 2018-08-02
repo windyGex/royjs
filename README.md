@@ -14,7 +14,9 @@ npm install roy.js --save
 
 The state management is nothing more than changing the state from partial to partial sharing, so in an application, each component can be managed corresponding to a state, and only when this part needs to be shared, it is extracted.
 
-## Basic Usage
+## Usage
+
+### Basic Usage
 
 ```js
 import {Store, inject} from 'roy.js';
@@ -45,7 +47,7 @@ class App extends React.Component {
 
 ```
 
-## Centralized Store
+### Centralized Store
 
 ```js
 import {Store, connect} from 'roy.js';
@@ -94,7 +96,7 @@ class App2 extends React.Component {
 }
 ```
 
-## Merge localStore to globalStore
+### Merge localStore to globalStore
 
 ```js
 import {Store, inject, connect} from 'roy.js';
@@ -128,5 +130,12 @@ class App extends React.Component {
 }
 ```
 
+## Benchmark
 
+Test on my macbook pro (Intel Core i7 2.2GHz)
 
+![benchmark](https://img.alicdn.com/tfs/TB1n.LgIuSSBuNjy0FlXXbBpVXa-786-140.png)
+
+```shell
+tnpm run benchmark
+```
