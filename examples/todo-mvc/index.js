@@ -1,8 +1,8 @@
 import {Store, inject, devtools} from '../../src/';
 import route from '../../src/route';
-import {HashRouter, NavLink as Link} from 'react-router-dom';
+import render from '../../src/render';
+import {NavLink as Link} from 'react-router-dom';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 const logger = function (store) {
     store.subscribe(obj => {
@@ -107,5 +107,4 @@ class App extends React.Component {
         </section>);
     }
 }
-
-ReactDOM.render(<HashRouter><App/></HashRouter>, document.getElementById('root'));
+render(<App/>, '#root');

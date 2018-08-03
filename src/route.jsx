@@ -1,7 +1,9 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
+import meta from './meta';
 
 const route = function (path, options) {
+    meta.route = true;
     return function withRoute(Component) {
         return class RouterWrapper extends React.Component {
             render() {
