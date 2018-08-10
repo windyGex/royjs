@@ -5,6 +5,8 @@ import Observer from './observe-model';
 import DataSource from './data-source';
 import Store from './store';
 import devtools from './devtools';
+import route from './route';
+import render from './render';
 
 export default {
     DataSource,
@@ -13,5 +15,11 @@ export default {
     Observer,
     Store,
     Provider,
-    devtools
+    devtools,
+    route,
+    render
 };
+
+export * from 'react-router-dom';
+
+export * from 'axios';

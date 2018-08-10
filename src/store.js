@@ -141,6 +141,11 @@ class Store extends Events {
             } else {
                 this.actions[actionType] = action;
             }
+            Object.defineProperty(this, type, {
+                get() {
+                    return (payload) => this.dispatch(type, payload);
+                }
+            });
         });
     }
     dispatch = (type, payload) => {
