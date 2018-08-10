@@ -1,4 +1,5 @@
 import React from 'react';
+/*eslint-disable*/
 import {Route} from 'react-router-dom';
 import meta from './meta';
 
