@@ -4,6 +4,7 @@ import Provider from './provider';
 import Observer from './observe-model';
 import DataSource from './data-source';
 import Store from './store';
+import compose from './compose';
 
 export default {
     DataSource,
@@ -11,5 +12,6 @@ export default {
     connect,
     Observer,
     Store,
-    Provider
+    Provider,
+    compose
 };

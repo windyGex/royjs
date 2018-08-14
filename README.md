@@ -108,8 +108,8 @@ const subModuleStore = new Store({
         name: 'subModule'
     },
     actions: {
-        change() {
-            this.set('name', 'subModuleChanged');
+        change(state) {
+            state.set('name', 'subModuleChanged');
         }
     }
 })
@@ -142,15 +142,15 @@ const store = new Store({
     actions: {
         add(state, payload) {
             const {count} = state;
-            this.set('count', count + 1);
+            state.set('count', count + 1);
         },
         reduce(state, payload) {
             const {count} = state;
-            this.set('count', count - 1);
+            state.set('count', count - 1);
         },
         fetch(state, payload) {
             this.request('./url').then(ret => {
-                this.set('dataSource', ret.ds)
+                state.set('dataSource', ret.ds)
             });
         }
     }

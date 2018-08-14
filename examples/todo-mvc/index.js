@@ -1,4 +1,5 @@
-import {Store, inject, devtools} from '../../src/';
+import {Store, inject} from '../../src/';
+import devtools from '../../src/devtools';
 import route from '../../src/route';
 import render from '../../src/render';
 import {NavLink as Link} from 'react-router-dom';
@@ -6,7 +7,7 @@ import React from 'react';
 
 const logger = function (store) {
     store.subscribe(obj => {
-        console.log(obj.type, obj.payload, obj.state.toJSON());
+        console.log(obj.type, obj.state.toJSON());
     });
 };
 

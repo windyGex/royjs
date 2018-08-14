@@ -25,9 +25,14 @@ class Store extends Events {
         if (!globalStore) {
             console.warn('The store has not been initialized yet!');
         }
-        Object.keys(state).forEach(key => {
-            store.set(`${name}.${key}`, state[key]);
-        });
+        const stateKeys = Object.keys(state);
+        if (stateKeys.length === 0) {
+            store.set(name, {});
+        } else {
+            stateKeys.forEach(key => {
+                store.set(`${name}.${key}`, state[key]);
+            });
+        }
         store._wrapActions(actions, store.get(name), name);
         return store.get(name);
     }
@@ -100,7 +105,9 @@ class Store extends Events {
         this.name = name;
         this.primaryKey = options.primaryKey || 'id';
         plugins.forEach(plugin => {
-            plugin(this);
+            if (typeof plugin === 'function') {
+                plugin(this);
+            }
         });
         if (!globalStore) {
             globalStore = this;

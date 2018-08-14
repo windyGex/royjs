@@ -1,4 +1,5 @@
-import {Store, inject, devtools} from '../../src/';
+import {Store, inject} from '../../src/';
+import devtools from '../../src/devtools';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -15,11 +16,11 @@ const store = new Store({
     actions: {
         add(state, payload) {
             const {count} = state;
-            this.set('count', count + 1);
+            state.set('count', count + 1);
         },
         reduce(state, payload) {
             const {count} = state;
-            this.set('count', count - 1);
+            state.set('count', count - 1);
         },
         asyncAdd(state, payload) {
             setTimeout(() => {
