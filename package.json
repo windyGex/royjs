@@ -1,6 +1,6 @@
 {
   "name": "roy.js",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
   "scripts": {
