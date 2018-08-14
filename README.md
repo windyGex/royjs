@@ -130,6 +130,44 @@ class App extends React.Component {
 }
 ```
 
+### Async Request
+
+```js
+import {Store, inject} from 'roy.js';
+
+const store = new Store({
+    state: {
+        count: 0
+    },
+    actions: {
+        add(state, payload) {
+            const {count} = state;
+            this.set('count', count + 1);
+        },
+        reduce(state, payload) {
+            const {count} = state;
+            this.set('count', count - 1);
+        },
+        fetch(state, payload) {
+            this.request('./url').then(ret => {
+                this.set('dataSource', ret.ds)
+            });
+        }
+    }
+});
+
+@inject(store)
+class App extends React.Component {
+    componentDidMount() {
+        this.store.dispatch('fetch');
+    }
+    render() {
+        const {dataSource} = this.store.state;
+        return <div onClick={() => this.store.dispatch('add')}>{dataSource}</div>
+    }
+}
+```
+
 ## Benchmark
 
 Test on my macbook pro (Intel Core i7 2.2GHz)
