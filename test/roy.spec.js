@@ -4,7 +4,7 @@ import chai from 'chai';
 import React from 'react';
 import Enzyme, {mount} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-15';
-import {Store, inject, connect, Provider} from '../src/index';
+import {Store, inject, connect, Provider, compose} from '../src/index';
 import {JSDOM} from 'jsdom';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -102,6 +102,31 @@ describe('Should support inject store to React Component', () => {
             expect(wrapper.find('span').text()).eql('b');
             done();
         }, 10);
+    });
+
+    it('should support compose', () => {
+        const object = {
+            view: function ({createElement}) {
+                return createElement('div', {
+                    onClick: () => {
+                        this.store.dispatch('change');
+                    }
+                }, this.store.state.name);
+            },
+            state: {
+                name: 123
+            },
+            actions: {
+                change(state, payload) {
+                    state.set('name', 456);
+                }
+            }
+        };
+        const Component = compose(object);
+        const wrapper = mount(<Component/>);
+        expect(wrapper.find('div').text()).eql('123');
+        wrapper.find('div').simulate('click');
+        expect(wrapper.find('div').text()).eql('456');
     });
 });
 

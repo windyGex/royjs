@@ -1,6 +1,6 @@
 import {
     Store
-} from '../../src/';
+} from '../src';
 const store = new Store({}, {
     plugins: []
 });
