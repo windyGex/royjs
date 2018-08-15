@@ -70,7 +70,7 @@ class Store extends Events {
             actions
         });
     }
-    
+
     static get = function () {
         return globalStore;
     }

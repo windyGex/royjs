@@ -9,7 +9,7 @@ export default function compose({
     state,
     actions,
     container,
-    init,
+    init
 }) {
     const store = new Store({
         state,
@@ -19,7 +19,7 @@ export default function compose({
         constructor() {
             super(...arguments);
 
-            if(typeof(init) === 'function') {
+            if (typeof init === 'function') {
                 init.call(this, ...arguments);
             }
         }
