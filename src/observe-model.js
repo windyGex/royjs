@@ -28,9 +28,9 @@ function ObservableArray(data, parent, from) {
         }
         return item;
     }
-    data.forEach((item) => {
+    data.forEach((item, index) => {
         const parent = () => data;
-        wrap(item, parent, from);
+        data[index] = wrap(item, parent, from);
     });
     ['unshift', 'push', 'shift', 'pop', 'sort', 'splice'].forEach(method => {
         const oldM = data[method];
