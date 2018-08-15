@@ -8,13 +8,22 @@ export default function compose({
     components,
     state,
     actions,
-    container
+    container,
+    init,
 }) {
     const store = new Store({
         state,
         actions
     });
     class ComposeComponent extends React.Component {
+        constructor() {
+            super(...arguments);
+
+            if(typeof(init) === 'function') {
+                init.call(this, ...arguments);
+            }
+        }
+
         render() {
             return view.call(this, {
                 createElement: React.createElement,
