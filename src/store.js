@@ -156,7 +156,7 @@ class Store extends Events {
     dispatch = (type, payload) => {
         const action = this.actions[type];
         if (!action || typeof action !== 'function') {
-            throw new Error('Cant find ${type} action');
+            throw new Error(`Cant find ${type} action`);
         }
         this.allowModelSet = true;
         const ret = action(payload);
