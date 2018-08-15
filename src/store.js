@@ -62,12 +62,15 @@ class Store extends Events {
             obj.key = `${name}.${obj.key}`;
             target.trigger('get', obj);
         });
+        store.on('actions', args => {
+            target.trigger('actions', args);
+        });
         return Store.create(target, name, {
             state: state.toJSON(),
             actions
         });
-
     }
+    
     static get = function () {
         return globalStore;
     }
@@ -106,7 +109,7 @@ class Store extends Events {
         this.primaryKey = options.primaryKey || 'id';
         plugins.forEach(plugin => {
             if (typeof plugin === 'function') {
-                plugin(this);
+                plugin(this, this.actions);
             }
         });
         if (!globalStore) {
