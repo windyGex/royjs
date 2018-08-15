@@ -101,16 +101,16 @@ class Store extends Events {
         this.actions = {};
         this.strict = strict;
         this.allowModelSet = !strict;
-        this._wrapActions(actions, this.model);
         this.state = this.model;
         this.url = options.url;
         this.name = name;
         this.primaryKey = options.primaryKey || 'id';
         plugins.forEach(plugin => {
             if (typeof plugin === 'function') {
-                plugin(this, this.actions);
+                plugin(this, actions);
             }
         });
+        this._wrapActions(actions, this.model);
         if (!globalStore) {
             globalStore = this;
         }
