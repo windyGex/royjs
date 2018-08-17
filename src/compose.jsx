@@ -6,6 +6,7 @@ import inject from './inject';
 const noop = function () {};
 
 export default function compose({
+    name,
     view,
     components,
     state,
@@ -18,6 +19,7 @@ export default function compose({
     beforeDestroy = noop
 }) {
     const store = new Store({
+        name,
         state,
         actions
     });
