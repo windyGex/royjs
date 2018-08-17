@@ -1,5 +1,5 @@
 {
-  "name": "roy.js",
+  "name": "@royjs/core",
   "version": "0.5.3",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/windyGex/roy.git"
+    "url": "git+https://github.com/windyGex/roy.git"
   },
   "files": [
     "dist",
@@ -82,5 +82,10 @@
   "dependencies": {
     "axios": "^0.18.0",
     "react-router-dom": "^4.3.1"
+  },
+  "directories": {
+    "example": "examples",
+    "lib": "lib",
+    "test": "test"
   }
 }
