@@ -1,11 +1,11 @@
-# Roy.js  ![buildStatus](https://travis-ci.org/windyGex/roy.svg?branch=master)
+# Roy  ![buildStatus](https://travis-ci.org/windyGex/roy.svg?branch=master)
 
 A powerful mvvm framework for react.
 
 ## Install
 
 ```shell
-npm install roy.js --save
+npm install royjs --save
 ```
 
 ## Motive
@@ -19,7 +19,7 @@ The state management is nothing more than changing the state from partial to par
 ### Basic Usage
 
 ```js
-import {Store, inject} from 'roy.js';
+import {Store, inject} from 'royjs';
 
 const store = new Store({
     state: {
@@ -50,7 +50,7 @@ class App extends React.Component {
 ### Centralized Store
 
 ```js
-import {Store, connect} from 'roy.js';
+import {Store, connect} from 'royjs';
 
 const store = new Store({}, {
     plugins: [devtools]
@@ -99,7 +99,7 @@ class App2 extends React.Component {
 ### Merge localStore to globalStore
 
 ```js
-import {Store, inject, connect} from 'roy.js';
+import {Store, inject, connect} from 'royjs';
 
 const store = new Store();
 
@@ -133,7 +133,7 @@ class App extends React.Component {
 ### Async Request
 
 ```js
-import {Store, inject} from 'roy.js';
+import {Store, inject} from 'royjs';
 
 const store = new Store({
     state: {
