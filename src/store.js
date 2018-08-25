@@ -1,6 +1,7 @@
 import Events from './events';
 import ObservableModel from './observe-model';
 import DataSource from './data-source';
+import setValues from './plugins/set-values';
 
 let globalStore;
 
@@ -105,6 +106,7 @@ class Store extends Events {
         this.url = options.url;
         this.name = name;
         this.primaryKey = options.primaryKey || 'id';
+        plugins.unshift(setValues);
         plugins.forEach(plugin => {
             if (typeof plugin === 'function') {
                 plugin(this, actions);

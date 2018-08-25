@@ -1,4 +1,4 @@
-let devtools = function (store) {
+const devtools = function (store) {
     let tool;
     store.subscribe(obj => {
         if (window.hasOwnProperty('__REDUX_DEVTOOLS_EXTENSION__') && !tool) {

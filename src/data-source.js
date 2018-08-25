@@ -6,7 +6,7 @@ function DataSource(props) {
 DataSource.prototype = {
     url: '',
     request() {
-        console.error('需要首先引入[roy.js/request]才能正常工作');
+        console.error('需要首先引入[@royjs/core/request]才能正常工作');
     },
     get(id, params) {
         return this.request.get(`${this.url}/${id}`, params);

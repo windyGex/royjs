@@ -1,5 +1,6 @@
 import {Store, inject} from '../../src/';
-import devtools from '../../src/devtools';
+import devtools from '../../src/plugins/devtools';
+import routePlugin from '../../src/plugins/route';
 import route from '../../src/route';
 import render from '../../src/render';
 import {NavLink as Link} from 'react-router-dom';
@@ -34,7 +35,7 @@ const store = new Store({
         }
     }
 }, {
-    plugins: [logger, devtools]
+    plugins: [logger, devtools, routePlugin]
 });
 
 @route('/:filter')
@@ -43,21 +44,28 @@ class App extends React.Component {
     onAdd = (e) => {
         if (e.keyCode === 13) {
             this.store.dispatch('add', e.target.value);
-            this.store.set('newTodo', '');
+            this.store.dispatch('setValues', {
+                newTodo: ''
+            });
         }
     }
+    back = () => {
+        this.store.dispatch('router.goBack');
+    }
     onChange = (e) => {
-        this.store.set('newTodo', e.target.value);
+        this.store.dispatch('setValues', {
+            newTodo: e.target.value
+        });
     }
     renderList() {
         const todoList = this.store.get('todoList');
         const {params} = this.props.match;
         const filters = {
             'all': todo => todo,
-            'active': todo => todo.completed,
-            'completed': todo => !todo.completed
+            'active': todo => !todo.completed,
+            'complete': todo => todo.completed
         };
-        return todoList.filter(todo => filters[params.filter]).map((todo, index)=> {
+        return todoList.filter(filters[params.filter]).map((todo, index)=> {
             return <li className={{ completed: todo.completed }} key={index}>
                 <div className="view">
                     <input
@@ -96,7 +104,7 @@ class App extends React.Component {
 
             <footer className="footer">
                 <span className="todo-count">
-                    {todoCount > 0 ? <strong>剩余任务数量{todoList.length}个</strong> : null}
+                    {todoCount > 0 ? <strong>剩余任务数量{todoCount}个</strong> : null}
                     {todoCount <= 0 ? '没有需要完成的任务' : null}
                 </span>
                 <ul className="filters">
@@ -104,8 +112,15 @@ class App extends React.Component {
                     <li><Link to="/active" activeClassName="selected">Active</Link></li>
                     <li><Link to="/complete" activeClassName="selected">Complete</Link></li>
                 </ul>
+                <button onClick={this.back} style={btnStyle}>后退</button>
             </footer>
         </section>);
     }
 }
+
+const btnStyle = {
+    position: 'absolute',
+    right: 5
+};
+
 render(<App/>, '#root');
