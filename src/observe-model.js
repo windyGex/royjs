@@ -59,7 +59,7 @@ class ObservableModel extends Events {
         Object.keys(this).forEach(key => {
             if (key.charAt(0) != '_' && key !== 'parent') {
                 const value = this[key];
-                if (value.toJSON) {
+                if (value && value.toJSON) {
                     ret[key] = value.toJSON();
                 } else {
                     ret[key] = value;

@@ -1,6 +1,6 @@
 {
   "name": "@royjs/core",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
   "scripts": {
@@ -28,7 +28,8 @@
     "README.md",
     "index.js",
     "router.js",
-    "request.js"
+    "request.js",
+    "devtools.js"
   ],
   "keywords": [
     "mvvm",
