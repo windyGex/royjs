@@ -27,7 +27,7 @@ const connect = function (
                 };
                 this.store.on('change', this._change);
                 this.store.on('get', this._get);
-                this.store.history = this.props.history;
+                this.store.history = this.store.history || this.props.history;
                 Component.prototype.store = this.store;
             }
             componentWillUnmount() {
