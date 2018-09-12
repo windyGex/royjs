@@ -8,8 +8,8 @@ const devtools = function (store) {
                     store.set(JSON.parse(message.state));
                 }
             });
+            tool.send(obj.type, obj.state.toJSON());
         }
-        tool.send(obj.type, obj.state.toJSON());
     });
 };
 
