@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Store, inject, Provider, connect} from '../../src/';
-import devtools from '../../src/devtools';
+import devtools from '../../src/plugins/devtools';
 
 const store = new Store({
     name: 'list',

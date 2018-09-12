@@ -1,5 +1,5 @@
 import {Store, inject} from '../../src/';
-import devtools from '../../src/devtools';
+import devtools from '../../src/plugins/devtools';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
