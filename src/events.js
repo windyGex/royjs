@@ -6,7 +6,12 @@ Events.prototype = {
     on(type, callback) {
         let cache;
         if (!callback) return this;
-        cache = this.__events || (this.__events = {});
+        if (!this.__events) {
+            Object.defineProperty(this, '__events', {
+                value: {}
+            });
+        }
+        cache = this.__events;
         (cache[type] || (cache[type] = [])).push(callback);
         return this;
     },
@@ -34,7 +39,9 @@ Events.mixTo = function (receiver) {
     const proto = Events.prototype;
     for (let p in proto) {
         if (proto.hasOwnProperty(p)) {
-            receiver[p] = proto[p];
+            Object.defineProperty(receiver, p, {
+                value: proto[p]
+            });
         }
     }
 };

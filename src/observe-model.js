@@ -14,13 +14,18 @@ const isArray = function (item) {
 
 function ObservableArray(data, parent, from) {
     Events.mixTo(data);
-    data.parent = parent || function () {};
+    Object.defineProperty(data, 'parent', {
+        value: parent || function(){},
+        writable: true
+    });
     const wrap = (item, parent, from) => {
         if (isPlainObject(item)) {
             if (!(item instanceof ObservableModel)) {
                 item = new ObservableModel(item, from);
             }
-            item.parent = parent;
+            Object.defineProperty(item, 'parent', {
+                value: parent
+            });
             item.on('change', args => {
                 data.trigger('change', { ...args
                 });
@@ -34,15 +39,22 @@ function ObservableArray(data, parent, from) {
     });
     ['unshift', 'push', 'shift', 'pop', 'sort', 'splice'].forEach(method => {
         const oldM = data[method];
-        data[method] = (...args) => {
-            if (['unshift', 'push'].indexOf(method) > -1) {
-                args = args.map(item => wrap(item, parent, from));
-            } else if (method === 'splice') {
-                const items = args.slice(2).map(item => wrap(item, parent, from));
-                args = args.slice(0, 2).concat(items);
+        Object.defineProperty(data, method, {
+            value: (...args) => {
+                if (['unshift', 'push'].indexOf(method) > -1) {
+                    args = args.map(item => wrap(item, parent, from));
+                } else if (method === 'splice') {
+                    const items = args.slice(2).map(item => wrap(item, parent, from));
+                    args = args.slice(0, 2).concat(items);
+                }
+                oldM.apply(data, args);
+                data.trigger('change', {});
             }
-            oldM.apply(data, args);
-            data.trigger('change', {});
+        });
+    });
+    Object.defineProperty(data, 'toJSON', {
+        value: function() {
+            return this.map(item => item && item.toJSON && item.toJSON());
         }
     });
 }
@@ -52,7 +64,16 @@ class ObservableModel extends Events {
     constructor(object, from) {
         super(object);
         this._wrapAll(object, this);
-        this._from = from;
+
+        Object.defineProperties(this, {
+            _from: {
+                value: from
+            },
+            parent: {
+                value: function(){},
+                writable: true
+            }
+        })
     }
     toJSON() {
         const ret = {};
@@ -74,7 +95,6 @@ class ObservableModel extends Events {
             target[key] = this._wrap(object[key], key, parent);
         });
     }
-    parent() {}
     get(path) {
         if (!path) {
             return;
@@ -198,7 +218,9 @@ class ObservableModel extends Events {
                     });
                 });
             }
-            item.parent = parent;
+            Object.defineProperty(item, 'parent', {
+                value: parent
+            });
         } else if (isArray(item) || item instanceof ObservableArray) {
             if (!item.__events) {
                 ObservableArray(item, () => {}, this._from);
@@ -212,7 +234,9 @@ class ObservableModel extends Events {
                     });
                 });
             }
-            item.parent = parent;
+            Object.defineProperty(item, 'parent', {
+                value: parent
+            });
         }
         return item;
     }
