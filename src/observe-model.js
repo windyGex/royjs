@@ -95,6 +95,11 @@ class ObservableModel extends Events {
             target[key] = this._wrap(object[key], key, parent);
         });
     }
+    reset() {
+        Object.keys(this).forEach(key => {
+            this.set(key, undefined);
+        });
+    }
     get(path) {
         if (!path) {
             return;

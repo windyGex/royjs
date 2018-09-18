@@ -156,6 +156,9 @@ describe('it should support observable store', () => {
         item.set('a', 3);
         expect(cb.callCount).eq(3);
         expect(store.state.get('d[0].a')).eq(3);
+        store.state.reset();
+        expect(store.state.a).eq(undefined);
+        expect(store.state.c).eq(undefined);
     });
 });
 
