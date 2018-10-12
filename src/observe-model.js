@@ -54,7 +54,12 @@ function ObservableArray(data, parent, from) {
     });
     Object.defineProperty(data, 'toJSON', {
         value: function() {
-            return this.map(item => item && item.toJSON && item.toJSON());
+            return this.map(item => {
+                if (item && item.toJSON) {
+                    return item.toJSON();
+                }
+                return item;
+            });
         }
     });
 }
@@ -112,7 +117,11 @@ class ObservableModel extends Events {
             if (key.indexOf('[') >= 0) {
                 key = key.match(/(.*)\[(.*)\]/);
                 if (key) {
-                    val = this[key[1]][key[2]];
+                    try {
+                        val = this[key[1]][key[2]];
+                    } catch(e) {
+                        throw new Error(`state ${key[1]} is undefined!`);
+                    }
                 }
                 // lists().name
             } else if (key.indexOf('(') >= 0) {

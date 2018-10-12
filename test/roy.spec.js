@@ -18,7 +18,7 @@ chai.expect();
 
 const expect = chai.expect;
 
-describe('Should support inject store to React Component', () => {
+describe('support inject store to React Component', () => {
     it('inject store using  object', () => {
         const store = new Store({
             state: {
@@ -159,6 +159,13 @@ describe('it should support observable store', () => {
         store.state.reset();
         expect(store.state.a).eq(undefined);
         expect(store.state.c).eq(undefined);
+        store.state.set('d', [{
+            children: [{
+                b: false
+            }]
+        }]);
+        store.state.set('d[0].children[0].b', true);
+        expect(store.state.d[0].children[0].b, true);
     });
 });
 
@@ -186,5 +193,15 @@ describe('it should support plugin', () => {
             b: 1
         });
         expect(store.state.b).eq(1);
+    });
+});
+
+describe('bugfix', () => {
+    it('should fix array toJSON', () => {
+        const store = new Store({
+            state: {}
+        });
+        store.set('data', [1, 2, 3]);
+        expect(store.state.data.toJSON().toString()).eq('1,2,3');
     });
 });

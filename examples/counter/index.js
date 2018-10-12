@@ -22,10 +22,13 @@ const store = new Store({
             const {count} = state;
             state.set('count', count - 1);
         },
-        asyncAdd(state, payload) {
-            setTimeout(() => {
-                this.dispatch('add');
-            }, 500);
+        async asyncAdd(state, payload) {
+            await new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve();
+                }, 500);
+            });
+            this.dispatch('add');
         }
     }
 }, {
