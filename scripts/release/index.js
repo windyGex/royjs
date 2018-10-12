@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const co = require('co');
 const changelog = require('./changelog');
 const notice = require('./notice');
@@ -14,7 +12,6 @@ co(function * () {
     yield changelog();
     packageInfo = require('../../package.json');
     yield publishToTnpm();
-    // yield publishToCDN(packageInfo.version);
     yield pushMaster();
     yield notice();
 }).catch(err => {
@@ -31,8 +28,8 @@ function * pushMaster() {
 function * publishToTnpm() {
     yield runCmd('git checkout master');
     yield runCmd('git pull');
-    // yield runCmd(`git tag ${packageInfo.version}`);
-    // yield runCmd(`git push roy ${packageInfo.version}`);
-    // yield runCmd(`git push github ${packageInfo.version}`);
+    yield runCmd(`git tag ${packageInfo.version}`);
+    yield runCmd(`git push roy ${packageInfo.version}`);
+    yield runCmd(`git push github ${packageInfo.version}`);
     yield runCmd('npm publish');
 }
