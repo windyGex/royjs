@@ -173,8 +173,8 @@ class Store extends Events {
             const actionType = prefix ? `${prefix}.${type}` : type;
             const that = this;
             const action = actions[type];
-            function actionPayload(payload) {
-                const ret = action.call(that, state, payload);
+            function actionPayload(payload, options) {
+                const ret = action.call(that, state, payload, options);
                 that.trigger('actions', {
                     type: actionType,
                     payload,
@@ -198,13 +198,13 @@ class Store extends Events {
             this._endBatch();
         }
     }
-    dispatch = (type, payload) => {
+    dispatch = (type, payload, options) => {
         const action = this.actions[type];
         if (!action || typeof action !== 'function') {
             throw new Error(`Cant find ${type} action`);
         }
         this.allowModelSet = true;
-        const ret = action(payload);
+        const ret = action(payload, options);
         if (this.strict) {
             this.allowModelSet = false;
         }

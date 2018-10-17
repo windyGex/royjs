@@ -1,6 +1,6 @@
 const setValues = function (store, actions) {
-    actions.setValues = function (state, payload) {
-        state.set(payload);
+    actions.setValues = function (state, payload, options) {
+        state.set(payload, options);
     };
 };
 

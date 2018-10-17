@@ -1,6 +1,6 @@
 {
   "name": "@royjs/core",
-  "version": "0.6.4",
+  "version": "0.6.7",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
   "scripts": {
@@ -13,8 +13,8 @@
     "example:todo": "parcel examples/todo-mvc/index.html",
     "example:counter": "parcel examples/counter/index.html",
     "example:scene": "parcel examples/scenes/index.html",
-    "example:batch": "parcel examples/batch-update/index.html",
-    "benchmark": "parcel test/benchmark.html"
+    "benchmark": "parcel test/benchmark.html",
+    "release": "npm run test && node ./scripts/release"
   },
   "repository": {
     "type": "git",
@@ -65,24 +65,30 @@
     "babel-register": "^6.26.0",
     "benchmark": "^2.1.4",
     "chai": "^4.1.2",
+    "chalk": "^2.4.1",
+    "conventional-changelog": "^2.0.3",
     "dva": "^2.3.1",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-15": "^1.0.6",
     "eslint": "^4.13.1",
     "eslint-loader": "^1.9.0",
+    "fs-extra": "^7.0.0",
+    "inquirer": "^6.2.0",
     "jsdom": "^11.12.0",
     "mocha": "^4.0.1",
     "parcel": "^1.9.7",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
     "react-test-renderer": "^15.6.2",
+    "request": "^2.88.0",
     "rimraf": "^2.6.2",
+    "semver": "^5.6.0",
     "sinon": "^6.1.5",
     "webpack": "^3.10.0",
     "yargs": "^10.0.3"
   },
   "dependencies": {
-    "@alife/hippo-request": "^0.1.1-rc1",
+    "@alife/hippo-request": "1.x",
     "axios": "^0.18.0",
     "react-router-dom": "^4.3.1"
   },
