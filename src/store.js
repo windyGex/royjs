@@ -57,10 +57,12 @@ class Store extends Events {
         } = store;
         store.on('change', args => {
             args = isArray(args) ? args : [args];
-            for (let i = 0; i < args.length; i++) {
-                const item = args[i];
-                target.set(`${name}.${item.key}`, item.value);
-            }
+            target.transaction(() => {
+                for (let i = 0; i < args.length; i++) {
+                    const item = args[i];
+                    target.set(`${name}.${item.key}`, item.value);
+                }
+            });
         });
         store.on('get', args => {
             const obj = { ...args

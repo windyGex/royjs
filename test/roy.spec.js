@@ -205,3 +205,169 @@ describe('bugfix', () => {
         expect(store.state.data.toJSON().toString()).eq('1,2,3');
     });
 });
+
+describe('it should support batch update when multiple set store', () => {
+    it('render method should be called once when multiple sets are wrapped by the transaction method', (done) => {
+        const cb = sinon.spy();
+        const store = new Store({
+            state: {
+                count1: 0,
+                count2: 0,
+                count3: 0
+            },
+            actions: {
+                add(state, payload) {
+                    window.setTimeout(() => {
+                        this.transaction(() => {
+                            this.dispatch('setValues', {
+                                count1: state.count1 + 1,
+                                count2: state.count2 + 1,
+                                count3: state.count3 + 1
+                            });
+                        });
+                    }, 100);
+                }
+            }
+        });
+
+        @inject(store)
+        class App extends React.Component {
+            render() {
+                cb();
+                const {count1, count2, count3} = this.store.state;
+                const {dispatch} = this.store;
+                return (<div>
+                    <span>{count1}{count2}{count3}</span>
+                    <button onClick={() => dispatch('add')}>add</button>
+                </div>);
+            }
+        }
+        const wrapper = mount(<App/>);
+        wrapper.find('button').simulate('click');
+        window.setTimeout(() => {
+            expect(cb.callCount).eq(2);
+            expect(wrapper.find('span').text()).eq('111');
+            done();
+        }, 300);
+    });
+
+    it('render method should be called once when multiple sets are wrapped by the nest transaction method', (done) => {
+        const cb = sinon.spy();
+        const store = new Store({
+            state: {
+                count1: 0,
+                count2: 0,
+                count3: 0
+            },
+            actions: {
+                add(state, payload) {
+                    window.setTimeout(() => {
+                        this.transaction(() => {
+                            this.transaction(() => {
+                                this.dispatch('setValues', {
+                                    count1: state.count1 + 1,
+                                    count2: state.count2 + 1,
+                                    count3: state.count3 + 1
+                                });
+                            });
+                            this.dispatch('setValues', {
+                                count3: state.count3 + 1
+                            });
+                        });
+                    }, 100);
+                }
+            }
+        });
+
+        @inject(store)
+        class App extends React.Component {
+            render() {
+                cb();
+                const {count1, count2, count3} = this.store.state;
+                const {dispatch} = this.store;
+                return (<div>
+                    <span>{count1}{count2}{count3}</span>
+                    <button onClick={() => dispatch('add')}>add</button>
+                </div>);
+            }
+        }
+        const wrapper = mount(<App/>);
+        wrapper.find('button').simulate('click');
+        window.setTimeout(() => {
+            expect(cb.callCount).eq(2);
+            expect(wrapper.find('span').text()).eq('112');
+            done();
+        }, 300);
+    });
+
+    it('Component injected with global store render method should be called once when set local store ', (done) => {
+        const cb = sinon.spy();
+        const globalStore = new Store();
+        const store = new Store({
+            name: 'app',
+            state: {
+                count1: 0,
+                count2: 0,
+                count3: 0
+            },
+            actions: {
+                add(state, payload) {
+                    window.setTimeout(() => {
+                        this.transaction(() => {
+                            this.dispatch('setValues', {
+                                count1: state.count1 + 1,
+                                count2: state.count2 + 1,
+                                count3: state.count3 + 1
+                            });
+                        });
+                    }, 100);
+                }
+            }
+        });
+
+        @inject(store)
+        class Component1 extends React.Component {
+            render() {
+                const {count1, count2, count3} = this.store.state;
+                const {dispatch} = this.store;
+                return (<div>
+                    {count1}
+                    {count2}
+                    {count3}
+                    <button onClick={() => dispatch('add')}>add</button>
+                </div>);
+            }
+        }
+
+        @inject(globalStore)
+        class Component2 extends React.Component {
+            render() {
+                cb();
+                if (this.store.state.app) {
+                    const {count1, count2, count3} = this.store.state.app;
+                    return (<span>
+                        {count1}
+                        {count2}
+                        {count3}
+                    </span>);
+                }
+                return (<div></div>);
+            }
+        }
+
+        const wrapper = mount(
+            <Provider store={globalStore}>
+                <div>
+                    <Component1 />
+                    <Component2 />
+                </div>
+            </Provider>
+        );
+        wrapper.find('button').simulate('click');
+        window.setTimeout(() => {
+            expect(cb.callCount).eq(2);
+            expect(wrapper.find('Component2').find('span').text()).eq('111');
+            done();
+        }, 300);
+    });
+});

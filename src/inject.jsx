@@ -37,7 +37,7 @@ const inject = function (key, value) {
                     for (let index = 0; index < obj.length; index++) {
                         const item = obj[index];
                         if (this._deps[item.key]) {
-                            state[item.key] = obj.value;
+                            state[item.key] = item.value;
                         }
                     }
                     this.setState(state);
