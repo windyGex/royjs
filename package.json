@@ -13,6 +13,7 @@
     "example:todo": "parcel examples/todo-mvc/index.html",
     "example:counter": "parcel examples/counter/index.html",
     "example:scene": "parcel examples/scenes/index.html",
+    "example:batch": "parcel examples/batch-update/index.html",
     "benchmark": "parcel test/benchmark.html"
   },
   "repository": {

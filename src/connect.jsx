@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
 import Store from './store';
+import {isArray} from './utils';
 
 const connect = function (
     mapStateToProps = state => state
@@ -15,12 +16,16 @@ const connect = function (
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
-                this._change = obj => {
+                this._change = (obj) => {
                     const state = {};
-                    if (this._deps[obj.key]) {
-                        state[obj.key] = obj.value;
-                        this.setState(state);
+                    obj = isArray(obj) ? obj : [obj];
+                    for (let index = 0; index < obj.length; index++) {
+                        const item = obj[index];
+                        if (this._deps[item.key]) {
+                            state[item.key] = obj.value;
+                        }
                     }
+                    this.setState(state);
                 };
                 this._get = data => {
                     this._deps[data.key] = true;
