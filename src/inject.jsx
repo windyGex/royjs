@@ -30,15 +30,17 @@ const inject = function (key, value) {
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
-                this._change = (obj) => {
+                const that = this;
+                this._change = function change(obj) {
                     const state = {};
-                    if (this._deps[obj.key]) {
-                        state[obj.key] = obj.value;
-                        this.setState(state);
+                    if (that._deps[obj.key]) {
+                        state[obj.key] = this.get(obj.key);
+                        that.setState(state);
                     }
+                    console.log(that._deps);
                 };
-                this._get = (data) => {
-                    this._deps[data.key] = true;
+                this._get = function get(data) {
+                    that._deps[data.key] = true;
                 };
                 Object.keys(defaultProps).forEach(key => {
                     this[key] = defaultProps[key];

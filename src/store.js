@@ -96,7 +96,7 @@ class Store extends Events {
             this.trigger('get', args);
         });
         this.model.on('change', (args = {}) => {
-            args.value = this.model.get(args.key);
+            // args.value = this.model.get(args.key);
             this.trigger('change', args);
         });
         this.actions = {};
