@@ -7,4 +7,9 @@
 * compile error ([f09386a](https://github.com/windyGex/roy/commit/f09386a))
 
 
+### Features
+
+* add transaction function for batch update, [#42883](https://github.com/windyGex/roy/issues/42883) ([f625028](https://github.com/windyGex/roy/commit/f625028))
+
+
 
