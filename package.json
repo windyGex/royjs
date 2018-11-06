@@ -14,6 +14,7 @@
     "example:counter": "parcel examples/counter/index.html",
     "example:scene": "parcel examples/scenes/index.html",
     "benchmark": "parcel test/benchmark.html",
+    "proxy": "parcel examples/proxy/index.html",
     "release": "npm run test && node ./scripts/release"
   },
   "repository": {
