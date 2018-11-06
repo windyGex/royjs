@@ -2,6 +2,7 @@ import Events from './events';
 import ObservableModel from './observe-model';
 import DataSource from './data-source';
 import setValues from './plugins/set-values';
+import {isArray} from './utils';
 
 let globalStore;
 
@@ -55,7 +56,13 @@ class Store extends Events {
             actions
         } = store;
         store.on('change', args => {
-            target.set(`${name}.${args.key}`, args.value);
+            args = isArray(args) ? args : [args];
+            target.transaction(() => {
+                for (let i = 0; i < args.length; i++) {
+                    const item = args[i];
+                    target.set(`${name}.${item.key}`, item.value);
+                }
+            });
         });
         store.on('get', args => {
             const obj = { ...args
@@ -96,9 +103,20 @@ class Store extends Events {
             this.trigger('get', args);
         });
         this.model.on('change', (args = {}) => {
-            // args.value = this.model.get(args.key);
-            this.trigger('change', args);
+            try {
+                this._startBatch();
+                if (this.inBatch > 1) {
+                    this.pendingUnobservations.push([this.model, args]);
+                } else {
+                    args.value = this.model.get(args.key);
+                    this.trigger('change', args);
+                }
+            } finally {
+                this._endBatch();
+            }
         });
+        this.inBatch = 0;
+        this.pendingUnobservations = [];
         this.actions = {};
         this.strict = strict;
         this.allowModelSet = !strict;
@@ -132,6 +150,26 @@ class Store extends Events {
     set(key, value, options = {}) {
         return this.model.set(key, value, options);
     }
+    _startBatch() {
+        this.inBatch++;
+    }
+    _endBatch() {
+        // 最外层事务结束时，才开始执行
+        if (--this.inBatch === 0) {
+            // 发布所有state待定的改变
+            this._runPendingObservations();
+        }
+    }
+    _runPendingObservations() {
+        const list = this.pendingUnobservations;
+        const batchArgs = list.map(item => {
+            const [model, args] = item;
+            args.value = model.get(args.key);
+            return args;
+        });
+
+        this.trigger('change', batchArgs);
+    }
     _wrapActions(actions, state, prefix) {
         Object.keys(actions).forEach(type => {
             const actionType = prefix ? `${prefix}.${type}` : type;
@@ -153,6 +191,14 @@ class Store extends Events {
                 this.actions[actionType] = action;
             }
         });
+    }
+    transaction = (fn) => {
+        this._startBatch();
+        try {
+            return fn.apply(this);
+        } finally {
+            this._endBatch();
+        }
     }
     dispatch = (type, payload, options) => {
         const action = this.actions[type];

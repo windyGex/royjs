@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
+import {isArray} from './utils';
 
 // inject(listStore)
 // inject('listStore', listStore)
@@ -33,11 +34,14 @@ const inject = function (key, value) {
                 const that = this;
                 this._change = function change(obj) {
                     const state = {};
-                    if (that._deps[obj.key]) {
-                        state[obj.key] = this.get(obj.key);
-                        that.setState(state);
+                    obj = isArray(obj) ? obj : [obj];
+                    for (let index = 0; index < obj.length; index++) {
+                        const item = obj[index];
+                        if (this._deps[item.key]) {
+                            state[item.key] = item.value;
+                        }
                     }
-                    console.log(that._deps);
+                    this.setState(state);
                 };
                 this._get = function get(data) {
                     that._deps[data.key] = true;

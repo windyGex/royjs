@@ -1,16 +1,6 @@
 /* eslint-disable */
 import Events from './events';
-
-const checkType = function (item) {
-    return Object.prototype.toString.call(item).replace(/\[object\s(.*)\]/, (all, matched) => matched);
-};
-
-const isPlainObject = function (item) {
-    return checkType(item) === 'Object';
-};
-const isArray = function (item) {
-    return checkType(item) === 'Array';
-};
+import {isPlainObject, isArray} from './utils';
 
 function ObservableArray(data, parent, from) {
     Events.mixTo(data);
