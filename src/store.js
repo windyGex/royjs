@@ -1,5 +1,6 @@
 import Events from './events';
 import ObservableModel from './observe-model';
+import observable from './proxy';
 import DataSource from './data-source';
 import setValues from './plugins/set-values';
 import {isArray} from './utils';
@@ -98,7 +99,7 @@ class Store extends Events {
             ...this.state,
             ...state
         };
-        this.model = new ObservableModel(state, this);
+        this.model = observable(state);
         this.model.on('get', args => {
             this.trigger('get', args);
         });
@@ -108,7 +109,6 @@ class Store extends Events {
                 if (this.inBatch > 1) {
                     this.pendingUnobservations.push([this.model, args]);
                 } else {
-                    args.value = this.model.get(args.key);
                     this.trigger('change', args);
                 }
             } finally {

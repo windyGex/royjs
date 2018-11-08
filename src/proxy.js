@@ -82,7 +82,7 @@ const process = {
             }
         };
         return function setValue(path, value, config = {}) {
-            const parentProxy = config.parentProxy;
+            const parentProxy = config.parentProxy || target.$proxy;
             if (isPlainObject(path)) {
                 Object.keys(path).forEach(key => {
                     let val = path[key];
@@ -155,14 +155,17 @@ const process = {
             return events.trigger.apply(events, args);
         };
     },
-    toJSON() {
-
+    toJSON(options) {
+        return function toJSON() {
+            return options.target;
+        }
     }
 };
 
 const observable = function observable(object) {
     const proxy = function proxy(object, parent) {
         const events = new Events();
+        let returnProxy;
         const handler = {
             get(target, key) {
                 if (process[key]) {
@@ -179,16 +182,25 @@ const observable = function observable(object) {
                 });
                 return getValue(key);
             },
-            set(target, key, value) {
+            set(target, key, value, proxy) {
                 return process.set({
                     target,
-                    events
+                    events,
+                    proxy
                 })(key, value, {
                     parentProxy: parent
                 });
             }
         };
-        return new Proxy(object, handler);
+        returnProxy = new Proxy(object, handler);
+        if(!object.$proxy) {
+            Object.defineProperty(object, '$proxy', {
+                get() {
+                    return returnProxy;
+                }
+            });
+        }
+        return returnProxy;
     };
     const ret = proxy(object);
     for (let key in object) {
