@@ -53,19 +53,18 @@ const process = {
                 keyName = keyNames[0],
                 oldObject = object;
 
-            const parentProxy = config.parentProxy;
             object = object[keyName];
             if (typeof object == 'undefined') {
                 object = observable({});
                 object.on('get', args => {
                     const currentKey = `${keyName}.${args.key}`;
-                    parentProxy.trigger('get', {
+                    target.$proxy.trigger('get', {
                         key: currentKey
                     });
                 });
                 object.on('change', args => {
                     const currentKey = `${keyName}.${args.key}`;
-                    parentProxy.trigger('change', {
+                    target.$proxy.trigger('change', {
                         ...args,
                         ...{
                             key: currentKey
@@ -76,13 +75,10 @@ const process = {
             }
             if (isPlainObject(object)) {
                 keyNames.splice(0, 1);
-                return object.set(keyNames.join('.'), value, {
-                    parentProxy: object
-                });
+                return object.set(keyNames.join('.'), value);
             }
         };
         return function setValue(path, value, config = {}) {
-            const parentProxy = config.parentProxy || target.$proxy;
             if (isPlainObject(path)) {
                 Object.keys(path).forEach(key => {
                     let val = path[key];
@@ -98,13 +94,13 @@ const process = {
                 value = observable(value);
                 value.on('get', args => {
                     const currentKey = `${path}.${args.key}`;
-                    parentProxy.trigger('get', {
+                    target.$proxy.trigger('get', {
                         key: currentKey
                     });
                 });
                 value.on('change', args => {
                     const currentKey = `${path}.${args.key}`;
-                    parentProxy.trigger('change', {
+                    target.$proxy.trigger('change', {
                         ...args,
                         ...{
                             key: currentKey
@@ -116,9 +112,7 @@ const process = {
                 nested = true;
             }
             if (nested) {
-                _set(target, path, value, {
-                    parentProxy
-                });
+                _set(target, path, value);
             } else if (path.indexOf('[') >= 0) {
                 let key = path.match(/(.*)\[(.*)\]/);
                 if (key) {
@@ -199,12 +193,11 @@ const observable = function observable(object) {
                     target.$proxy.trigger('change', {});
                     return ret;
                 }
-                return process.set({
+                process.set({
                     target,
                     events
-                })(key, value, {
-                    parentProxy: parent
-                });
+                })(key, value);
+                return true;
             }
         };
         returnProxy = new Proxy(object, handler);

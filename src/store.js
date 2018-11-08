@@ -61,7 +61,8 @@ class Store extends Events {
             target.transaction(() => {
                 for (let i = 0; i < args.length; i++) {
                     const item = args[i];
-                    target.set(`${name}.${item.key}`, item.value);
+                    const value = store.get(item.key);
+                    target.set(`${name}.${item.key}`, value);
                 }
             });
         });
