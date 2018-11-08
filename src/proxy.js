@@ -1,6 +1,5 @@
-
 import Events from './events';
-import {isPlainObject} from './utils';
+import { isPlainObject } from './utils';
 
 const process = {
     get(options) {
@@ -8,6 +7,9 @@ const process = {
         return function getValue(path, slient = false) {
             if (!path) {
                 return;
+            }
+            if (typeof path !== 'string') {
+                return target[path];
             }
             const field = path.split('.');
             let val, key;
@@ -42,27 +44,29 @@ const process = {
                 });
             }
             return val;
-        }
+        };
     },
     set(options) {
-        const { events, target, parent } = options;
-        const _set = function (object, path, value) {
+        const { events, target } = options;
+        const _set = function(object, path, value, config = {}) {
             var keyNames = path.split('.'),
                 keyName = keyNames[0],
                 oldObject = object;
 
+            const parentProxy = config.parentProxy;
             object = object[keyName];
             if (typeof object == 'undefined') {
                 object = observable({});
-                object.on('get', (args) => {
+                object.on('get', args => {
                     const currentKey = `${keyName}.${args.key}`;
-                    parent.trigger('get', {
+                    parentProxy.trigger('get', {
                         key: currentKey
                     });
                 });
-                object.on('change', (args) => {
+                object.on('change', args => {
                     const currentKey = `${keyName}.${args.key}`;
-                    parent.trigger('change', { ...args,
+                    parentProxy.trigger('change', {
+                        ...args,
                         ...{
                             key: currentKey
                         }
@@ -72,10 +76,13 @@ const process = {
             }
             if (isPlainObject(object)) {
                 keyNames.splice(0, 1);
-                return object.set(keyNames.join('.'), value);
+                return object.set(keyNames.join('.'), value, {
+                    parentProxy: object
+                });
             }
-        }
-        return function setValue(path, value, config) {
+        };
+        return function setValue(path, value, config = {}) {
+            const parentProxy = config.parentProxy;
             if (isPlainObject(path)) {
                 Object.keys(path).forEach(key => {
                     let val = path[key];
@@ -83,18 +90,22 @@ const process = {
                 });
                 return;
             }
-            let nested, getValue = process.get(options), currentValue = getValue(path, true);
+            let nested,
+                getValue = process.get(options),
+                currentValue = getValue(path, true);
+
             if (isPlainObject(value)) {
                 value = observable(value);
-                value.on('get', (args) => {
+                value.on('get', args => {
                     const currentKey = `${path}.${args.key}`;
-                    parent.trigger('get', {
+                    parentProxy.trigger('get', {
                         key: currentKey
                     });
                 });
-                value.on('change', (args) => {
+                value.on('change', args => {
                     const currentKey = `${path}.${args.key}`;
-                    parent.trigger('change', { ...args,
+                    parentProxy.trigger('change', {
+                        ...args,
                         ...{
                             key: currentKey
                         }
@@ -105,7 +116,9 @@ const process = {
                 nested = true;
             }
             if (nested) {
-                _set(target, path, value);
+                _set(target, path, value, {
+                    parentProxy
+                });
             } else if (path.indexOf('[') >= 0) {
                 let key = path.match(/(.*)\[(.*)\]/);
                 if (key) {
@@ -117,30 +130,33 @@ const process = {
             } else {
                 target[path] = value;
             }
-            if ((currentValue !== value || config.forceUpdate)) {
+            if ((currentValue !== value || config.forceUpdate) && !nested) {
                 events.trigger('change', {
                     key: path
                 });
             }
-        }
+        };
     },
     on(options) {
         return function on(...args) {
-            const {events} = options;
+            const { events } = options;
             return events.on.apply(events, args);
-        }
+        };
     },
     off(options) {
         return function off(...args) {
-            const {events} = options;
+            const { events } = options;
             return events.off.apply(events, args);
-        }
+        };
     },
     trigger(options) {
         return function trigger(...args) {
-            const {events} = options;
+            const { events } = options;
             return events.trigger.apply(events, args);
-        }
+        };
+    },
+    toJSON() {
+
     }
 };
 
@@ -153,26 +169,23 @@ const observable = function observable(object) {
                     return process[key]({
                         target,
                         key,
-                        events,
-                        parent
+                        events
                     });
                 }
                 const getValue = process.get({
                     target,
                     key,
-                    events,
-                    parent
+                    events
                 });
-                if (key in target) {
-                    return getValue(key);
-                }
+                return getValue(key);
             },
             set(target, key, value) {
                 return process.set({
                     target,
-                    events,
-                    parent
-                })(key, value);
+                    events
+                })(key, value, {
+                    parentProxy: parent
+                });
             }
         };
         return new Proxy(object, handler);
@@ -189,7 +202,8 @@ const observable = function observable(object) {
             });
             object[key].on('change', function(args) {
                 const currentKey = `${key}.${args.key}`;
-                ret.trigger('change', { ...args,
+                ret.trigger('change', {
+                    ...args,
                     ...{
                         key: currentKey
                     }
