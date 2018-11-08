@@ -107,7 +107,7 @@ class Store extends Events {
             try {
                 this._startBatch();
                 if (this.inBatch > 1) {
-                    this.pendingUnobservations.push([this.model, args]);
+                    this.pendingUnobservations.push(args);
                 } else {
                     this.trigger('change', args);
                 }
@@ -161,14 +161,7 @@ class Store extends Events {
         }
     }
     _runPendingObservations() {
-        const list = this.pendingUnobservations;
-        const batchArgs = list.map(item => {
-            const [model, args] = item;
-            args.value = model.get(args.key);
-            return args;
-        });
-
-        this.trigger('change', batchArgs);
+        this.trigger('change', this.pendingUnobservations.slice());
     }
     _wrapActions(actions, state, prefix) {
         Object.keys(actions).forEach(type => {
