@@ -80,8 +80,8 @@ const process = {
     },
     set(options) {
         const { events, target } = options;
-        const _set = function(object, path, value, config = {}) {
-            var keyNames = path.split('.'),
+        const _set = function(object, path, value) {
+            let keyNames = path.split('.'),
                 keyName = keyNames[0],
                 oldObject = object;
 
