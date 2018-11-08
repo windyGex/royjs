@@ -28,7 +28,7 @@ Events.prototype = {
     trigger(type, evt) {
         const cache = this.__events;
         if (cache && cache[type]) {
-            cache[type].forEach(callback => callback.call(this, evt));
+            cache[type].forEach(callback => callback(evt));
         }
     }
 };
