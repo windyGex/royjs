@@ -1,5 +1,4 @@
 import Events from './events';
-import ObservableModel from './observe-model';
 import observable from './proxy';
 import DataSource from './data-source';
 import setValues from './plugins/set-values';

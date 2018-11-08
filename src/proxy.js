@@ -1,12 +1,44 @@
 import Events from './events';
 import { isPlainObject } from './utils';
 
+function wrap(key, value, ret) {
+    if (!(value && value.$proxy)) {
+        if (isPlainObject(value)) {
+            value = observable(value, ret);
+            value.on('get', function (args) {
+                const currentKey = `${key}.${args.key}`;
+                ret.trigger('get', {
+                    key: currentKey
+                });
+            });
+            value.on('change', function (args) {
+                const currentKey = `${key}.${args.key}`;
+                ret.trigger('change', {
+                    ...args,
+                    ...{
+                        key: currentKey
+                    }
+                });
+            });
+        } else if (Array.isArray(value)) {
+            value = observable(value, ret);
+            value.on('change', function (args) {
+                if (!args.key) {
+                    args.key = key;
+                }
+                ret.trigger('change', { ...args });
+            });
+        }
+    }
+    return value;
+}
+
 const process = {
     get(options) {
         const { target, events } = options;
         return function getValue(path, slient = false) {
             if (!path) {
-                return;
+                return null;
             }
             if (typeof path !== 'string') {
                 return target[path];
@@ -53,24 +85,9 @@ const process = {
                 keyName = keyNames[0],
                 oldObject = object;
 
-            object = object[keyName];
+            object = object.get(keyName);
             if (typeof object == 'undefined') {
-                object = observable({});
-                object.on('get', args => {
-                    const currentKey = `${keyName}.${args.key}`;
-                    target.$proxy.trigger('get', {
-                        key: currentKey
-                    });
-                });
-                object.on('change', args => {
-                    const currentKey = `${keyName}.${args.key}`;
-                    target.$proxy.trigger('change', {
-                        ...args,
-                        ...{
-                            key: currentKey
-                        }
-                    });
-                });
+                object = wrap(keyName, {}, target.$proxy);
                 oldObject[keyName] = object;
             }
             if (isPlainObject(object)) {
@@ -90,29 +107,12 @@ const process = {
                 getValue = process.get(options),
                 currentValue = getValue(path, true);
 
-            if (isPlainObject(value)) {
-                value = observable(value);
-                value.on('get', args => {
-                    const currentKey = `${path}.${args.key}`;
-                    target.$proxy.trigger('get', {
-                        key: currentKey
-                    });
-                });
-                value.on('change', args => {
-                    const currentKey = `${path}.${args.key}`;
-                    target.$proxy.trigger('change', {
-                        ...args,
-                        ...{
-                            key: currentKey
-                        }
-                    });
-                });
-            }
+            value = wrap(path, value, target.$proxy);
             if (path.indexOf('.') > 0) {
                 nested = true;
             }
             if (nested) {
-                _set(target, path, value);
+                _set(target.$proxy, path, value);
             } else if (path.indexOf('[') >= 0) {
                 let key = path.match(/(.*)\[(.*)\]/);
                 if (key) {
@@ -152,6 +152,14 @@ const process = {
     toJSON(options) {
         return function toJSON() {
             return options.target;
+        };
+    },
+    reset(options) {
+        const {target} = options;
+        return function() {
+            Object.keys(target).forEach(key => {
+                target.$proxy.set(key, undefined);
+            });
         }
     }
 };
@@ -181,7 +189,7 @@ const observable = function observable(object) {
             },
             set(target, key, value) {
                 if (Array.isArray(target)) {
-                    if(isPlainObject(value)) {
+                    if (isPlainObject(value)) {
                         value = observable(value);
                         value.on('change', args => {
                             target.$proxy.trigger('change', {
@@ -201,7 +209,7 @@ const observable = function observable(object) {
             }
         };
         returnProxy = new Proxy(object, handler);
-        if(!object.$proxy) {
+        if (!object.$proxy) {
             Object.defineProperty(object, '$proxy', {
                 get() {
                     return returnProxy;
@@ -212,36 +220,7 @@ const observable = function observable(object) {
     };
     const ret = proxy(object);
     for (let key in object) {
-        if(!object[key].$proxy) {
-            if (isPlainObject(object[key])) {
-                object[key] = proxy(object[key], ret);
-                object[key].on('get', function(args) {
-                    const currentKey = `${key}.${args.key}`;
-                    ret.trigger('get', {
-                        key: currentKey
-                    });
-                });
-                object[key].on('change', function(args) {
-                    const currentKey = `${key}.${args.key}`;
-                    ret.trigger('change', {
-                        ...args,
-                        ...{
-                            key: currentKey
-                        }
-                    });
-                });
-            } else if (Array.isArray(object[key])){
-                object[key] = proxy(object[key], ret);
-                object[key].on('change', function(args) {
-                    if (!args.key) {
-                        args.key = key;
-                    }
-                    ret.trigger('change', { ...args
-                    });
-                });
-            }
-        }
-
+        object[key] = wrap(key, object[key], ret);
     }
     return ret;
 };
