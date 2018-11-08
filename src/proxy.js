@@ -175,6 +175,9 @@ const observable = function observable(object) {
                         events
                     });
                 }
+                if (Array.isArray(target)) {
+                    return Reflect.get(target, key);
+                }
                 const getValue = process.get({
                     target,
                     key,
@@ -182,11 +185,23 @@ const observable = function observable(object) {
                 });
                 return getValue(key);
             },
-            set(target, key, value, proxy) {
+            set(target, key, value) {
+                if (Array.isArray(target)) {
+                    if(isPlainObject(value)) {
+                        value = observable(value);
+                        value.on('change', args => {
+                            target.$proxy.trigger('change', {
+                                ...args
+                            });
+                        });
+                    }
+                    const ret = Reflect.set(target, key, value);
+                    target.$proxy.trigger('change', {});
+                    return ret;
+                }
                 return process.set({
                     target,
-                    events,
-                    proxy
+                    events
                 })(key, value, {
                     parentProxy: parent
                 });
@@ -204,24 +219,36 @@ const observable = function observable(object) {
     };
     const ret = proxy(object);
     for (let key in object) {
-        if (typeof object[key] === 'object') {
-            object[key] = proxy(object[key], ret);
-            object[key].on('get', function(args) {
-                const currentKey = `${key}.${args.key}`;
-                ret.trigger('get', {
-                    key: currentKey
-                });
-            });
-            object[key].on('change', function(args) {
-                const currentKey = `${key}.${args.key}`;
-                ret.trigger('change', {
-                    ...args,
-                    ...{
+        if(!object[key].$proxy) {
+            if (isPlainObject(object[key])) {
+                object[key] = proxy(object[key], ret);
+                object[key].on('get', function(args) {
+                    const currentKey = `${key}.${args.key}`;
+                    ret.trigger('get', {
                         key: currentKey
-                    }
+                    });
                 });
-            });
+                object[key].on('change', function(args) {
+                    const currentKey = `${key}.${args.key}`;
+                    ret.trigger('change', {
+                        ...args,
+                        ...{
+                            key: currentKey
+                        }
+                    });
+                });
+            } else if (Array.isArray(object[key])){
+                object[key] = proxy(object[key], ret);
+                object[key].on('change', function(args) {
+                    if (!args.key) {
+                        args.key = key;
+                    }
+                    ret.trigger('change', { ...args
+                    });
+                });
+            }
         }
+
     }
     return ret;
 };
