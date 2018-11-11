@@ -31,19 +31,25 @@ const inject = function (key, value) {
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
+                const that = this;
                 this._change = (obj) => {
                     const state = {};
                     obj = isArray(obj) ? obj : [obj];
+                    let matched;
                     for (let index = 0; index < obj.length; index++) {
                         const item = obj[index];
-                        if (this._deps[item.key]) {
-                            state[item.key] = item.value;
+                        const match = Object.keys(this._deps).some(dep => item.key.indexOf(dep) === 0);
+                        if (match) {
+                            matched = true;
+                            state[item.key] = this.store.get(item.key);
                         }
                     }
-                    this.setState(state);
+                    if (matched) {
+                        this.setState(state);
+                    }
                 };
-                this._get = (data) => {
-                    this._deps[data.key] = true;
+                this._get = function get(data) {
+                    that._deps[data.key] = true;
                 };
                 Object.keys(defaultProps).forEach(key => {
                     this[key] = defaultProps[key];

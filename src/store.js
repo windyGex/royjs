@@ -1,5 +1,5 @@
 import Events from './events';
-import ObservableModel from './observe-model';
+import observable from './proxy';
 import DataSource from './data-source';
 import setValues from './plugins/set-values';
 import {isArray} from './utils';
@@ -60,7 +60,8 @@ class Store extends Events {
             target.transaction(() => {
                 for (let i = 0; i < args.length; i++) {
                     const item = args[i];
-                    target.set(`${name}.${item.key}`, item.value);
+                    const value = store.get(item.key);
+                    target.set(`${name}.${item.key}`, value);
                 }
             });
         });
@@ -98,7 +99,7 @@ class Store extends Events {
             ...this.state,
             ...state
         };
-        this.model = new ObservableModel(state, this);
+        this.model = observable(state);
         this.model.on('get', args => {
             this.trigger('get', args);
         });
@@ -106,9 +107,8 @@ class Store extends Events {
             try {
                 this._startBatch();
                 if (this.inBatch > 1) {
-                    this.pendingUnobservations.push([this.model, args]);
+                    this.pendingUnobservations.push(args);
                 } else {
-                    args.value = this.model.get(args.key);
                     this.trigger('change', args);
                 }
             } finally {
@@ -161,14 +161,7 @@ class Store extends Events {
         }
     }
     _runPendingObservations() {
-        const list = this.pendingUnobservations;
-        const batchArgs = list.map(item => {
-            const [model, args] = item;
-            args.value = model.get(args.key);
-            return args;
-        });
-
-        this.trigger('change', batchArgs);
+        this.trigger('change', this.pendingUnobservations.slice());
     }
     _wrapActions(actions, state, prefix) {
         Object.keys(actions).forEach(type => {

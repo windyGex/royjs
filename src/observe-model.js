@@ -95,7 +95,7 @@ class ObservableModel extends Events {
             this.set(key, undefined);
         });
     }
-    get(path) {
+    get(path, slient=false) {
         if (!path) {
             return;
         }
@@ -147,9 +147,11 @@ class ObservableModel extends Events {
                 }
             }
         }
-        this.trigger('get', {
-            key: path
-        });
+        if (!slient) {
+            this.trigger('get', {
+                key: path
+            });
+        }
         return val;
     }
     set(path, value, options = {}) {
@@ -163,7 +165,7 @@ class ObservableModel extends Events {
             });
             return;
         }
-        let nested, currentValue = this.get(path);
+        let nested, currentValue = this.get(path, true);
         if (path.indexOf('.') > 0) {
             nested = true;
         }
