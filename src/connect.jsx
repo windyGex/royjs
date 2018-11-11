@@ -18,14 +18,19 @@ const connect = function (
                 this._deps = {};
                 this._change = (obj) => {
                     const state = {};
+                    let matched;
                     obj = isArray(obj) ? obj : [obj];
                     for (let index = 0; index < obj.length; index++) {
                         const item = obj[index];
-                        if (this._deps[item.key]) {
-                            state[item.key] = item.value;
+                        const match = Object.keys(this._deps).some(dep => item.key.indexOf(dep) === 0);
+                        if (match) {
+                            matched = match;
+                            state[item.key] = this.store.get(item.key);
                         }
                     }
-                    this.setState(state);
+                    if (matched) {
+                        this.setState(state);
+                    }
                 };
                 this._get = data => {
                     this._deps[data.key] = true;
