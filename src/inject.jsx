@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
-import {isArray} from './utils';
+import { isArray } from './utils';
 
 // inject(listStore)
 // inject('listStore', listStore)
@@ -31,8 +31,7 @@ const inject = function (key, value) {
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
-                const that = this;
-                this._change = (obj) => {
+                this._change = obj => {
                     const state = {};
                     obj = isArray(obj) ? obj : [obj];
                     let matched;
@@ -48,8 +47,8 @@ const inject = function (key, value) {
                         this.setState(state);
                     }
                 };
-                this._get = function get(data) {
-                    that._deps[data.key] = true;
+                this._get = data => {
+                    this._deps[data.key] = true;
                 };
                 Object.keys(defaultProps).forEach(key => {
                     this[key] = defaultProps[key];

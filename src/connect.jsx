@@ -2,11 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
 import Store from './store';
-import {isArray} from './utils';
+import { isArray } from './utils';
 
-const connect = function (
-    mapStateToProps = state => state
-) {
+const connect = function (mapStateToProps = state => state) {
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
             static contextTypes = {
@@ -16,7 +14,7 @@ const connect = function (
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
-                this._change = (obj) => {
+                this._change = obj => {
                     const state = {};
                     let matched;
                     obj = isArray(obj) ? obj : [obj];
@@ -51,7 +49,7 @@ const connect = function (
             render() {
                 const props = mapStateToProps(this.store.state);
                 const dispatch = this.store.dispatch;
-                return <Component {...this.props} {...props} dispatch={dispatch}/>;
+                return <Component {...this.props} {...props} dispatch={dispatch} />;
             }
         }
         return StoreWrapper;

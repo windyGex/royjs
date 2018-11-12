@@ -49,7 +49,7 @@ export default function compose({
     }
     const StoreComponent = inject(store)(ComposeComponent);
     if (container) {
-        return ReactDOM.render(<StoreComponent/>, document.querySelector(container));
+        return ReactDOM.render(<StoreComponent />, document.querySelector(container));
     }
     return StoreComponent;
 }

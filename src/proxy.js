@@ -155,24 +155,24 @@ const process = {
         };
     },
     reset(options) {
-        const {target} = options;
+        const { target } = options;
         return function() {
             Object.keys(target).forEach(key => {
                 target.$proxy.set(key, undefined);
             });
-        }
+        };
     }
 };
 
 ['pop', 'shift', 'push', 'unshift', 'sort', 'reverse', 'splice'].forEach(method => {
-    process[method] = (options) => {
-        const {target, events} = options;
+    process[method] = options => {
+        const { target, events } = options;
         return function(...args) {
             const ret = Array.prototype[method].apply(target.$proxy, args);
             target.$proxy.trigger('change', {});
             return ret;
-        }
-    }
+        };
+    };
 });
 
 const observable = function observable(object) {
