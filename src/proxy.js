@@ -164,13 +164,24 @@ const process = {
     }
 };
 
+['pop', 'shift', 'push', 'unshift', 'sort', 'reverse', 'splice'].forEach(method => {
+    process[method] = (options) => {
+        const {target, events} = options;
+        return function(...args) {
+            const ret = Array.prototype[method].apply(target.$proxy, args);
+            target.$proxy.trigger('change', {});
+            return ret;
+        }
+    }
+});
+
 const observable = function observable(object) {
     const proxy = function proxy(object, parent) {
         const events = new Events();
         let returnProxy;
         const handler = {
             get(target, key) {
-                if (process[key]) {
+                if (process.hasOwnProperty(key)) {
                     return process[key]({
                         target,
                         key,
@@ -198,8 +209,7 @@ const observable = function observable(object) {
                         });
                     }
                     const ret = Reflect.set(target, key, value);
-                    target.$proxy.trigger('change', {});
-                    return ret;
+                    return true;
                 }
                 process.set({
                     target,

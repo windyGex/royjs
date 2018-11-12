@@ -154,7 +154,7 @@ describe('it should support observable store', () => {
         expect(store.state.get('d[0].a')).eq(2);
         const item = store.state.d[0];
         item.set('a', 3);
-        expect(cb.callCount).eq(4);
+        expect(cb.callCount).eq(3);
         expect(store.state.get('d[0].a')).eq(3);
         store.state.reset();
         expect(store.state.a).eq(undefined);
@@ -166,6 +166,48 @@ describe('it should support observable store', () => {
         }]);
         store.state.set('d[0].children[0].b', true);
         expect(store.state.d[0].children[0].b, true);
+    });
+});
+
+describe('it should support array operation', () => {
+    let store;
+    beforeEach(() => {
+        store = new Store({
+            state: {}
+        });
+    });
+
+    afterEach(() => {
+        store = null;
+    });
+
+    it('should support array operation', () => {
+        const callback = sinon.spy();
+        store.on('change', callback);
+        store.state.set('a', []);
+        expect(callback.called).eql(true);
+        store.state.a.push(1);
+        expect(callback.callCount).eql(2);
+        store.state.a.splice(0, 1);
+        expect(callback.callCount).eql(3);
+        expect(store.state.a.length).eql(0);
+        store.state.a.push(1, 3, 2);
+        expect(callback.callCount).eql(4);
+        store.state.a.sort();
+        expect(callback.callCount).eql(5);
+        expect(store.state.a.toString()).eql('1,2,3');
+        store.state.a.reverse();
+        expect(callback.callCount).eql(6);
+        expect(store.state.a.toString()).eql('3,2,1');
+        store.state.a.pop();
+        expect(callback.callCount).eql(7);
+        expect(store.state.a.toString()).eql('3,2');
+        store.state.a.shift();
+        expect(callback.callCount).eql(8);
+        expect(store.state.a.toString()).eql('2');
+        store.state.a.unshift(4);
+        expect(callback.callCount).eql(9);
+        expect(store.state.a.toString()).eql('4,2');
     });
 });
 
