@@ -1,3 +1,4 @@
+/* eslint-disable */
 const co = require('co');
 const changelog = require('./changelog');
 const notice = require('./notice');
@@ -13,7 +14,6 @@ co(function * () {
     packageInfo = require('../../package.json');
     yield publishToTnpm();
     yield pushMaster();
-    yield notice();
 }).catch(err => {
     console.error('Release failed', err.stack);
 });
@@ -22,7 +22,7 @@ function * pushMaster() {
     yield runCmd('git checkout master');
     yield runCmd('git add .');
     yield runCmd(`git commit -m 'chore: Release-${packageInfo.version}'`);
-    yield runCmd('git push roy master');
+    yield runCmd('git push github master');
 }
 
 function * publishToTnpm() {
