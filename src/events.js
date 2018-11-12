@@ -35,7 +35,7 @@ Events.prototype = {
 
 // Mix `Events` to object instance or Class function.
 Events.mixTo = function (receiver) {
-    receiver = typeof (receiver) === 'function' ? receiver.prototype : receiver;
+    receiver = typeof receiver === 'function' ? receiver.prototype : receiver;
     const proto = Events.prototype;
     for (let p in proto) {
         if (proto.hasOwnProperty(p)) {

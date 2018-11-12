@@ -1,4 +1,3 @@
-
 const checkType = function (item) {
     return Object.prototype.toString.call(item).replace(/\[object\s(.*)\]/, (all, matched) => matched);
 };
