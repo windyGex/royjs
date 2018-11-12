@@ -161,7 +161,9 @@ class Store extends Events {
         }
     }
     _runPendingObservations() {
-        this.trigger('change', this.pendingUnobservations.slice());
+        if (this.pendingUnobservations.length) {
+            this.trigger('change', this.pendingUnobservations.slice());
+        }
     }
     _wrapActions(actions, state, prefix) {
         Object.keys(actions).forEach(type => {

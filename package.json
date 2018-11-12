@@ -8,11 +8,12 @@
     "build:umd": "webpack --env dev && webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
     "test": "nyc --reporter=html --reporter=text mocha --require babel-core/register --colors ./test/*.spec.js",
-    "test:watch": "mocha --require babel-core/register --colors -w ./test/*.spec.js",
+    "test:watch": "nyc --reporter=html --reporter=text mocha --require babel-core/register --colors -w ./test/*.spec.js",
     "prepublish": "npm run build && npm run build:umd",
     "example:todo": "parcel examples/todo-mvc/index.html",
     "example:counter": "parcel examples/counter/index.html",
     "example:scene": "parcel examples/scenes/index.html",
+    "example:proxy": "parcel examples/proxy/index.html",
     "benchmark": "parcel test/benchmark.html",
     "release": "npm run test && node ./scripts/release",
     "notice": "node ./scripts/notice"

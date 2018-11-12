@@ -11,12 +11,14 @@ const logger = function (store) {
 
 const store = new Store({
     state: {
-        count: 0
+        count: 0,
+        list: []
     },
     actions: {
         add(state, payload) {
             const {count} = state;
             state.set('count', count + 1);
+            state.list.push('1');
         },
         reduce(state, payload) {
             const {count} = state;
@@ -38,10 +40,11 @@ const store = new Store({
 @inject(store)
 class App extends React.Component {
     render() {
-        const {count} = this.store.state;
+        const {count, list} = this.store.state;
         const {dispatch} = this.store;
         return (<div>
             {count}
+            list: {list.length}
             <button onClick={() => dispatch('add')}>add</button>
             <button onClick={() => dispatch('reduce')}>reduce</button>
             <button onClick={() => dispatch('asyncAdd')}>async</button>
