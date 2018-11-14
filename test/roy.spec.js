@@ -267,7 +267,7 @@ describe('it should support batch update when multiple set store', () => {
                                 count3: state.count3 + 1
                             });
                         });
-                    }, 100);
+                    }, 10);
                 }
             }
         });
@@ -290,7 +290,7 @@ describe('it should support batch update when multiple set store', () => {
             expect(cb.callCount).eq(2);
             expect(wrapper.find('span').text()).eq('111');
             done();
-        }, 300);
+        }, 10);
     });
 
     it('render method should be called once when multiple sets are wrapped by the nest transaction method', (done) => {
@@ -316,7 +316,7 @@ describe('it should support batch update when multiple set store', () => {
                                 count3: state.count3 + 1
                             });
                         });
-                    }, 100);
+                    }, 10);
                 }
             }
         });
@@ -339,7 +339,7 @@ describe('it should support batch update when multiple set store', () => {
             expect(cb.callCount).eq(2);
             expect(wrapper.find('span').text()).eq('112');
             done();
-        }, 300);
+        }, 10);
     });
 
     it('Component injected with global store render method should be called once when set local store ', (done) => {
@@ -362,7 +362,7 @@ describe('it should support batch update when multiple set store', () => {
                                 count3: state.count3 + 1
                             });
                         });
-                    }, 100);
+                    }, 10);
                 }
             }
         });
@@ -410,6 +410,6 @@ describe('it should support batch update when multiple set store', () => {
             expect(cb.callCount).eq(2);
             expect(wrapper.find('Component2').find('span').text()).eq('111');
             done();
-        }, 300);
+        }, 10);
     });
 });
