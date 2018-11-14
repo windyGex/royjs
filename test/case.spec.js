@@ -55,13 +55,33 @@ describe('support inject store to React Component', () => {
         expect(wrapper.find('span').text()).eql('true');
     });
 
-    it('should support array method', () => {
+    it('should support array push method', () => {
         expect(wrapper.find('span').text()).eql('false');
         store.state.a.push({
             status: true
         });
         expect(wrapper.find('span').text()).eql('true');
         store.state.a[0].set('status', false);
+        expect(wrapper.find('span').text()).eql('false');
+    })
+
+    it('should support array splice method', () => {
+        expect(wrapper.find('span').text()).eql('false');
+        store.state.a.splice(0, 0, {
+            status: true
+        });
+        expect(wrapper.find('span').text()).eql('true');
+        store.state.a[0].set('status', false);
+        expect(wrapper.find('span').text()).eql('false');
+    })
+
+    it('should support array pop method', () => {
+        expect(wrapper.find('span').text()).eql('false');
+        store.state.a.splice(0, 0, {
+            status: true
+        });
+        expect(wrapper.find('span').text()).eql('true');
+        store.state.a.pop();
         expect(wrapper.find('span').text()).eql('false');
     })
 
