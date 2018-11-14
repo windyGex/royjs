@@ -36,7 +36,6 @@ const connect = function (mapStateToProps = state => state) {
                 this.store.on('change', this._change);
                 this.store.on('get', this._get);
                 this.store.history = this.store.history || this.props.history;
-                Component.prototype.store = this.store;
             }
             componentWillUnmount() {
                 this.store.off('change', this._change);

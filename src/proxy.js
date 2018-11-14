@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import Events from './events';
 import { isPlainObject } from './utils';
 
@@ -23,10 +24,13 @@ function wrap(key, value, ret) {
         } else if (Array.isArray(value)) {
             value = observable(value, ret);
             value.on('change', function (args) {
+                const mixArgs = {...args};
                 if (!args.key) {
-                    args.key = key;
+                    mixArgs.key = key;
+                } else {
+                    mixArgs.key = `${key}.${args.key}`;
                 }
-                ret.trigger('change', { ...args });
+                ret.trigger('change', mixArgs);
             });
         }
     }
@@ -203,9 +207,8 @@ const observable = function observable(object) {
                     if (isPlainObject(value)) {
                         value = observable(value);
                         value.on('change', args => {
-                            target.$proxy.trigger('change', {
-                                ...args
-                            });
+                            // todo: 待优化，现在任何item的更新都会触发针对list的更新
+                            target.$proxy.trigger('change', {});
                         });
                     }
                     const ret = Reflect.set(target, key, value);
@@ -229,8 +232,16 @@ const observable = function observable(object) {
         return returnProxy;
     };
     const ret = proxy(object);
-    for (let key in object) {
-        object[key] = wrap(key, object[key], ret);
+    if (isPlainObject(object)) {
+        for (let key in object) {
+            if (object.hasOwnProperty(key)) {
+                object[key] = wrap(key, object[key], ret);
+            }
+        }
+    } else if(Array.isArray(object)){
+        object.forEach((item, index) => {
+            object[index] = wrap(index, object[index], ret);
+        });
     }
     return ret;
 };
