@@ -172,6 +172,7 @@ const process = {
     process[method] = options => {
         const { target, events } = options;
         return function(...args) {
+            // todo: 这里利用了新增项会调用set方法的特性，没有对新增项进行observable包裹
             const ret = Array.prototype[method].apply(target.$proxy, args);
             target.$proxy.trigger('change', {});
             return ret;
