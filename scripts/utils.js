@@ -29,6 +29,6 @@ exports.ajaxPost = function (url, data) {
 exports.dingGroups = [
     // Hippo 超级战队
     'https://oapi.dingtalk.com/robot/send?access_token=5d3c6985e73016080ebb2d6e3ac69603d239eed6cff3090b8c259537214ffd3f',
-    // // Hippo 使用讨论
-    // 'https://oapi.dingtalk.com/robot/send?access_token=6122acc67589c1bf9ee362817245d12506005f27d01741a43a4fefeec5f99c7c'
+    // Hippo 使用讨论
+    'https://oapi.dingtalk.com/robot/send?access_token=6122acc67589c1bf9ee362817245d12506005f27d01741a43a4fefeec5f99c7c'
 ];

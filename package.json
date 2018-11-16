@@ -14,7 +14,9 @@
     "example:counter": "parcel examples/counter/index.html",
     "example:scene": "parcel examples/scenes/index.html",
     "benchmark": "parcel test/benchmark.html",
-    "release": "npm run test && node ./scripts/release"
+    "release": "npm run test && node ./scripts/release",
+    "changelog": "node ./scripts/changelog",
+    "notice": "node ./scripts/notice"
   },
   "repository": {
     "type": "git",
