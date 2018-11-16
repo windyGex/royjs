@@ -38,3 +38,4 @@ lib/
 .examples/test.html
 .examples/index.js
 dist/
+.nyc-output

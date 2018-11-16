@@ -12,10 +12,10 @@ function ObservableArray(data, parent, from) {
         if (isPlainObject(item)) {
             if (!(item instanceof ObservableModel)) {
                 item = new ObservableModel(item, from);
+                Object.defineProperty(item, 'parent', {
+                    value: parent
+                });
             }
-            Object.defineProperty(item, 'parent', {
-                value: parent
-            });
             item.on('change', args => {
                 data.trigger('change', { ...args
                 });

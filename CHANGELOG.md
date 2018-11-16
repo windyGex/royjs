@@ -1,5 +1,11 @@
 # Change Log 
 
+<a name="0.6.9"></a>
+## [0.6.9](https://github.com/windyGex/roy/compare/0.6.8...0.6.9) (2018-11-16)
+
+
+
+
 <a name="0.6.8"></a>
 ## [0.6.8](https://github.com/windyGex/roy/compare/0.6.7...0.6.8) (2018-11-05)
 
