@@ -4,7 +4,7 @@ import Provider from './provider';
 import DataSource from './data-source';
 import Store from './store';
 import compose from './compose';
-import {throttle, takeLatest} from './utils';
+import {throttle} from './utils';
 
 export default {
     DataSource,
@@ -13,6 +13,5 @@ export default {
     Store,
     Provider,
     compose,
-    throttle,
-    takeLatest
+    throttle
 };
