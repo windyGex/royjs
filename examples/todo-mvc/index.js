@@ -1,10 +1,9 @@
+import {NavLink as Link, HashRouter, Route, Switch, Redirect} from 'react-router-dom';
+import React from 'react';
+import {render} from 'react-dom';
 import {Store, inject} from '../../src/';
 import devtools from '../../src/plugins/devtools';
 import routePlugin from '../../src/plugins/route';
-import route from '../../src/route';
-import render from '../../src/render';
-import {NavLink as Link} from 'react-router-dom';
-import React from 'react';
 
 const logger = function (store) {
     store.subscribe(obj => {
@@ -38,7 +37,6 @@ const store = new Store({
     plugins: [logger, devtools, routePlugin]
 });
 
-@route('/:filter')
 @inject(store)
 class App extends React.Component {
     onAdd = (e) => {
@@ -123,4 +121,11 @@ const btnStyle = {
     right: 5
 };
 
-render(<App/>, '#root');
+const routes = (<HashRouter>
+    <Switch>
+        <Route path="/:filter" component={App} />
+        <Redirect from ="/" to="/all" />
+    </Switch>
+</HashRouter>);
+
+render(routes, document.querySelector('#root'));

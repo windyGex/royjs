@@ -13,7 +13,6 @@
     "example:todo": "parcel examples/todo-mvc/index.html",
     "example:counter": "parcel examples/counter/index.html",
     "example:scene": "parcel examples/scenes/index.html",
-    "example:proxy": "parcel examples/proxy/index.html",
     "benchmark": "parcel test/benchmark.html",
     "release": "npm run test && node ./scripts/release",
     "notice": "node ./scripts/notice"
