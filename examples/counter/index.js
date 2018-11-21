@@ -1,4 +1,4 @@
-import {Store, inject, throttle, takeLatest} from '../../src/';
+import {Store, inject} from '../../src/';
 import devtools from '../../src/plugins/devtools';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -24,8 +24,12 @@ const store = new Store({
             const {count} = state;
             state.set('count', count - 1);
         },
-        @takeLatest
-        asyncAdd(state, payload) {
+        async asyncAdd(state, payload) {
+            await new Promise((resolve) => {
+                setTimeout(() =>{
+                    resolve();
+                }, 400);
+            });
             this.dispatch('add');
         }
     }
