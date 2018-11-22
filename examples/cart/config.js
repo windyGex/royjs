@@ -8,7 +8,7 @@ export const category = [
 ];
 
 export const sortMethods = [
-    { name: '综合排序', value: 'defaults' },
+    { name: '综合排序', value: 'id' },
     { name: '销量优先', value: 'sales' },
     { name: '价格', value: 'price' }
 ];
