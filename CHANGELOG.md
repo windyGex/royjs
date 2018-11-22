@@ -1,4 +1,10 @@
-# Change Log 
+# Change Log
+
+<a name="1.0.0-beta1"></a>
+# [1.0.0-beta1](https://github.com/windyGex/roy/compare/0.6.9...1.0.0-beta1) (2018-11-22)
+
+
+
 
 <a name="0.6.9"></a>
 ## [0.6.9](https://github.com/windyGex/roy/compare/0.6.8...0.6.9) (2018-11-16)
