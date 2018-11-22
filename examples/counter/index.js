@@ -16,13 +16,10 @@ const store = new Store({
     },
     actions: {
         add(state, payload) {
-            const {count} = state;
-            state.set('count', count + 1);
-            state.list.push('1');
+            state.count++;
         },
         reduce(state, payload) {
-            const {count} = state;
-            state.set('count', count - 1);
+            state.count--;
         },
         async asyncAdd(state, payload) {
             await new Promise((resolve) => {
@@ -40,11 +37,10 @@ const store = new Store({
 @inject(store)
 class App extends React.Component {
     render() {
-        const {count, list} = this.store.state;
+        const {count} = this.store.state;
         const {dispatch} = this.store;
         return (<div>
             {count}
-            list: {list.length}
             <button onClick={() => dispatch('add')}>add</button>
             <button onClick={() => dispatch('reduce')}>reduce</button>
             <button onClick={() => dispatch('asyncAdd')}>async</button>
