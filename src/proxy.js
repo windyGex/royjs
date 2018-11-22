@@ -181,6 +181,10 @@ const process = {
 });
 
 const observable = function observable(object) {
+    if (object.$proxy) {
+        return object;
+    }
+
     const proxy = function proxy(object, parent) {
         const events = new Events();
         let returnProxy;

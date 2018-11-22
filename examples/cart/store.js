@@ -11,6 +11,17 @@ const store = new Store({
     actions: {
         sortList(state, payload) {
             state.goods.sort((a, b) => a[payload] - b[payload]);
+        },
+        addCartItem(state, payload) {
+            const item = state.list.filter(item => item.id === payload.id)[0];
+            if (!item) {
+                state.list.push({
+                    ...payload,
+                    quantity: 1
+                });
+            } else {
+                item.quantity++;
+            }
         }
     }
 }, {
