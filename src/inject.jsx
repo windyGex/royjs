@@ -62,9 +62,7 @@ const inject = function (key, value) {
                     Component.prototype[key] = this[key];
                 });
             }
-            shouldComponentUpdate(nextProps, nextState) {
 
-            }
             componentWillUnmount() {
                 Object.keys(defaultProps).forEach(key => {
                     this[key].off('change', this._change);
