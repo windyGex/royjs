@@ -3,6 +3,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import store from './store';
 import List from './components/list';
+import Cart from './components/cart';
 import './index.css';
 
 class App extends React.Component {
@@ -10,7 +11,7 @@ class App extends React.Component {
     render() {
         return (<div className="g-panel">
             <List />
-            {/* <Cart /> */}
+            <Cart />
         </div>);
     }
 }
