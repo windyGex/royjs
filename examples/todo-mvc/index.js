@@ -25,7 +25,7 @@ const store = new Store({
             });
         },
         complete(state, payload) {
-            payload.set('completed', !payload.completed);
+            payload.completed = !payload.completed;
         },
         asyncAdd(state, payload) {
             setTimeout(() => {
