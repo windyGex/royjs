@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
-import { isArray } from './utils';
+import { isArray, warning } from './utils';
 
 // inject(listStore)
 // inject('listStore', listStore)
@@ -18,6 +18,7 @@ const inject = function (key, value) {
                 store: key
             };
         } else {
+            warning('inject multiple store will be removed at next version');
             defaultProps = key;
         }
     } else if (length === 2) {
@@ -60,6 +61,9 @@ const inject = function (key, value) {
                     }
                     Component.prototype[key] = this[key];
                 });
+            }
+            shouldComponentUpdate(nextProps, nextState) {
+
             }
             componentWillUnmount() {
                 Object.keys(defaultProps).forEach(key => {
