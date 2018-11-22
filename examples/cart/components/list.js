@@ -1,11 +1,24 @@
 import React from 'react';
-import { category, sortMethods, goods } from './config';
+import { category, sortMethods } from '../config';
+import { connect } from '../../../src';
 
+@connect(state => ({
+    goods: state.goods
+}))
 export default class List extends React.Component {
+    add = item => {
+        this.props.dispatch('addCartItem', item);
+    };
+    sort = value => {
+        this.props.dispatch('sortList', value);
+    };
+    filter = id => {
+        this.props.dispatch('filterList', id);
+    };
     renderCategory(data) {
         return data.map(item => {
             return (
-                <li className="cate" key={item.id}>
+                <li className="cate" key={item.id} onClick={this.filter.bind(this, item.id)}>
                     {item.des}
                 </li>
             );
@@ -15,7 +28,7 @@ export default class List extends React.Component {
     renderFilter(data) {
         return data.map(item => {
             return (
-                <li className="filter-opt" key={item.value}>
+                <li className="filter-opt" key={item.value} onClick={this.sort.bind(this, item.value)}>
                     {item.name}
                 </li>
             );
@@ -25,9 +38,9 @@ export default class List extends React.Component {
     renderList(data) {
         return data.map(item => {
             return (
-                <li className="goods-item">
+                <li className="goods-item" key={item.id}>
                     <div className="goods-img">
-                        <img src={item.img}/>
+                        <img src={item.img} />
                         <div className="flag">热</div>
                     </div>
                     <div className="goods-info">
@@ -38,7 +51,9 @@ export default class List extends React.Component {
                             </span>
                         </div>
                         <span className="des">{item.sales}人付款</span>
-                        <span className="save">+</span>
+                        <span className="save" onClick={this.add.bind(this, item)}>
+                            +
+                        </span>
                     </div>
                 </li>
             );
@@ -55,7 +70,7 @@ export default class List extends React.Component {
                         <ul className="cate-tab">{this.renderCategory(category)}</ul>
                     </div>
                     <ul className="filter-bar">{this.renderFilter(sortMethods)}</ul>
-                    <ul className="goods-list">{this.renderList(goods)}</ul>
+                    <ul className="goods-list">{this.renderList(this.props.goods)}</ul>
                 </div>
             </div>
         );

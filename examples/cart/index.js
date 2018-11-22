@@ -1,7 +1,8 @@
 import {NavLink as Link, HashRouter, Route, Switch, Redirect} from 'react-router-dom';
 import React from 'react';
 import {render} from 'react-dom';
-import List from './list';
+import store from './store';
+import List from './components/list';
 import './index.css';
 
 class App extends React.Component {
