@@ -32,7 +32,6 @@ const connect = function (mapStateToProps = state => state) {
                 };
                 this._get = data => {
                     this._deps[data.key] = true;
-                    console.log(this._deps)
                 };
                 this.store.on('change', this._change);
                 this.store.history = this.store.history || this.props.history;
