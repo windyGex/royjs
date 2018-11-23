@@ -5,6 +5,19 @@ import { connect } from '../../../src';
     list: state.list
 }))
 export default class Cart extends React.Component {
+
+    selectAll(e) {
+        this.props.dispatch('selectAll', {
+            checked: e.target.checked
+        });
+    }
+    onSelect(id, e) {
+        const {checked} = e.target;
+        this.props.dispatch('select', {
+            id,
+            checked
+        });
+    }
     renderCart() {
         const { list } = this.props;
         if (list.length) {
@@ -20,10 +33,10 @@ export default class Cart extends React.Component {
     renderList(data) {
         return data.map(item => {
             return (
-                <li className="goods-item">
+                <li className="goods-item" key={item.id}>
                     <div className="item-selector">
                         <div className="icon-selector">
-                            <input type="checkbox" />
+                            <input type="checkbox" onChange={this.onSelect.bind(this, item.id)} checked={item.selected}/>
                         </div>
                     </div>
                     <div className="goods-img">
@@ -48,6 +61,14 @@ export default class Cart extends React.Component {
         });
     }
     render() {
+        console.log('cart, render')
+        const selectedItems = this.props.list.filter(item => item.selected);
+        const selectedNum = selectedItems.length;
+        const totalPrice = selectedItems.reduce((total, item) => {
+            total += item.quantity * item.price;
+            return total;
+        }, 0);
+        const checked = selectedItems.length === this.props.list.length;
         return (
             <div className="device" id="page-cart">
                 <header>
@@ -62,19 +83,19 @@ export default class Cart extends React.Component {
                     <div className="g-selector">
                         <div className="item-selector">
                             <div className="icon-selector">
-                                <input type="checkbox" />
+                                <input type="checkbox" onChange={this.selectAll.bind(this)} checked={checked}/>
                             </div>
                         </div>
                         <span>全选</span>
                     </div>
-                    {/* <div className="action-btn buy-btn">去结算({selectedNum})</div>
+                    <div className="action-btn buy-btn">去结算({selectedNum})</div>
                     <div className="action-btn del-btn">删除({selectedNum})</div>
                     <div className="total">
                         合计：
                         <span>
                             ¥<b>{totalPrice}</b>
                         </span>
-                    </div> */}
+                    </div>
                 </div>
             </div>
         );

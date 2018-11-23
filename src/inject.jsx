@@ -61,6 +61,28 @@ const inject = function (key, value) {
                     }
                     Component.prototype[key] = this[key];
                 });
+
+                const render = Component.prototype.render;
+                const that = this;
+
+                Component.prototype.render = function (...args) {
+                    that.beforeRender();
+                    const ret = render.apply(this, args);
+                    that.afterRender();
+                    return ret;
+                };
+            }
+
+            beforeRender() {
+                Object.keys(defaultProps).forEach(key => {
+                    this[key].on('get', this._get);
+                });
+            }
+
+            afterRender() {
+                Object.keys(defaultProps).forEach(key => {
+                    this[key].off('get', this._get);
+                });
             }
 
             componentWillUnmount() {

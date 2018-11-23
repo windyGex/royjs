@@ -22,6 +22,17 @@ const store = new Store({
             } else {
                 item.quantity++;
             }
+        },
+        select(state, payload) {
+            const item = state.list.filter(item => item.id === payload.id)[0];
+            item.selected = payload.checked;
+        },
+        selectAll(state, payload) {
+            if (state.list) {
+                state.list.forEach(item => {
+                    item.selected = payload.checked;
+                });
+            }
         }
     }
 }, {
