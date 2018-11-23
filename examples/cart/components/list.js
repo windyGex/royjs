@@ -2,9 +2,7 @@ import React from 'react';
 import { category, sortMethods } from '../config';
 import { connect } from '../../../src';
 
-@connect(state => ({
-    goods: state.goods
-}))
+@connect(state => state.list)
 export default class List extends React.Component {
     add = item => {
         this.props.dispatch('addCartItem', item);
@@ -13,12 +11,17 @@ export default class List extends React.Component {
         this.props.dispatch('sortList', value);
     };
     filter = id => {
-        this.props.dispatch('filterList', id);
+        this.props.dispatch('fetch', {
+            category: id
+        });
     };
     renderCategory(data) {
         return data.map(item => {
             return (
-                <li className="cate" key={item.id} onClick={this.filter.bind(this, item.id)}>
+                <li
+                    className={`cate ${this.props.currentCategory === item.id ? 'tab-active' : ''}`}
+                    key={item.id}
+                    onClick={this.filter.bind(this, item.id)}>
                     {item.des}
                 </li>
             );
@@ -28,7 +31,10 @@ export default class List extends React.Component {
     renderFilter(data) {
         return data.map(item => {
             return (
-                <li className="filter-opt" key={item.value} onClick={this.sort.bind(this, item.value)}>
+                <li
+                    className={`filter-opt ${this.props.currentSort === item.value ? 'filter-active' : ''}`}
+                    key={item.value}
+                    onClick={this.sort.bind(this, item.value)}>
                     {item.name}
                 </li>
             );
@@ -59,8 +65,11 @@ export default class List extends React.Component {
             );
         });
     }
+    componentDidMount() {
+        this.props.dispatch('fetch');
+    }
     render() {
-        console.log('list, render')
+        console.log('list, render');
         return (
             <div className="device" id="page-list">
                 <header>
@@ -73,6 +82,7 @@ export default class List extends React.Component {
                     <ul className="filter-bar">{this.renderFilter(sortMethods)}</ul>
                     <ul className="goods-list">{this.renderList(this.props.goods)}</ul>
                 </div>
+                {this.props.loading ? <div className="loading">loading...</div> : null}
             </div>
         );
     }
