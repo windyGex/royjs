@@ -30,5 +30,4 @@ function * publishToTnpm() {
     yield runCmd('git pull');
     yield runCmd(`git tag ${packageInfo.version}`);
     yield runCmd(`git push github ${packageInfo.version}`);
-    yield runCmd('npm publish');
 }
