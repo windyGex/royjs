@@ -32,21 +32,28 @@ const connect = function (mapStateToProps = state => state) {
                 };
                 this._get = data => {
                     this._deps[data.key] = true;
+                    console.log(this._deps)
                 };
                 this.store.on('change', this._change);
-                this.store.on('get', this._get);
                 this.store.history = this.store.history || this.props.history;
             }
             componentWillUnmount() {
                 this.store.off('change', this._change);
-                this.store.off('get', this._get);
             }
             componentDidMount() {
                 const node = ReactDOM.findDOMNode(this);
                 node._instance = this;
             }
+            beforeRender() {
+                this.store.on('get', this._get);
+            }
+            afterRender() {
+                this.store.off('get', this._get);
+            }
             render() {
+                this.beforeRender();
                 const props = mapStateToProps(this.store.state);
+                this.afterRender();
                 const dispatch = this.store.dispatch;
                 return <Component {...this.props} {...props} dispatch={dispatch} />;
             }

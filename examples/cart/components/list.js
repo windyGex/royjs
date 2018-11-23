@@ -60,6 +60,7 @@ export default class List extends React.Component {
         });
     }
     render() {
+        console.log('list, render')
         return (
             <div className="device" id="page-list">
                 <header>
