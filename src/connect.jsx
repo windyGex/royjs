@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
 import Store from './store';
+import eql from 'shallowequal';
 import { isArray } from './utils';
 
-const connect = function (mapStateToProps = state => state) {
+const connect = function (mapStateToProps = state => state, pure = false) {
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
             static contextTypes = {
@@ -35,6 +36,15 @@ const connect = function (mapStateToProps = state => state) {
                 };
                 this.store.on('change', this._change);
                 this.store.history = this.store.history || this.props.history;
+
+                if (pure) {
+                    this.shouldComponentUpdate = function (nextProps, nextState) {
+                        if (this.state !== nextState) {
+                            return true;
+                        }
+                        return !eql(this.props, nextProps);
+                    };
+                }
             }
             componentWillUnmount() {
                 this.store.off('change', this._change);

@@ -1,6 +1,10 @@
 <a name="1.0.0-beta2"></a>
 # [1.0.0-beta2](https://github.com/windyGex/roy/compare/1.0.0-beta1...1.0.0-beta2) (2018-11-23)
 
+### Feature
+
+* Using `Proxy` instead of observable model
+* Reduce render count when store changes
 
 ### Bug Fixes
 
