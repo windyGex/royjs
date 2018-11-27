@@ -116,7 +116,17 @@ const inject = function (key, value) {
                 }
             }
             render() {
-                return <Component {...defaultProps} {...this.props} />;
+                const ret = {};
+                Object.keys(defaultProps).forEach(key => {
+                    const store = defaultProps[key];
+                    ret[key] = store.state;
+                    if (key === 'store') {
+                        ret.dispatch = store.dispatch;
+                    } else {
+                        ret[`${key}Dispatch`] = store.dispatch;
+                    }
+                });
+                return <Component {...this.props} {...ret} />;
             }
         }
         return StoreWrapper;
