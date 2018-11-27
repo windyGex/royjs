@@ -68,7 +68,12 @@ const inject = function (key, value) {
                     if (this[key].name) {
                         this.context.store && this.context.store.mount(this[key].name, this[key]);
                     }
-                    Component.prototype[key] = this[key];
+                    Object.defineProperty(Component.prototype, key, {
+                        get() {
+                            warning('this.store is forbidden. Using [this.props.store] and [this.props.dispatch] instead of this.store');
+                            return defaultProps[key];
+                        }
+                    });
                 });
 
                 const render = Component.prototype.render;
