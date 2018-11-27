@@ -157,7 +157,11 @@ class Store extends Events {
             const that = this;
             const action = actions[type];
             function actionPayload(payload, options) {
-                const ret = action.call(that, state, payload, options);
+                const ret = action.call(that, state, payload, {
+                    state: that.state,
+                    dispatch: that.dispatch,
+                    ...options
+                });
                 that.trigger('actions', {
                     type: actionType,
                     payload,
