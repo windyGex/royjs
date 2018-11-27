@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
+import eql from 'shallowequal';
 import { isArray, warning } from './utils';
 
 // inject(listStore)
+// inject(listStore, true)
 // inject('listStore', listStore)
 // inject({
 // listStore,
@@ -11,7 +13,7 @@ import { isArray, warning } from './utils';
 // })
 const inject = function (key, value) {
     const length = arguments.length;
-    let defaultProps = {};
+    let defaultProps = {}, pure = false;
     if (length === 1) {
         if (key.primaryKey) {
             defaultProps = {
@@ -22,7 +24,14 @@ const inject = function (key, value) {
             defaultProps = key;
         }
     } else if (length === 2) {
-        defaultProps[key] = value;
+        if (value === true || value === false) {
+            pure = value;
+            defaultProps = {
+                store: key
+            };
+        } else {
+            defaultProps[key] = value;
+        }
     }
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
@@ -71,6 +80,15 @@ const inject = function (key, value) {
                     that.afterRender();
                     return ret;
                 };
+
+                if (pure) {
+                    this.shouldComponentUpdate = function (nextProps, nextState) {
+                        if (this.state !== nextState) {
+                            return true;
+                        }
+                        return !eql(this.props, nextProps);
+                    };
+                }
             }
 
             beforeRender() {
