@@ -14,6 +14,7 @@
     "example:counter": "parcel examples/counter/index.html",
     "example:scene": "parcel examples/scenes/index.html",
     "example:cart": "parcel examples/cart/index.html",
+    "example:pure": "parcel examples/pure/index.html",
     "benchmark": "parcel test/benchmark.html",
     "release": "npm run test && node ./scripts/release",
     "notice": "node ./scripts/notice"
