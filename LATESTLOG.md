@@ -9,8 +9,7 @@
 
 ### Features
 
-* Add pure for optimizing pefermance ([32fd168](https://github.com/windyGex/roy/commit/32fd168))
-* Support shouldComponentUpdate when pure is true ([7390a17](https://github.com/windyGex/roy/commit/7390a17))
+* Add pure for optimizing peformance ([32fd168](https://github.com/windyGex/roy/commit/32fd168))
 
 
 
