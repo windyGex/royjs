@@ -1,5 +1,22 @@
 # Change Log 
 
+<a name="1.0.0-beta3"></a>
+# [1.0.0-beta3](https://github.com/windyGex/roy/compare/1.0.0-beta2...1.0.0-beta3) (2018-11-28)
+
+
+### Bug Fixes
+
+* More strict instance access ([3c0b172](https://github.com/windyGex/roy/commit/3c0b172))
+
+
+### Features
+
+* Add pure for optimizing pefermance ([32fd168](https://github.com/windyGex/roy/commit/32fd168))
+* Support shouldComponentUpdate when pure is true ([7390a17](https://github.com/windyGex/roy/commit/7390a17))
+
+
+
+
 <a name="1.0.0-beta2"></a>
 # [1.0.0-beta2](https://github.com/windyGex/roy/compare/1.0.0-beta1...1.0.0-beta2) (2018-11-23)
 
