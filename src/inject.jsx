@@ -63,7 +63,6 @@ const inject = function (key, value) {
                 Object.keys(defaultProps).forEach(key => {
                     this[key] = defaultProps[key];
                     this[key].on('change', this._change);
-                    this[key].on('get', this._get);
                     this[key].history = this[key].history || this.props.history;
                     if (this[key].name) {
                         this.context.store && this.context.store.mount(this[key].name, this[key]);

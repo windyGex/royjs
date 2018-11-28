@@ -180,6 +180,8 @@ const process = {
     };
 });
 
+const whiteList = ['_reactFragment', 'constructor'];
+
 const observable = function observable(object) {
     if (object.$proxy) {
         return object;
@@ -197,7 +199,7 @@ const observable = function observable(object) {
                         events
                     });
                 }
-                if (Array.isArray(target)) {
+                if (Array.isArray(target) || whiteList.indexOf(key) > -1 || (typeof key === 'string' && key.charAt(0) === '_')) {
                     return Reflect.get(target, key);
                 }
                 const getValue = process.get({
