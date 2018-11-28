@@ -1,6 +1,6 @@
 {
   "name": "@royjs/core",
-  "version": "1.0.0-beta2",
+  "version": "1.0.0-beta3",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
   "scripts": {
