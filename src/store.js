@@ -162,12 +162,14 @@ class Store extends Events {
     }
     _runPendingObservations() {
         const list = this.pendingUnobservations;
-        const batchArgs = list.map(item => {
-            const [model, args] = item;
-            args.value = model.get(args.key);
-            return args;
-        });
-        this.trigger('change', batchArgs);
+        if (list.length) {
+            const batchArgs = list.map(item => {
+                const [model, args] = item;
+                args.value = model.get(args.key);
+                return args;
+            });
+            this.trigger('change', batchArgs);
+        }
         this.pendingUnobservations = [];
     }
     _wrapActions(actions, state, prefix) {
