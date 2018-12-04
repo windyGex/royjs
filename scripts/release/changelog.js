@@ -92,7 +92,7 @@ function getRemotePkgInfo(ignoreError = false) {
         try {
             request({
                 url: requestUrl,
-                timeout: 5000,
+                timeout: 10000,
                 json: true
             }, function (error, response, body) {
                 if (error && !ignoreError) {
