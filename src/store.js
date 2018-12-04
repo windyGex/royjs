@@ -167,8 +167,8 @@ class Store extends Events {
             args.value = model.get(args.key);
             return args;
         });
-
         this.trigger('change', batchArgs);
+        this.pendingUnobservations = [];
     }
     _wrapActions(actions, state, prefix) {
         Object.keys(actions).forEach(type => {
