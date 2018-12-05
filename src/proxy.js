@@ -24,7 +24,7 @@ function wrap(key, value, ret) {
         } else if (Array.isArray(value)) {
             value = observable(value, ret);
             value.on('change', function (args) {
-                const mixArgs = {...args};
+                const mixArgs = { ...args };
                 if (!args.key) {
                     mixArgs.key = key;
                 } else {
@@ -35,6 +35,27 @@ function wrap(key, value, ret) {
         }
     }
     return value;
+}
+
+function rawJSON(target) {
+    if (Array.isArray(target)) {
+        return target.map(item => {
+            if (item && item.toJSON) {
+                return item.toJSON();
+            }
+            return item;
+        });
+    }
+    const ret = {};
+    Object.keys(target).forEach(key => {
+        const value = target[key];
+        if (value && value.toJSON) {
+            ret[key] = value.toJSON();
+        } else {
+            ret[key] = value;
+        }
+    });
+    return ret;
 }
 
 const process = {
@@ -155,7 +176,8 @@ const process = {
     },
     toJSON(options) {
         return function toJSON() {
-            return options.target;
+            const target = options.target;
+            return rawJSON(target);
         };
     },
     reset(options) {
@@ -199,7 +221,14 @@ const observable = function observable(object) {
                         events
                     });
                 }
-                if (Array.isArray(target) || whiteList.indexOf(key) > -1 || (typeof key === 'string' && key.charAt(0) === '_')) {
+                if (key === '$raw') {
+                    return rawJSON(target);
+                }
+                if (
+                    Array.isArray(target) ||
+                    whiteList.indexOf(key) > -1 ||
+                    (typeof key === 'string' && key.charAt(0) === '_')
+                ) {
                     return Reflect.get(target, key);
                 }
                 const getValue = process.get({
@@ -245,7 +274,7 @@ const observable = function observable(object) {
                 object[key] = wrap(key, object[key], ret);
             }
         }
-    } else if(Array.isArray(object)){
+    } else if (Array.isArray(object)) {
         object.forEach((item, index) => {
             object[index] = wrap(index, object[index], ret);
         });

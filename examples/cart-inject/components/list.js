@@ -3,7 +3,7 @@ import { category, sortMethods } from '../config';
 import { inject } from '../../../src';
 import store from '../store';
 
-@inject(store)
+@inject(store, true)
 export default class List extends React.Component {
     add = item => {
         this.store.dispatch('addCartItem', item);
