@@ -58,7 +58,7 @@ function rawJSON(target) {
     return ret;
 }
 
-const process = {
+const objectProcess = {
     get(options) {
         const { target, events } = options;
         return function getValue(path, slient = false) {
@@ -129,7 +129,7 @@ const process = {
                 return;
             }
             let nested,
-                getValue = process.get(options),
+                getValue = objectProcess.get(options),
                 currentValue = getValue(path, true);
 
             value = wrap(path, value, target.$proxy);
@@ -190,8 +190,14 @@ const process = {
     }
 };
 
+const arrayProcess = {};
+
+['on', 'off', 'trigger'].forEach(method => {
+    arrayProcess[method] = objectProcess[method];
+});
+
 ['pop', 'shift', 'push', 'unshift', 'sort', 'reverse', 'splice'].forEach(method => {
-    process[method] = options => {
+    arrayProcess[method] = options => {
         const { target, events } = options;
         return function(...args) {
             // todo: 这里利用了新增项会调用set方法的特性，没有对新增项进行observable包裹
@@ -214,15 +220,22 @@ const observable = function observable(object) {
         let returnProxy;
         const handler = {
             get(target, key) {
-                if (process.hasOwnProperty(key)) {
-                    return process[key]({
+                if (key === '$raw') {
+                    return rawJSON(target);
+                }
+                if (Array.isArray(target) && arrayProcess.hasOwnProperty(key)) {
+                    return arrayProcess[key]({
                         target,
                         key,
                         events
                     });
                 }
-                if (key === '$raw') {
-                    return rawJSON(target);
+                if (objectProcess.hasOwnProperty(key)) {
+                    return objectProcess[key]({
+                        target,
+                        key,
+                        events
+                    });
                 }
                 if (
                     Array.isArray(target) ||
@@ -231,7 +244,7 @@ const observable = function observable(object) {
                 ) {
                     return Reflect.get(target, key);
                 }
-                const getValue = process.get({
+                const getValue = objectProcess.get({
                     target,
                     key,
                     events
@@ -250,7 +263,7 @@ const observable = function observable(object) {
                     const ret = Reflect.set(target, key, value);
                     return true;
                 }
-                process.set({
+                objectProcess.set({
                     target,
                     events
                 })(key, value);
