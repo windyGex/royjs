@@ -112,4 +112,9 @@ describe('support inject store to React Component', () => {
         store.state.a[0].status = false;
         expect(wrapper.find('span').text()).eql('false');
     })
+
+    it('avoid object sort', () => {
+        store.state.sort = 1;
+        expect(store.state.sort).eql(1);
+    })
 })
