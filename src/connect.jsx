@@ -51,7 +51,9 @@ const connect = function (mapStateToProps = state => state, pure = false) {
             }
             componentDidMount() {
                 const node = ReactDOM.findDOMNode(this);
-                node._instance = this;
+                if (node) {
+                    node._instance = this;
+                }
             }
             beforeRender() {
                 this.store.on('get', this._get);
