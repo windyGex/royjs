@@ -64,9 +64,10 @@ const connect = function (mapStateToProps = state => state, pure = false) {
             render() {
                 this.beforeRender();
                 const props = mapStateToProps(this.store.state);
-                this.afterRender();
                 const dispatch = this.store.dispatch;
-                return <Component {...this.props} {...props} dispatch={dispatch} />;
+                const ret = <Component {...this.props} {...props} dispatch={dispatch} />;
+                this.afterRender();
+                return ret;
             }
         }
         return StoreWrapper;
