@@ -22,13 +22,13 @@ export default class Cart extends React.Component {
     };
 
     selectAll(e) {
-        this.store.dispatch('selectAll', {
+        this.props.dispatch('selectAll', {
             checked: e.target.checked
         });
     }
 
     onRemove = () => {
-        this.store.dispatch('onRemove');
+        this.props.dispatch('onRemove');
     };
     renderCart() {
         const { list } = this.store;
@@ -43,13 +43,13 @@ export default class Cart extends React.Component {
     }
     render() {
         console.log('cart, render');
-        const selectedItems = this.store.state.cart.list.filter(item => item.selected);
+        const selectedItems = this.props.state.cart.list.filter(item => item.selected);
         const selectedNum = selectedItems.length;
         const totalPrice = selectedItems.reduce((total, item) => {
             total += item.quantity * item.price;
             return total;
         }, 0);
-        const checked = selectedItems.length === this.store.state.cart.list.length && selectedItems.length > 0;
+        const checked = selectedItems.length === this.props.state.cart.list.length && selectedItems.length > 0;
         const { isEdit } = this.state;
         return (
             <div className="device" id="page-cart">

@@ -6,13 +6,13 @@ import store from '../store';
 @inject(store, true)
 export default class List extends React.Component {
     add = item => {
-        this.store.dispatch('addCartItem', item);
+        this.props.dispatch('addCartItem', item);
     };
     sort = value => {
-        this.store.dispatch('sortList', value);
+        this.props.dispatch('sortList', value);
     };
     filter = id => {
-        this.store.dispatch('fetch', {
+        this.props.dispatch('fetch', {
             category: id
         });
     };
@@ -20,7 +20,7 @@ export default class List extends React.Component {
         return data.map(item => {
             return (
                 <li
-                    className={`cate ${this.store.state.list.currentCategory === item.id ? 'tab-active' : ''}`}
+                    className={`cate ${this.props.state.list.currentCategory === item.id ? 'tab-active' : ''}`}
                     key={item.id}
                     onClick={this.filter.bind(this, item.id)}>
                     {item.des}
@@ -33,7 +33,7 @@ export default class List extends React.Component {
         return data.map(item => {
             return (
                 <li
-                    className={`filter-opt ${this.store.state.list.currentSort === item.value ? 'filter-active' : ''}`}
+                    className={`filter-opt ${this.props.state.list.currentSort === item.value ? 'filter-active' : ''}`}
                     key={item.value}
                     onClick={this.sort.bind(this, item.value)}>
                     {item.name}
@@ -67,7 +67,7 @@ export default class List extends React.Component {
         });
     }
     componentDidMount() {
-        this.store.dispatch('fetch');
+        this.props.dispatch('fetch');
     }
     render() {
         console.log('list, render');
@@ -81,9 +81,9 @@ export default class List extends React.Component {
                         <ul className="cate-tab">{this.renderCategory(category)}</ul>
                     </div>
                     <ul className="filter-bar">{this.renderFilter(sortMethods)}</ul>
-                    <ul className="goods-list">{this.renderList(this.store.state.list.goods)}</ul>
+                    <ul className="goods-list">{this.renderList(this.props.state.list.goods)}</ul>
                 </div>
-                {this.store.state.list.loading ? <div className="loading">loading...</div> : null}
+                {this.props.state.list.loading ? <div className="loading">loading...</div> : null}
             </div>
         );
     }

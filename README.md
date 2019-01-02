@@ -27,12 +27,10 @@ const store = new Store({
     },
     actions: {
         add(state, payload) {
-            const {count} = state;
-            this.set('count', count + 1);
+            state.count++;
         },
         reduce(state, payload) {
-            const {count} = state;
-            this.set('count', count - 1);
+            state.count--;
         }
     }
 });
@@ -40,8 +38,8 @@ const store = new Store({
 @inject(store)
 class App extends React.Component {
     render() {
-        const {count} = this.store.state;
-        return <div onClick={() => this.store.dispatch('add')}>{count}</div>
+        const {count} = this.props.state;
+        return <div onClick={() => this.props.dispatch('add')}>{count}</div>
     }
 }
 
@@ -62,7 +60,7 @@ store.create('module1', {
     },
     actions: {
         change(state, payload){
-            state.set('name', payload);
+            state.name = payload;
         }
     }
 });
@@ -73,7 +71,7 @@ store.create('module2', {
     },
     actions: {
         change(state, payload){
-            state.set('name', payload);
+            state.name = payload;
         }
     }
 });
@@ -81,7 +79,7 @@ store.create('module2', {
 @connect(state => state.module1)
 class App extends React.Component {
     onClick = () => {
-        this.store.dispatch('module2.change', 'changed name from module1');
+        this.props.dispatch('module2.change', 'changed name from module1');
     }
     render() {
         return <div onClick={this.onClick}>{this.props.name}</div>
@@ -109,14 +107,14 @@ const subModuleStore = new Store({
     },
     actions: {
         change(state) {
-            state.set('name', 'subModuleChanged');
+            state.name = 'subModuleChanged';
         }
     }
 })
 @inject(subModuleStore)
 class SubModule extends React.Component {
     render() {
-        return <div onClick={this.store.change}>{this.store.state.name}</div>
+        return <div onClick={() => this.props.dispatch('change')}>{this.props.state.name}</div>
     }
 }
 
@@ -141,16 +139,14 @@ const store = new Store({
     },
     actions: {
         add(state, payload) {
-            const {count} = state;
-            state.set('count', count + 1);
+            state.count++;
         },
         reduce(state, payload) {
-            const {count} = state;
-            state.set('count', count - 1);
+            state.count--;
         },
         fetch(state, payload) {
             this.request('./url').then(ret => {
-                state.set('dataSource', ret.ds)
+                state.dataSource = ret.ds;
             });
         }
     }
@@ -159,11 +155,11 @@ const store = new Store({
 @inject(store)
 class App extends React.Component {
     componentDidMount() {
-        this.store.dispatch('fetch');
+        this.props.dispatch('fetch');
     }
     render() {
-        const {dataSource} = this.store.state;
-        return <div onClick={() => this.store.dispatch('add')}>{dataSource}</div>
+        const {dataSource} = this.props.state;
+        return <div onClick={() => this.props.dispatch('add')}>{dataSource}</div>
     }
 }
 ```

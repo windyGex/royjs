@@ -21,7 +21,7 @@ describe('support inject store to React Component', () => {
     let store, App, wrapper;
     class Demo extends React.Component {
         render() {
-            const [item] = this.store.state.a;
+            const [item] = this.props.state.a;
             return <span>{item && item.status ? 'true' : 'false'}</span>;
         }
     }

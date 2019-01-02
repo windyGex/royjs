@@ -7,16 +7,16 @@ class CartList extends React.Component {
 
     onSelect(id, e) {
         const { checked } = e.target;
-        this.store.dispatch('select', {
+        this.props.dispatch('select', {
             id,
             checked
         });
     }
     onAdd(item) {
-        this.store.dispatch('onAdd', item);
+        this.props.dispatch('onAdd', item);
     }
     onReduce(item) {
-        this.store.dispatch('onReduce', item);
+        this.props.dispatch('onReduce', item);
     }
 
     renderList(data) {
@@ -59,7 +59,7 @@ class CartList extends React.Component {
     }
     render() {
         console.log('cartlist, render');
-        const { list } = this.store.state.cart;
+        const { list } = this.props.state.cart;
         if (list.length) {
             return <ul className="goods-list cart-list">{this.renderList(list)}</ul>;
         }

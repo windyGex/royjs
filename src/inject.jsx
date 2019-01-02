@@ -20,7 +20,7 @@ const inject = function (key, value) {
                 store: key
             };
         } else {
-            warning('inject multiple store will be removed at next version');
+            warning('inject multiple store will be removed at next version, using connect and Provider instead of it.');
             defaultProps = key;
         }
     } else if (length === 2) {
@@ -61,13 +61,22 @@ const inject = function (key, value) {
                     this._deps[data.key] = true;
                 };
                 Object.keys(defaultProps).forEach(key => {
-                    this[key] = defaultProps[key];
+                    const store = defaultProps[key];
+                    this[key] = store;
                     this[key].on('change', this._change);
                     this[key].history = this[key].history || this.props.history;
                     if (this[key].name) {
                         this.context.store && this.context.store.mount(this[key].name, this[key]);
                     }
-                    Component.prototype[key] = this[key];
+                    if (!Component.prototype[key]) {
+                        Object.defineProperty(Component.prototype, key, {
+                            get() {
+                                warning(`Using this.props.state instead of this.store.state
+and using this.props.dispatch instead of this.store.dispatch`);
+                                return store;
+                            }
+                        });
+                    }
                 });
 
                 const render = Component.prototype.render;
@@ -115,14 +124,19 @@ const inject = function (key, value) {
                 }
             }
             render() {
-                const ret = {};
+                let ret = {};
                 Object.keys(defaultProps).forEach(key => {
                     const store = defaultProps[key];
-                    ret[key] = store.state;
                     if (key === 'store') {
-                        ret.dispatch = store.dispatch;
+                        ret = {
+                            dispatch: store.dispatch,
+                            state: store.state
+                        };
                     } else {
-                        ret[`${key}Dispatch`] = store.dispatch;
+                        ret = {
+                            [`${key}Dispatch`]: store.dispatch,
+                            [`${key}State`]: store.state
+                        };
                     }
                 });
                 return <Component {...this.props} {...ret} />;

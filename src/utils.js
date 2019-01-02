@@ -25,5 +25,5 @@ export const throttle = function (target, key, descriptor) {
 };
 
 export const warning = function warning(msg) {
-    console.warn(msg);
+    console.error(msg);
 };

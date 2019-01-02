@@ -27,7 +27,7 @@ const store = new Store({
 @inject(store)
 class List extends React.Component {
     render() {
-        const {dataSource, complex} = this.store.state;
+        const {dataSource, complex} = this.props.state;
         return <div>{dataSource.length}, {complex.a}</div>;
     }
 }
@@ -43,10 +43,10 @@ globalStore.subscribe(function (state) {
 @connect()
 class Button extends React.Component {
     onClick = () => {
-        this.store.dispatch('list.add', 'add');
+        this.props.dispatch('list.add', 'add');
     }
     onChange = () => {
-        this.store.dispatch('list.complex');
+        this.props.dispatch('list.complex');
     }
     render() {
         return <div><button onClick={this.onClick}>Add</button>
