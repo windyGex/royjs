@@ -44,7 +44,7 @@ const store = new Store({
 class Child extends React.Component {
     render() {
         console.log('child render!');
-        const {list} = this.store.state;
+        const {list} = this.props.state;
         return <span>{list.length}</span>;
     }
 }
@@ -52,8 +52,8 @@ class Child extends React.Component {
 @inject(store)
 class App extends React.Component {
     render() {
-        const {count} = this.store.state;
-        const {dispatch} = this.store;
+        const {count} = this.props.state;
+        const {dispatch} = this.props;
         return (<div>
             {count}
             <Child/>

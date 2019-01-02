@@ -37,8 +37,8 @@ const store = new Store({
 @inject(store)
 class App extends React.Component {
     render() {
-        const {count} = this.store.state;
-        const {dispatch} = this.store;
+        const {state, dispatch} = this.props;
+        const {count} = state;
         return (<div>
             {count}
             <button onClick={() => dispatch('add')}>add</button>
