@@ -43,22 +43,22 @@ const store = new Store({
 class App extends React.Component {
     onAdd = (e) => {
         if (e.keyCode === 13) {
-            this.store.dispatch('add', e.target.value);
-            this.store.dispatch('setValues', {
+            this.props.dispatch('add', e.target.value);
+            this.props.dispatch('setValues', {
                 newTodo: ''
             });
         }
     }
     back = () => {
-        this.store.dispatch('router.goBack');
+        this.props.dispatch('router.goBack');
     }
     onChange = (e) => {
-        this.store.dispatch('setValues', {
+        this.props.dispatch('setValues', {
             newTodo: e.target.value
         });
     }
     renderList() {
-        const todoList = this.store.get('todoList');
+        const {todoList} = this.props.state;
         const {params} = this.props.match;
         const filters = {
             'all': todo => todo,
@@ -73,14 +73,14 @@ class App extends React.Component {
                         readOnly
                         type="checkbox"
                         checked={todo.completed}
-                        onClick={() => this.store.dispatch('complete', todo)}/>
+                        onClick={() => this.props.dispatch('complete', todo)}/>
                     <label>{todo.title}</label>
                 </div>
             </li>;
         });
     }
     render() {
-        const {todoList, newTodo} = this.store.state;
+        const {todoList, newTodo} = this.props.state;
         const todoCount = todoList.filter(todo => !todo.completed).length;
         return (<section className="todoapp">
             <header className="header">

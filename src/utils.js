@@ -9,3 +9,6 @@ export const isPlainObject = function (item) {
 export const isArray = function (item) {
     return checkType(item) === 'Array';
 };
+export const warning = function warning(msg) {
+    console.warn(msg);
+};

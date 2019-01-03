@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
-import {isArray} from './utils';
+import { isArray, warning } from './utils';
 
 // inject(listStore)
 // inject('listStore', listStore)
@@ -31,7 +31,7 @@ const inject = function (key, value) {
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
-                this._change = (obj) => {
+                this._change = obj => {
                     const state = {};
                     obj = isArray(obj) ? obj : [obj];
                     for (let index = 0; index < obj.length; index++) {
@@ -42,18 +42,25 @@ const inject = function (key, value) {
                     }
                     this.setState(state);
                 };
-                this._get = (data) => {
+                this._get = data => {
                     this._deps[data.key] = true;
                 };
                 Object.keys(defaultProps).forEach(key => {
-                    this[key] = defaultProps[key];
+                    const store = defaultProps[key];
+                    this[key] = store;
                     this[key].on('change', this._change);
-                    this[key].on('get', this._get);
                     this[key].history = this[key].history || this.props.history;
                     if (this[key].name) {
                         this.context.store && this.context.store.mount(this[key].name, this[key]);
                     }
-                    Component.prototype[key] = this[key];
+                    if (!Component.prototype[key]) {
+                        Object.defineProperty(Component.prototype, key, {
+                            get() {
+                                warning('Using this.props.state instead of this.store.state and using this.props.dispatch instead of this.store.dispatch');
+                                return store;
+                            }
+                        });
+                    }
                 });
             }
             componentWillUnmount() {
@@ -69,7 +76,22 @@ const inject = function (key, value) {
                 }
             }
             render() {
-                return <Component {...defaultProps} {...this.props} />;
+                let ret = {};
+                Object.keys(defaultProps).forEach(key => {
+                    const store = defaultProps[key];
+                    if (key === 'store') {
+                        ret = {
+                            dispatch: store.dispatch,
+                            state: store.state
+                        };
+                    } else {
+                        ret = {
+                            [`${key}Dispatch`]: store.dispatch,
+                            [`${key}State`]: store.state
+                        };
+                    }
+                });
+                return <Component {...defaultProps} {...this.props} {...ret} />;
             }
         }
         return StoreWrapper;

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
 import Store from './store';
-import {isArray} from './utils';
+import {isArray, warning} from './utils';
 
 const connect = function (
     mapStateToProps = state => state
@@ -33,7 +33,15 @@ const connect = function (
                 this.store.on('change', this._change);
                 this.store.on('get', this._get);
                 this.store.history = this.store.history || this.props.history;
-                Component.prototype.store = this.store;
+                const store = this.store;
+                if (!Component.prototype.store) {
+                    Object.defineProperty(Component.prototype, 'store', {
+                        get() {
+                            warning('Do\'nt use this.store in connect!');
+                            return store;
+                        }
+                    });
+                }
             }
             componentWillUnmount() {
                 this.store.off('change', this._change);
@@ -41,7 +49,9 @@ const connect = function (
             }
             componentDidMount() {
                 const node = ReactDOM.findDOMNode(this);
-                node._instance = this;
+                if (node) {
+                    node._instance = this;
+                }
             }
             render() {
                 const props = mapStateToProps(this.store.state);
