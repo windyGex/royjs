@@ -22,7 +22,7 @@
   "parser": "babel-eslint",
 
   "plugins": [
-    
+
   ],
 
   "rules": {
@@ -51,7 +51,7 @@
     "keyword-spacing": [2, {"before": true, "after": true}],
     "linebreak-style": 0,
     "max-depth": 0,
-    "max-len": [2, 120, 4],
+    "max-len": [2, 200, 4],
     "max-nested-callbacks": 0,
     "max-params": 0,
     "max-statements": 0,
