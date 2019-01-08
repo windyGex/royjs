@@ -2,7 +2,7 @@ import Events from './events';
 import ObservableModel from './observe-model';
 import DataSource from './data-source';
 import setValues from './plugins/set-values';
-import {isArray} from './utils';
+import { isArray, warning } from './utils';
 
 let globalStore;
 
@@ -20,12 +20,9 @@ class Store extends Events {
             name = store;
             store = globalStore;
         }
-        const {
-            state,
-            actions
-        } = params;
+        const { state, actions } = params;
         if (!globalStore) {
-            console.warn('The store has not been initialized yet!');
+            warning('The store has not been initialized yet!');
         }
         const stateKeys = Object.keys(state);
         if (stateKeys.length === 0) {
@@ -37,7 +34,7 @@ class Store extends Events {
         }
         store._wrapActions(actions, store.get(name), name);
         return store.get(name);
-    }
+    };
     // mount({})
     // mount(name, {})
     // mount(target, name, store)
@@ -51,10 +48,7 @@ class Store extends Events {
             name = target;
             target = globalStore;
         }
-        let {
-            state,
-            actions
-        } = store;
+        let { state, actions } = store;
         store.on('change', args => {
             args = isArray(args) ? args : [args];
             target.transaction(() => {
@@ -65,8 +59,7 @@ class Store extends Events {
             });
         });
         store.on('get', args => {
-            const obj = { ...args
-            };
+            const obj = { ...args };
             obj.key = `${name}.${obj.key}`;
             target.trigger('get', obj);
         });
@@ -77,23 +70,16 @@ class Store extends Events {
             state: state.toJSON(),
             actions
         });
-    }
+    };
     static get = function () {
         return globalStore;
-    }
+    };
     // state
     // actions
     constructor(params = {}, options = {}) {
         super(params, options);
-        let {
-            name,
-            state,
-            actions = {}
-        } = params;
-        const {
-            strict = false,
-            plugins = []
-        } = options;
+        let { name, state, actions = {} } = params;
+        const { strict = false, plugins = [] } = options;
         state = {
             ...this.state,
             ...state
@@ -142,6 +128,7 @@ class Store extends Events {
         });
     }
     get request() {
+        warning('推荐使用@alife/legion中的request代替，可直接替换，1.x该request将会被替换为原生axios.');
         return this.dataSource.request;
     }
     get(key) {
@@ -185,7 +172,7 @@ class Store extends Events {
                     state: that.model
                 });
                 return ret;
-            };
+            }
             if (!action._set) {
                 this.actions[actionType] = actionPayload;
                 actionPayload._set = true;
@@ -194,14 +181,14 @@ class Store extends Events {
             }
         });
     }
-    transaction = (fn) => {
+    transaction = fn => {
         this._startBatch();
         try {
             return fn.apply(this);
         } finally {
             this._endBatch();
         }
-    }
+    };
     dispatch = (type, payload, options) => {
         const action = this.actions[type];
         if (!action || typeof action !== 'function') {
@@ -213,13 +200,9 @@ class Store extends Events {
             this.allowModelSet = false;
         }
         return ret;
-    }
+    };
     subscribe(callback) {
-        this.on('actions', function ({
-            type,
-            payload,
-            state
-        }) {
+        this.on('actions', function ({ type, payload, state }) {
             callback({
                 type,
                 payload,
