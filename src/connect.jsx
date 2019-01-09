@@ -30,6 +30,10 @@ const connect = function (
                 this._get = data => {
                     this._deps[data.key] = true;
                 };
+                if (!this.store) {
+                    warning('The store has not been initialized yet!');
+                    return;
+                }
                 this.store.on('change', this._change);
                 this.store.on('get', this._get);
                 this.store.history = this.store.history || this.props.history;
