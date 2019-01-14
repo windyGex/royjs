@@ -75,6 +75,12 @@ const inject = function (key, value) {
                     node._instance = this;
                 }
             }
+            setInstance = inc => {
+                this._instance = inc;
+            };
+            get instance() {
+                return this._instance;
+            }
             render() {
                 let ret = {};
                 Object.keys(defaultProps).forEach(key => {
@@ -91,7 +97,7 @@ const inject = function (key, value) {
                         };
                     }
                 });
-                return <Component {...defaultProps} {...this.props} {...ret} />;
+                return <Component {...defaultProps} {...this.props} {...ret} ref={this.setInstance} />;
             }
         }
         return StoreWrapper;

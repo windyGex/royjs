@@ -2,11 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import T from 'prop-types';
 import Store from './store';
-import {isArray, warning} from './utils';
+import { isArray, warning } from './utils';
 
-const connect = function (
-    mapStateToProps = state => state
-) {
+const connect = function (mapStateToProps = state => state) {
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
             static contextTypes = {
@@ -16,7 +14,7 @@ const connect = function (
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
-                this._change = (obj) => {
+                this._change = obj => {
                     const state = {};
                     obj = isArray(obj) ? obj : [obj];
                     for (let index = 0; index < obj.length; index++) {
@@ -41,7 +39,7 @@ const connect = function (
                 if (!Component.prototype.store) {
                     Object.defineProperty(Component.prototype, 'store', {
                         get() {
-                            warning('Do\'nt use this.store in connect!');
+                            warning("Do'nt use this.store in connect!");
                             return store;
                         }
                     });
@@ -57,10 +55,16 @@ const connect = function (
                     node._instance = this;
                 }
             }
+            setInstance = inc => {
+                this._instance = inc;
+            };
+            get instance() {
+                return this._instance;
+            }
             render() {
                 const props = mapStateToProps(this.store.state);
                 const dispatch = this.store.dispatch;
-                return <Component {...this.props} {...props} dispatch={dispatch}/>;
+                return <Component {...this.props} {...props} dispatch={dispatch} ref={this.setInstance} />;
             }
         }
         return StoreWrapper;
