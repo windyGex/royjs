@@ -4,13 +4,13 @@ import T from 'prop-types';
 import Store from './store';
 import { isArray, warning } from './utils';
 
-const connect = function (mapStateToProps = state => state) {
+const connect = function (mapStateToProps = state => state, config = {}) {
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
             static contextTypes = {
-                store: T.any
+                store: T.any,
+                injectStore: T.any
             };
-            store = this.context.store || Store.get();
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
@@ -28,6 +28,18 @@ const connect = function (mapStateToProps = state => state) {
                 this._get = data => {
                     this._deps[data.key] = true;
                 };
+                this.store = context.store || Store.get();
+                if (config.inject) {
+                    if (context.injectStore) {
+                        this.store = context.injectStore;
+                    } else {
+                        if (this.store === context.store) {
+                            warning('Royjs is using Provider store to connect because the inject store is undefined');
+                        } else {
+                            warning('Royjs is using the first initialized store to connect because the inject store is undefined');
+                        }
+                    }
+                }
                 if (!this.store) {
                     warning('The store has not been initialized yet!');
                     return;

@@ -28,6 +28,9 @@ const inject = function (key, value) {
             static contextTypes = {
                 store: T.any
             };
+            static childContextTypes = {
+                injectStore: T.any
+            };
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
@@ -62,6 +65,11 @@ const inject = function (key, value) {
                         });
                     }
                 });
+            }
+            getChildContext() {
+                return {
+                    injectStore: this.store
+                };
             }
             componentWillUnmount() {
                 Object.keys(defaultProps).forEach(key => {
