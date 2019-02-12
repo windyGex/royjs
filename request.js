@@ -1,4 +1,4 @@
-var request = require('@alife/hippo-request');
+var request = require('axios');
 var DataSource = require('./lib/data-source');
 
 DataSource.prototype.request = request;

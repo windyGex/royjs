@@ -1,6 +1,6 @@
 {
   "name": "@royjs/core",
-  "version": "1.0.0-beta6",
+  "version": "1.0.0",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
   "scripts": {
@@ -94,7 +94,6 @@
     "yargs": "^10.0.3"
   },
   "dependencies": {
-    "@alife/hippo-request": "1.x",
     "axios": "^0.18.0",
     "react-router-dom": "^4.3.1",
     "shallowequal": "^1.1.0"
