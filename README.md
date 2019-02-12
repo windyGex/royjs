@@ -1,4 +1,4 @@
-# Roy  ![buildStatus](https://travis-ci.org/windyGex/roy.svg?branch=master)
+# Roy  ![buildStatus](https://travis-ci.org/windyGex/royjs.svg?branch=master)
 
 A powerful mvvm framework for react.
 
