@@ -412,4 +412,26 @@ describe('it should support batch update when multiple set store', () => {
             done();
         }, 10);
     });
+
+    it('should support connect inject store', () => {
+        const injectStore = new Store({
+            state: {
+                a: 1
+            }
+        });
+        @connect(state => state, {inject: true})
+        class Child extends React.Component {
+            render() {
+                return <span>{this.props.a}</span>;
+            }
+        }
+        @inject(injectStore)
+        class App extends React.Component {
+            render() {
+                return <Child />;
+            }
+        }
+        const wrapper = mount(<App/>);
+        expect(wrapper.find('span').text()).eq('1');
+    });
 });

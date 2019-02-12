@@ -38,6 +38,9 @@ const inject = function (key, value) {
             static contextTypes = {
                 store: T.any
             };
+            static childContextTypes = {
+                injectStore: T.any
+            };
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
@@ -97,6 +100,12 @@ and using this.props.dispatch instead of this.store.dispatch`);
                         return !eql(this.props, nextProps);
                     };
                 }
+            }
+
+            getChildContext() {
+                return {
+                    injectStore: this.store
+                };
             }
 
             beforeRender() {
