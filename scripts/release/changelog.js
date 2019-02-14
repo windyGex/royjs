@@ -17,35 +17,6 @@ module.exports = function * changelog() {
     const tnpmVersion = tnpmInfo['dist-tags'].latest;
 
     if (tnpmInfo && !semver.gt(packageInfo.version, tnpmVersion)) {
-        console.log(`[提示] [local:${packageInfo.version}] [tnpm:${tnpmVersion}] 请为本次提交指定新的版本号:`);
-
-        let uptype = yield inquirer.prompt([
-            {
-                type: 'list',
-                name: 'type',
-                message: '请选择版本升级的类型',
-                choices: [
-                    {
-                        name: 'z 位升级',
-                        value: 'z'
-                    }, {
-                        name: 'y 位升级',
-                        value: 'y'
-                    }, {
-                        name: 'x 位升级',
-                        value: 'x'
-                    }, {
-                        name: '不升级',
-                        value: 'null'
-                    }
-                ]
-            }
-        ]);
-
-        packageInfo.version = uptype.type === 'null' ? tnpmVersion : updateVersion(tnpmVersion, uptype.type);
-
-        yield fs.writeJson(packagePath, packageInfo, { spaces: 2 });
-
         console.log(`[提示] 回写版本号 ${packageInfo.version} 到 package.json success`);
     } else {
         console.log(`[提示] [本地 package.json 版本:${packageInfo.version}] > [tnpm 版本:${tnpmVersion}] `);
