@@ -55,9 +55,9 @@ function ObservableArray(data, parent, from) {
 }
 
 
-class ObservableModel extends Events {
+class ObservableModel {
     constructor(object, from) {
-        super(object);
+        Events.mixTo(this);
         this._wrapAll(object, this);
 
         Object.defineProperties(this, {
