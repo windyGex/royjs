@@ -47,7 +47,7 @@ describe('support inject store to React Component', () => {
         class App extends React.Component {
             render() {
                 const { name, dataSource } = this.props.state;
-                const b = this.store.get('obj.b');
+                const b = this.props.state.get('obj.b');
                 return (
                     <div>
                         <span>{name}</span>
