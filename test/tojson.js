@@ -1,9 +1,10 @@
-import {
-    Store
-} from '../src';
-const store = new Store({}, {
-    plugins: []
-});
+import { Store } from '../src';
+const store = new Store(
+    {},
+    {
+        plugins: []
+    }
+);
 const largeData = [];
 for (let i = 0; i < 50; i++) {
     const object = {};
