@@ -1,11 +1,12 @@
 /* global describe, it, before */
+/* eslint-disable */
 
 import chai from 'chai';
 import React from 'react';
-import Enzyme, {mount} from 'enzyme';
+import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-15';
-import {Store, inject, connect, Provider, compose} from '../src/index';
-import {JSDOM} from 'jsdom';
+import { Store, inject, connect, Provider, compose } from '../src/index';
+import { JSDOM } from 'jsdom';
 import sinon from 'sinon';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -45,17 +46,18 @@ describe('support inject store to React Component', () => {
         @inject(store)
         class App extends React.Component {
             render() {
-                const {name, dataSource} = this.store.state;
+                const { name, dataSource } = this.props.state;
                 const b = this.store.get('obj.b');
-                return <div>
-                    <span>{name}</span><div className="a">
-                        {dataSource.length}
+                return (
+                    <div>
+                        <span>{name}</span>
+                        <div className="a">{dataSource.length}</div>
+                        <em>{b}</em>
                     </div>
-                    <em>{b}</em>
-                </div>;
+                );
             }
         }
-        const wrapper = mount(<App/>);
+        const wrapper = mount(<App />);
         expect(wrapper.find('span').text()).eq('a');
         store.dispatch('add', 'b');
         expect(wrapper.find('span').text()).eq('b');
@@ -66,7 +68,7 @@ describe('support inject store to React Component', () => {
         expect(wrapper.find('em').text()).eq('2');
     });
 
-    it('support auto mount store to provider global store', (done) => {
+    it('support auto mount store to provider global store', done => {
         const store = new Store({
             name: 'module',
             state: {
@@ -81,7 +83,7 @@ describe('support inject store to React Component', () => {
         @inject(store)
         class Module extends React.Component {
             render() {
-                return <span>{this.store.state.name}</span>;
+                return <span>{this.props.state.name}</span>;
             }
         }
         @connect()
@@ -91,12 +93,14 @@ describe('support inject store to React Component', () => {
             }
         }
         const globalStore = new Store();
-        const wrapper = mount(<Provider store={globalStore}>
-            <div>
-                <Module/>
-                <Button/>
-            </div>
-        </Provider>);
+        const wrapper = mount(
+            <Provider store={globalStore}>
+                <div>
+                    <Module />
+                    <Button />
+                </div>
+            </Provider>
+        );
         expect(wrapper.find('span').text()).eq('a');
         wrapper.find('button').simulate('click');
         setTimeout(() => {
@@ -107,12 +111,16 @@ describe('support inject store to React Component', () => {
 
     it('should support compose', () => {
         const object = {
-            view: function ({createElement}) {
-                return createElement('div', {
-                    onClick: () => {
-                        this.store.dispatch('change');
-                    }
-                }, this.store.state.name);
+            view: function({ createElement }) {
+                return createElement(
+                    'div',
+                    {
+                        onClick: () => {
+                            this.props.dispatch('change');
+                        }
+                    },
+                    this.props.state.name
+                );
             },
             state: {
                 name: 123
@@ -124,7 +132,7 @@ describe('support inject store to React Component', () => {
             }
         };
         const Component = compose(object);
-        const wrapper = mount(<Component/>);
+        const wrapper = mount(<Component />);
         expect(wrapper.find('div').text()).eq('123');
         wrapper.find('div').simulate('click');
         expect(wrapper.find('div').text()).eq('456');
@@ -159,11 +167,15 @@ describe('it should support observable store', () => {
         store.state.reset();
         expect(store.state.a).eq(undefined);
         expect(store.state.c).eq(undefined);
-        store.state.set('d', [{
-            children: [{
-                b: false
-            }]
-        }]);
+        store.state.set('d', [
+            {
+                children: [
+                    {
+                        b: false
+                    }
+                ]
+            }
+        ]);
         store.state.set('d[0].children[0].b', true);
         expect(store.state.d[0].children[0].b, true);
     });
@@ -220,15 +232,18 @@ describe('it should support plugin', () => {
                 state.set(payload);
             };
         };
-        const store = new Store({
-            actions: {
-                change(state) {
-                    state.set('a', 1);
+        const store = new Store(
+            {
+                actions: {
+                    change(state) {
+                        state.set('a', 1);
+                    }
                 }
+            },
+            {
+                plugins: [plugin]
             }
-        }, {
-            plugins: [plugin]
-        });
+        );
         store.dispatch('change');
         expect(cb.called).eq(true);
         store.dispatch('setValue', {
@@ -249,7 +264,7 @@ describe('bugfix', () => {
 });
 
 describe('it should support batch update when multiple set store', () => {
-    it('render method should be called once when multiple sets are wrapped by the transaction method', (done) => {
+    it('render method should be called once when multiple sets are wrapped by the transaction method', done => {
         const cb = sinon.spy();
         const store = new Store({
             state: {
@@ -276,15 +291,21 @@ describe('it should support batch update when multiple set store', () => {
         class App extends React.Component {
             render() {
                 cb();
-                const {count1, count2, count3} = this.store.state;
-                const {dispatch} = this.store;
-                return (<div>
-                    <span>{count1}{count2}{count3}</span>
-                    <button onClick={() => dispatch('add')}>add</button>
-                </div>);
+                const { count1, count2, count3 } = this.props.state;
+                const { dispatch } = this.props;
+                return (
+                    <div>
+                        <span>
+                            {count1}
+                            {count2}
+                            {count3}
+                        </span>
+                        <button onClick={() => dispatch('add')}>add</button>
+                    </div>
+                );
             }
         }
-        const wrapper = mount(<App/>);
+        const wrapper = mount(<App />);
         wrapper.find('button').simulate('click');
         window.setTimeout(() => {
             expect(cb.callCount).eq(2);
@@ -293,7 +314,7 @@ describe('it should support batch update when multiple set store', () => {
         }, 10);
     });
 
-    it('render method should be called once when multiple sets are wrapped by the nest transaction method', (done) => {
+    it('render method should be called once when multiple sets are wrapped by the nest transaction method', done => {
         const cb = sinon.spy();
         const store = new Store({
             state: {
@@ -325,15 +346,21 @@ describe('it should support batch update when multiple set store', () => {
         class App extends React.Component {
             render() {
                 cb();
-                const {count1, count2, count3} = this.store.state;
-                const {dispatch} = this.store;
-                return (<div>
-                    <span>{count1}{count2}{count3}</span>
-                    <button onClick={() => dispatch('add')}>add</button>
-                </div>);
+                const { count1, count2, count3 } = this.props.state;
+                const { dispatch } = this.props;
+                return (
+                    <div>
+                        <span>
+                            {count1}
+                            {count2}
+                            {count3}
+                        </span>
+                        <button onClick={() => dispatch('add')}>add</button>
+                    </div>
+                );
             }
         }
-        const wrapper = mount(<App/>);
+        const wrapper = mount(<App />);
         wrapper.find('button').simulate('click');
         window.setTimeout(() => {
             expect(cb.callCount).eq(2);
@@ -342,7 +369,7 @@ describe('it should support batch update when multiple set store', () => {
         }, 10);
     });
 
-    it('Component injected with global store render method should be called once when set local store ', (done) => {
+    it('Component injected with global store render method should be called once when set local store ', done => {
         const cb = sinon.spy();
         const globalStore = new Store();
         const store = new Store({
@@ -370,14 +397,16 @@ describe('it should support batch update when multiple set store', () => {
         @inject(store)
         class Component1 extends React.Component {
             render() {
-                const {count1, count2, count3} = this.store.state;
-                const {dispatch} = this.store;
-                return (<div>
-                    {count1}
-                    {count2}
-                    {count3}
-                    <button onClick={() => dispatch('add')}>add</button>
-                </div>);
+                const { count1, count2, count3 } = this.props.state;
+                const { dispatch } = this.props;
+                return (
+                    <div>
+                        {count1}
+                        {count2}
+                        {count3}
+                        <button onClick={() => dispatch('add')}>add</button>
+                    </div>
+                );
             }
         }
 
@@ -385,15 +414,17 @@ describe('it should support batch update when multiple set store', () => {
         class Component2 extends React.Component {
             render() {
                 cb();
-                if (this.store.state.app) {
-                    const {count1, count2, count3} = this.store.state.app;
-                    return (<span>
-                        {count1}
-                        {count2}
-                        {count3}
-                    </span>);
+                if (this.props.state.app) {
+                    const { count1, count2, count3 } = this.props.state.app;
+                    return (
+                        <span>
+                            {count1}
+                            {count2}
+                            {count3}
+                        </span>
+                    );
                 }
-                return (<div></div>);
+                return <div />;
             }
         }
 
@@ -408,7 +439,12 @@ describe('it should support batch update when multiple set store', () => {
         wrapper.find('button').simulate('click');
         window.setTimeout(() => {
             expect(cb.callCount).eq(2);
-            expect(wrapper.find('Component2').find('span').text()).eq('111');
+            expect(
+                wrapper
+                    .find('Component2')
+                    .find('span')
+                    .text()
+            ).eq('111');
             done();
         }, 10);
     });
@@ -419,7 +455,10 @@ describe('it should support batch update when multiple set store', () => {
                 a: 1
             }
         });
-        @connect(state => state, {inject: true})
+        @connect(
+            state => state,
+            { inject: true }
+        )
         class Child extends React.Component {
             render() {
                 return <span>{this.props.a}</span>;
@@ -431,7 +470,32 @@ describe('it should support batch update when multiple set store', () => {
                 return <Child />;
             }
         }
-        const wrapper = mount(<App/>);
+        const wrapper = mount(<App />);
         expect(wrapper.find('span').text()).eq('1');
+    });
+
+    it('should support collect deps for didMount', () => {
+        const store = new Store({
+            state: {
+                a: 1
+            }
+        });
+        const cb = sinon.spy();
+        @inject(store)
+        class App extends React.Component {
+            componentDidMount() {
+                const { a } = this.props.state;
+            }
+            componentWillReceiveProps = cb;
+            render() {
+                return <div />;
+            }
+        }
+        mount(<App />);
+        expect(cb.called).eq(false);
+        store.dispatch('setValues', {
+            a: 2
+        });
+        expect(cb.called).eq(true);
     });
 });

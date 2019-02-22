@@ -1,10 +1,10 @@
 /* eslint-disable */
 import chai from 'chai';
 import React from 'react';
-import Enzyme, {mount} from 'enzyme';
+import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-15';
-import {Store, inject, connect, Provider, compose} from '../src/index';
-import {JSDOM} from 'jsdom';
+import { Store, inject, connect, Provider, compose } from '../src/index';
+import { JSDOM } from 'jsdom';
 import sinon from 'sinon';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -25,33 +25,37 @@ describe('support inject store to React Component', () => {
             return <span>{item && item.status ? 'true' : 'false'}</span>;
         }
     }
-    beforeEach (() => {
+    beforeEach(() => {
         store = new Store({
             state: {
                 a: []
             }
         });
         App = inject(store)(Demo);
-        wrapper = mount(<App/>);
+        wrapper = mount(<App />);
     });
 
     afterEach(() => {
-        store = null
-        App = null
-        wrapper = null
+        store = null;
+        App = null;
+        wrapper = null;
     });
 
     // set;
     it('should support item change for array', () => {
-        store.state.set('a', [{
-            status: true
-        }]);
+        store.state.set('a', [
+            {
+                status: true
+            }
+        ]);
         expect(wrapper.find('span').text()).eql('true');
         store.state.a[0].set('status', false);
         expect(wrapper.find('span').text()).eql('false');
-        store.state.set('a', [{
-            status: true
-        }]);
+        store.state.set('a', [
+            {
+                status: true
+            }
+        ]);
         expect(wrapper.find('span').text()).eql('true');
     });
 
@@ -63,7 +67,7 @@ describe('support inject store to React Component', () => {
         expect(wrapper.find('span').text()).eql('true');
         store.state.a[0].set('status', false);
         expect(wrapper.find('span').text()).eql('false');
-    })
+    });
 
     it('should support array splice method', () => {
         expect(wrapper.find('span').text()).eql('false');
@@ -73,7 +77,7 @@ describe('support inject store to React Component', () => {
         expect(wrapper.find('span').text()).eql('true');
         store.state.a[0].set('status', false);
         expect(wrapper.find('span').text()).eql('false');
-    })
+    });
 
     it('should support array pop method', () => {
         expect(wrapper.find('span').text()).eql('false');
@@ -83,7 +87,7 @@ describe('support inject store to React Component', () => {
         expect(wrapper.find('span').text()).eql('true');
         store.state.a.pop();
         expect(wrapper.find('span').text()).eql('false');
-    })
+    });
 
     it('should support set key method', () => {
         expect(wrapper.find('span').text()).eql('false');
@@ -93,16 +97,18 @@ describe('support inject store to React Component', () => {
         expect(wrapper.find('span').text()).eql('false');
         store.state.set('a[0].status', true);
         expect(wrapper.find('span').text()).eql('true');
-    })
+    });
 
     it('should support proxy', () => {
-        store.state.a = [{
-            status: true
-        }];
+        store.state.a = [
+            {
+                status: true
+            }
+        ];
         expect(wrapper.find('span').text()).eql('true');
         store.state.a[0].status = false;
         expect(wrapper.find('span').text()).eql('false');
-    })
+    });
 
     it('should support push proxy', () => {
         store.state.a.push({
@@ -111,10 +117,10 @@ describe('support inject store to React Component', () => {
         expect(wrapper.find('span').text()).eql('true');
         store.state.a[0].status = false;
         expect(wrapper.find('span').text()).eql('false');
-    })
+    });
 
     it('avoid object sort', () => {
         store.state.sort = 1;
         expect(store.state.sort).eql(1);
-    })
-})
+    });
+});

@@ -82,7 +82,7 @@ and using this.props.dispatch instead of this.store.dispatch`);
                     }
                 });
 
-                const render = Component.prototype.render;
+                const { render, componentDidMount } = Component.prototype;
                 const that = this;
 
                 Component.prototype.render = function (...args) {
@@ -91,6 +91,14 @@ and using this.props.dispatch instead of this.store.dispatch`);
                     that.afterRender();
                     return ret;
                 };
+
+                if (typeof componentDidMount === 'function') {
+                    Component.prototype.componentDidMount = function () {
+                        that.beforeRender();
+                        componentDidMount.apply(this);
+                        that.afterRender();
+                    };
+                }
 
                 if (pure) {
                     this.shouldComponentUpdate = function (nextProps, nextState) {
