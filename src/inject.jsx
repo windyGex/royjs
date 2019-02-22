@@ -13,7 +13,8 @@ import { isArray, warning } from './utils';
 // })
 const inject = function (key, value) {
     const length = arguments.length;
-    let defaultProps = {}, pure = false;
+    let defaultProps = {},
+        pure = false;
     if (length === 1) {
         if (key.primaryKey) {
             defaultProps = {
@@ -34,6 +35,7 @@ const inject = function (key, value) {
         }
     }
     return function withStore(Component) {
+        const { render, componentDidMount } = Component.prototype;
         class StoreWrapper extends React.Component {
             static contextTypes = {
                 store: T.any
@@ -71,7 +73,7 @@ const inject = function (key, value) {
                     if (this[key].name) {
                         this.context.store && this.context.store.mount(this[key].name, this[key]);
                     }
-                    if (!Component.prototype[key]) {
+                    if (!Component.prototype._hasSet) {
                         Object.defineProperty(Component.prototype, key, {
                             get() {
                                 warning(`Using this.props.state instead of this.store.state
@@ -81,10 +83,10 @@ and using this.props.dispatch instead of this.store.dispatch`);
                         });
                     }
                 });
+                Component.prototype._hasSet = true;
 
-                const { render, componentDidMount } = Component.prototype;
+                // 劫持组件原型，收集依赖信息
                 const that = this;
-
                 Component.prototype.render = function (...args) {
                     that.beforeRender();
                     const ret = render.apply(this, args);
@@ -133,6 +135,11 @@ and using this.props.dispatch instead of this.store.dispatch`);
                     this[key].off('change', this._change);
                     this[key].off('get', this._get);
                 });
+                // 还原组件原型，避免多次实例化导致的嵌套
+                Component.prototype.render = render;
+                if (componentDidMount) {
+                    Component.prototype.componentDidMount = componentDidMount;
+                }
             }
             componentDidMount() {
                 const node = ReactDOM.findDOMNode(this);
