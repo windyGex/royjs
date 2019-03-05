@@ -16,7 +16,6 @@ const connect = function (mapStateToProps = state => state, config = {}) {
                 super(props, context);
                 this._deps = {};
                 this._change = obj => {
-                    const state = {};
                     let matched;
                     obj = isArray(obj) ? obj : [obj];
                     for (let index = 0; index < obj.length; index++) {
@@ -24,11 +23,10 @@ const connect = function (mapStateToProps = state => state, config = {}) {
                         const match = Object.keys(this._deps).some(dep => item.key.indexOf(dep) === 0);
                         if (match) {
                             matched = match;
-                            state[item.key] = this.store.get(item.key);
                         }
                     }
                     if (matched) {
-                        this.setState(state);
+                        this.forceUpdate();
                     }
                 };
                 this._get = data => {
