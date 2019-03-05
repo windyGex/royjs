@@ -65,36 +65,42 @@ const objectProcess = {
             if (!path) {
                 return null;
             }
+
             if (typeof path !== 'string') {
                 return target[path];
             }
-            const field = path.split('.');
-            let val, key;
-            if (field.length) {
-                key = field[0];
-                // lists[1].name
-                if (key.indexOf('[') >= 0) {
-                    key = key.match(/(.*)\[(.*)\]/);
-                    if (key) {
-                        try {
-                            val = target[key[1]][key[2]];
-                        } catch (e) {
-                            throw new Error(`state ${key[1]} is undefined!`);
+            // 避免使用.作为key的尴尬, 优先直接获取值
+            let val = target[path];
+            if (val == null) {
+                let key;
+                const field = path.split('.');
+                if (field.length) {
+                    key = field[0];
+                    // lists[1].name
+                    if (key.indexOf('[') >= 0) {
+                        key = key.match(/(.*)\[(.*)\]/);
+                        if (key) {
+                            try {
+                                val = target[key[1]][key[2]];
+                            } catch (e) {
+                                throw new Error(`state ${key[1]} is undefined!`);
+                            }
                         }
+                    } else {
+                        val = target[field[0]];
                     }
-                } else {
-                    val = target[field[0]];
-                }
-                if (val) {
-                    for (let i = 1; i < field.length; i++) {
-                        val = val[field[i]];
-                        /* eslint-disable */
-                        if (val == null) {
-                            break;
+                    if (val) {
+                        for (let i = 1; i < field.length; i++) {
+                            val = val[field[i]];
+                            /* eslint-disable */
+                            if (val == null) {
+                                break;
+                            }
                         }
                     }
                 }
             }
+
             if (!slient) {
                 events.trigger('get', {
                     key: path
@@ -237,11 +243,7 @@ const observable = function observable(object) {
                         events
                     });
                 }
-                if (
-                    Array.isArray(target) ||
-                    whiteList.indexOf(key) > -1 ||
-                    (typeof key === 'string' && key.charAt(0) === '_')
-                ) {
+                if (Array.isArray(target) || whiteList.indexOf(key) > -1 || (typeof key === 'string' && key.charAt(0) === '_')) {
                     return Reflect.get(target, key);
                 }
                 const getValue = objectProcess.get({
