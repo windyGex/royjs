@@ -3,8 +3,45 @@ import ReactDOM from 'react-dom';
 import T from 'prop-types';
 import Store from './store';
 import eql from 'shallowequal';
-import { isArray, warning } from './utils';
+import { isArray, isPlainObject, warning } from './utils';
 
+const normalizer = (mapStateToProps, context, dispatch) => {
+    let ret = {};
+    if (isArray(mapStateToProps)) {
+        mapStateToProps.forEach(key => {
+            if (typeof key === 'string') {
+                ret[key] = context.get(key);
+            } else {
+                Object.keys(key).forEach(k => {
+                    ret[k] = context.get(key[k]);
+                });
+            }
+        });
+    } else if (typeof mapStateToProps === 'function') {
+        ret = mapStateToProps(context);
+    } else if (isPlainObject(mapStateToProps)) {
+        const { state = [], actions = [] } = mapStateToProps;
+        ret = normalizer(state, context);
+        actions.forEach(action => {
+            if (typeof action === 'string') {
+                ret[action] = payload => {
+                    dispatch(action, payload);
+                };
+            } else {
+                Object.keys(action).forEach(k => {
+                    ret[k] = payload => {
+                        dispatch(action[k], payload);
+                    };
+                });
+            }
+        });
+    }
+    return ret;
+};
+
+// connect([], config) -> state
+// connect({}, config) -> state, action
+// connect(() => {}, config) -> state
 const connect = function (mapStateToProps = state => state, config = {}) {
     return function withStore(Component) {
         class StoreWrapper extends React.Component {
@@ -73,8 +110,8 @@ const connect = function (mapStateToProps = state => state, config = {}) {
             }
             render() {
                 this.beforeRender();
-                const props = mapStateToProps(this.store.state);
-                const dispatch = this.store.dispatch;
+                const { dispatch, state } = this.store;
+                const props = normalizer(mapStateToProps, state, dispatch);
                 const ret = <Component {...this.props} {...props} dispatch={dispatch} />;
                 this.afterRender();
                 return ret;
