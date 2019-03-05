@@ -498,4 +498,43 @@ describe('it should support batch update when multiple set store', () => {
         });
         expect(cb.called).eq(true);
     });
+
+    it('should support multiple args type since 1.2.0', () => {
+        const injectStore = new Store({
+            state: {
+                a: 1
+            },
+            actions: {
+                add(state) {
+                    state.a++;
+                }
+            }
+        });
+        @connect(
+            {
+                state: ['a'],
+                actions: [
+                    {
+                        onAdd: 'add'
+                    }
+                ]
+            },
+            { inject: true }
+        )
+        class Child extends React.Component {
+            render() {
+                return <span onClick={() => this.props.onAdd()}>{this.props.a}</span>;
+            }
+        }
+        @inject(injectStore)
+        class App extends React.Component {
+            render() {
+                return <Child />;
+            }
+        }
+        const wrapper = mount(<App />);
+        expect(wrapper.find('span').text()).eq('1');
+        wrapper.find('span').simulate('click');
+        expect(wrapper.find('span').text()).eq('2');
+    });
 });
