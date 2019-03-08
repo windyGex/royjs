@@ -32,7 +32,9 @@ export const asyncEach = function asyncEach(array, callback, end) {
     let i = 0,
         length = array.length,
         ret;
-
+    if (!length) {
+        return end();
+    }
     const next = () => {
         if (++i >= length) {
             return end();
