@@ -2,7 +2,7 @@ import Events from './events';
 import observable from './proxy';
 import DataSource from './data-source';
 import setValues from './plugins/set-values';
-import { isArray } from './utils';
+import { isArray, asyncEach } from './utils';
 
 let globalStore;
 
@@ -80,7 +80,7 @@ class Store extends Events {
     constructor(params = {}, options = {}) {
         super(params, options);
         let { name, state, actions = {} } = params;
-        const { strict = false, plugins = [] } = options;
+        const { strict = false, plugins = [], middlewares = [] } = options;
         state = {
             ...this.state,
             ...state
@@ -110,6 +110,7 @@ class Store extends Events {
         this.url = options.url;
         this.name = name;
         this.primaryKey = options.primaryKey || 'id';
+        this.middlewares = middlewares;
         plugins.unshift(setValues);
         plugins.forEach(plugin => {
             if (typeof plugin === 'function') {
@@ -155,24 +156,13 @@ class Store extends Events {
     _wrapActions(actions, state, prefix) {
         Object.keys(actions).forEach(type => {
             const actionType = prefix ? `${prefix}.${type}` : type;
-            const that = this;
             const action = actions[type];
-            function actionPayload(payload, options) {
-                const ret = action.call(that, state, payload, {
-                    state: that.state,
-                    dispatch: that.dispatch,
-                    ...options
-                });
-                that.trigger('actions', {
-                    type: actionType,
-                    payload,
-                    state: that.model
-                });
-                return ret;
-            }
             if (!action._set) {
-                this.actions[actionType] = actionPayload;
-                actionPayload._set = true;
+                this.actions[actionType] = {
+                    context: state,
+                    func: action,
+                    _set: true
+                };
             } else {
                 this.actions[actionType] = action;
             }
@@ -187,15 +177,51 @@ class Store extends Events {
         }
     };
     dispatch = (type, payload, options) => {
-        const action = this.actions[type];
-        if (!action || typeof action !== 'function') {
+        let ret,
+            context = this.model,
+            middlewares = this.middlewares;
+
+        let actionMeta = this.actions[type],
+            action;
+        if (!actionMeta) {
             throw new Error(`Cant find ${type} action`);
         }
         this.allowModelSet = true;
-        const ret = action(payload, options);
-        if (this.strict) {
-            this.allowModelSet = false;
+        if (actionMeta.context) {
+            context = actionMeta.context;
+            action = actionMeta.func;
         }
+        const meta = {
+            payload,
+            dispatch: this.dispatch,
+            state: context,
+            type,
+            action,
+            context: this
+        };
+
+        const callback = (pipe, index, next) => {
+            ret = pipe(meta, next);
+        };
+
+        const end = () => {
+            ret = meta.action.call(this, meta.state, meta.payload, {
+                state: this.state,
+                dispatch: this.dispatch,
+                ...options
+            });
+            this.trigger('actions', {
+                type: meta.type,
+                payload: meta.payload,
+                state: this.model
+            });
+            if (this.strict) {
+                this.allowModelSet = false;
+            }
+        };
+
+        asyncEach(middlewares, callback, end);
+
         return ret;
     };
     subscribe(callback) {
