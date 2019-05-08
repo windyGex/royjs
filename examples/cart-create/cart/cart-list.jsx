@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from '../../../src';
 
-@connect([{
-    list: 'cart.list'
-}], true)
+@connect(state => ({
+    list: state.cart.list
+}), true)
 class CartList extends React.Component {
 
     onSelect(id, e) {
