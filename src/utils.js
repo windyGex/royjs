@@ -27,20 +27,3 @@ export const throttle = function (target, key, descriptor) {
 export const warning = function warning(msg) {
     console.error(msg);
 };
-
-export const asyncEach = function asyncEach(array, callback, end) {
-    let i = 0,
-        length = array.length,
-        ret;
-    if (!length) {
-        return end();
-    }
-    const next = () => {
-        if (++i >= length) {
-            return end();
-        }
-        ret = callback(array[i], i, next);
-    };
-    ret = callback(array[0], 0, next);
-    return ret;
-};
