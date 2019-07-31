@@ -108,11 +108,17 @@ const connect = function (mapStateToProps = state => state, config = {}) {
             afterRender() {
                 this.store.off('get', this._get);
             }
+            setInstance = inc => {
+                this._instance = inc;
+            };
+            get instance() {
+                return this._instance;
+            }
             render() {
                 this.beforeRender();
                 const { dispatch, state } = this.store;
                 const props = normalizer(mapStateToProps, state, dispatch);
-                const ret = <Component {...this.props} {...props} dispatch={dispatch} />;
+                const ret = <Component {...this.props} {...props} dispatch={dispatch} ref={this.setInstance} />;
                 this.afterRender();
                 return ret;
             }

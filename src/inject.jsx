@@ -145,6 +145,12 @@ and using this.props.dispatch instead of this.store.dispatch`);
                     node._instance = this;
                 }
             }
+            setInstance = inc => {
+                this._instance = inc;
+            };
+            get instance() {
+                return this._instance;
+            }
             render() {
                 let ret = {};
                 Object.keys(defaultProps).forEach(key => {
@@ -161,7 +167,7 @@ and using this.props.dispatch instead of this.store.dispatch`);
                         };
                     }
                 });
-                return <Component {...this.props} {...ret} />;
+                return <Component {...this.props} {...ret} ref={this.setInstance} />;
             }
         }
         return StoreWrapper;
