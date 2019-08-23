@@ -300,6 +300,40 @@ describe('it should support batch update when multiple set store', () => {
         }, 300);
     });
 
+    it('support store refresh', () => {
+        @connect(state => state)
+        class View extends React.Component {
+            render() {
+                return <span>{this.props.count}</span>
+            }
+        }
+        class App extends React.Component {
+            state = {
+                store: new Store({
+                    state: {
+                        count: 1
+                    }
+                })
+            }
+            componentDidMount() {
+                this.setState({
+                    store: new Store({
+                        state: {
+                            count: 2
+                        }
+                    })
+                });
+            }
+            render() {
+                return <Provider store={this.state.store}>
+                    <View />
+                </Provider>;
+            }
+        }
+        const wrapper = mount(<App />);
+        expect(wrapper.text()).eql('2');
+    });
+
     it('Component injected with global store render method should be called once when set local store ', (done) => {
         const cb = sinon.spy();
         const globalStore = new Store();

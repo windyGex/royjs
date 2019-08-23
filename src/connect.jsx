@@ -28,25 +28,12 @@ const connect = function (mapStateToProps = state => state, config = {}) {
                 this._get = data => {
                     this._deps[data.key] = true;
                 };
-                this.store = context.store || Store.get();
-                if (config.inject) {
-                    if (context.injectStore) {
-                        this.store = context.injectStore;
-                    } else {
-                        if (this.store === context.store) {
-                            warning('Royjs is using Provider store to connect because the inject store is undefined');
-                        } else {
-                            warning('Royjs is using the first initialized store to connect because the inject store is undefined');
-                        }
-                    }
-                }
+                this.store = this.getStore(context);
                 if (!this.store) {
                     warning('The store has not been initialized yet!');
                     return;
                 }
-                this.store.on('change', this._change);
-                this.store.on('get', this._get);
-                this.store.history = this.store.history || this.props.history;
+                this.bindEvents();
                 const store = this.store;
                 if (!Component.prototype.store) {
                     Object.defineProperty(Component.prototype, 'store', {
@@ -57,9 +44,45 @@ const connect = function (mapStateToProps = state => state, config = {}) {
                     });
                 }
             }
-            componentWillUnmount() {
+
+            getStore(context) {
+                let store = context.store || Store.get();
+                if (config.inject) {
+                    if (context.injectStore) {
+                        store = context.injectStore;
+                    } else {
+                        if (store === context.store) {
+                            warning('Royjs is using Provider store to connect because the inject store is undefined');
+                        } else {
+                            warning('Royjs is using the first initialized store to connect because the inject store is undefined');
+                        }
+                    }
+                }
+                return store;
+            }
+
+            componentWillReceiveProps(nextProps, nextContext) {
+                const store = this.getStore(nextContext);
+                if (typeof store !== 'undefined' && store !== this.store) {
+                    this.unbindEvents();
+                    this.store = store;
+                    this.bindEvents();
+                }
+            }
+
+            unbindEvents() {
                 this.store.off('change', this._change);
                 this.store.off('get', this._get);
+            }
+
+            bindEvents() {
+                this.store.on('change', this._change);
+                this.store.on('get', this._get);
+                this.store.history = this.store.history || this.props.history;
+            }
+
+            componentWillUnmount() {
+                this.unbindEvents();
             }
             componentDidMount() {
                 const node = ReactDOM.findDOMNode(this);
