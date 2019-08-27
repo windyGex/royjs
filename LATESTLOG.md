@@ -1,10 +1,10 @@
-<a name="0.7.2"></a>
-## [0.7.2](https://github.com/windyGex/roy/compare/0.7.1...0.7.2) (2019-08-23)
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/windyGex/roy/compare/0.7.2...0.8.0) (2019-08-27)
 
 
-### Bug Fixes
+### Features
 
-* should refresh the store when the context changed ([2eba60d](https://github.com/windyGex/roy/commit/2eba60d))
+* support hot reload ([eae61ff](https://github.com/windyGex/roy/commit/eae61ff))
 
 
 
