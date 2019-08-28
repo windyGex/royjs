@@ -1,10 +1,10 @@
-<a name="0.8.0"></a>
-# [0.8.0](https://github.com/windyGex/roy/compare/0.7.2...0.8.0) (2019-08-27)
+<a name="0.8.1"></a>
+## [0.8.1](https://github.com/windyGex/roy/compare/0.8.0...0.8.1) (2019-08-28)
 
 
-### Features
+### Bug Fixes
 
-* support hot reload ([eae61ff](https://github.com/windyGex/roy/commit/eae61ff))
+* store hot actions ([04409a0](https://github.com/windyGex/roy/commit/04409a0))
 
 
 
