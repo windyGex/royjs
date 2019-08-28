@@ -5,6 +5,7 @@ import Observer from './observe-model';
 import DataSource from './data-source';
 import Store from './store';
 import compose from './compose';
+import hotRender from './hot-render';
 
 export default {
     DataSource,
@@ -13,5 +14,6 @@ export default {
     Observer,
     Store,
     Provider,
-    compose
+    compose,
+    hotRender
 };

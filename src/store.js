@@ -137,7 +137,7 @@ class Store extends Events {
     set(key, value, options = {}) {
         return this.model.set(key, value, options);
     }
-    hot(state, actions, prefix) {
+    hot(state = {}, actions = {}, prefix) {
         this.transaction(() => {
             Object.keys(state).forEach(key => {
                 const oldKey = key;
