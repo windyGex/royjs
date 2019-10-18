@@ -110,12 +110,7 @@ class Store extends Events {
         this.url = options.url;
         this.name = name;
         this.primaryKey = options.primaryKey || 'id';
-        plugins.unshift(setValues);
-        plugins.forEach(plugin => {
-            if (typeof plugin === 'function') {
-                plugin(this, actions);
-            }
-        });
+        this._initPlugins(plugins, actions);
         this._wrapActions(actions, this.model);
         if (!globalStore) {
             globalStore = this;
@@ -131,13 +126,22 @@ class Store extends Events {
         warning('推荐使用@alife/legion中的request代替，可直接替换，1.x该request将会被替换为原生axios.');
         return this.dataSource.request;
     }
+    _initPlugins(plugins, actions) {
+        const p = [...plugins];
+        p.unshift(setValues);
+        p.forEach(plugin => {
+            if (typeof plugin === 'function') {
+                plugin(this, actions);
+            }
+        });
+    }
     get(key) {
         return this.model.get(key);
     }
     set(key, value, options = {}) {
         return this.model.set(key, value, options);
     }
-    hot(state = {}, actions = {}, prefix) {
+    hot(state = {}, actions = {}, prefix, plugins) {
         this.transaction(() => {
             Object.keys(state).forEach(key => {
                 const oldKey = key;
@@ -149,6 +153,7 @@ class Store extends Events {
                 }
             });
         });
+        this._initPlugins(plugins, actions);
         this._wrapActions(actions, this.model, prefix);
     }
     _startBatch() {

@@ -9,7 +9,7 @@ export default function hotRender(element, container, options = {}) {
     if (options.storeConfig) {
         const { storeConfig } = options;
         if (window.hotStore) {
-            window.hotStore.hot(storeConfig.state, storeConfig.actions);
+            window.hotStore.hot(storeConfig.state, storeConfig.actions, '', storeConfig.plugins || []);
         } else {
             window.hotStore = new Store(storeConfig, {
                 plugins: storeConfig.plugins || []
