@@ -110,12 +110,7 @@ class Store extends Events {
         this.url = options.url;
         this.name = name;
         this.primaryKey = options.primaryKey || 'id';
-        plugins.unshift(setValues);
-        plugins.forEach(plugin => {
-            if (typeof plugin === 'function') {
-                plugin(this, actions);
-            }
-        });
+        this._initPlugins(plugins, actions);
         this._wrapActions(actions, this.model);
         if (!globalStore) {
             globalStore = this;
@@ -130,11 +125,35 @@ class Store extends Events {
     get request() {
         return this.dataSource.request;
     }
+    _initPlugins(plugins, actions) {
+        const p = [...plugins];
+        p.unshift(setValues);
+        p.forEach(plugin => {
+            if (typeof plugin === 'function') {
+                plugin(this, actions);
+            }
+        });
+    }
     get(key) {
         return this.model.get(key);
     }
     set(key, value, options = {}) {
         return this.model.set(key, value, options);
+    }
+    hot(state = {}, actions = {}, prefix, plugins) {
+        this.transaction(() => {
+            Object.keys(state).forEach(key => {
+                const oldKey = key;
+                if (prefix) {
+                    key = `${prefix}.${key}`;
+                }
+                if (typeof this.get(key) === 'undefined') {
+                    this.set(key, state[oldKey]);
+                }
+            });
+        });
+        this._initPlugins(plugins, actions);
+        this._wrapActions(actions, this.model, prefix);
     }
     _startBatch() {
         this.inBatch++;

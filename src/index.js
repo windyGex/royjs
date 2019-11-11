@@ -4,6 +4,7 @@ import Provider from './provider';
 import DataSource from './data-source';
 import Store from './store';
 import compose from './compose';
+import hotRender from './hot-render';
 import {throttle} from './utils';
 
 export default {
@@ -13,5 +14,6 @@ export default {
     Store,
     Provider,
     compose,
-    throttle
+    throttle,
+    hotRender
 };
