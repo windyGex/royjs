@@ -22,7 +22,6 @@ class Store extends Events {
         }
         const { state, actions } = params;
         if (!globalStore) {
-            console.warn('The store has not been initialized yet!');
         }
         const stateKeys = Object.keys(state);
         if (stateKeys.length === 0) {
@@ -144,7 +143,6 @@ class Store extends Events {
     hot(state = {}, actions = {}, prefix, plugins) {
         this.transaction(() => {
             const flag = 'hot transaction'
-            console.time(flag)
             const keyMap = {}
             const diffKeys = diff(this.originState, state)
                 .concat( diff(state, this.originState) )
@@ -159,9 +157,6 @@ class Store extends Events {
                 const value = key.split('.').reduce((obj,curKey) => obj && obj[curKey], state)
                 setValue(key, value)
             })
-            console.timeEnd(flag)
-            console.log('diffKeys')
-            console.table(diffKeys)
             this.originState = deepCopy(state)
         });
         this._initPlugins(plugins, actions);
