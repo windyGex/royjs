@@ -143,7 +143,6 @@ class Store extends Events {
     }
     hot(state = {}, actions = {}, prefix, plugins) {
         this.transaction(() => {
-            const flag = 'hot transaction'
             const keyMap = {}
             const diffKeys = diff(this.originState, state)
                 .concat( diff(state, this.originState) )
