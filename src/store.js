@@ -22,6 +22,7 @@ class Store extends Events {
         }
         const { state, actions } = params;
         if (!globalStore) {
+            console.warn('The store has not been initialized yet!');
         }
         const stateKeys = Object.keys(state);
         if (stateKeys.length === 0) {
