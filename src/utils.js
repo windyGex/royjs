@@ -27,3 +27,30 @@ export const throttle = function (target, key, descriptor) {
 export const warning = function warning(msg) {
     console.error(msg);
 };
+
+export const deepCopy = function deepCopy(params) {
+    return JSON.parse(JSON.stringify(params))
+}
+
+export const jsonEqual = function equal(x, y) {
+    if(checkType(x) === checkType(y)){
+        return JSON.stringify(x) === JSON.stringify(y)
+    }else{
+        return false;
+    }
+}
+
+export const diff = function diff(left, right, previousPath = '', keys = []){
+    Object.entries(left)
+        .forEach(
+            ([k ,v]) => {
+                const currentPath = previousPath ?`${previousPath}.${k}` : k;
+                if(isPlainObject(v) && isPlainObject(right[k])){
+                    diff(v, right[k], currentPath, keys)
+                }else if(!jsonEqual(right[k] , v)){
+                    keys.push(currentPath)
+                }
+            }
+        )
+    return keys;
+}
