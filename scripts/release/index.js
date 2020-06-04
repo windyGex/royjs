@@ -22,12 +22,12 @@ function * pushMaster() {
     yield runCmd('git checkout master');
     yield runCmd('git add .');
     yield runCmd(`git commit -m 'chore: Release-${packageInfo.version}'`);
-    yield runCmd('git push github master');
+    yield runCmd('git push origin master');
 }
 
 function * publishToTnpm() {
     yield runCmd('git checkout master');
     yield runCmd('git pull');
     yield runCmd(`git tag ${packageInfo.version}`);
-    yield runCmd(`git push github ${packageInfo.version}`);
+    yield runCmd(`git push origin ${packageInfo.version}`);
 }
