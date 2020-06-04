@@ -2,7 +2,7 @@
 import chai from 'chai';
 import React from 'react';
 import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-15';
+import Adapter from 'enzyme-adapter-react-16';
 import { Store, inject, connect, Provider, compose } from '../src/index';
 import { JSDOM } from 'jsdom';
 import sinon from 'sinon';

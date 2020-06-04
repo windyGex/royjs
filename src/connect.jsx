@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import T from 'prop-types';
 import Store from './store';
 import eql from 'shallowequal';
 import { isArray, isPlainObject, warning } from './utils';
+import { StoreContext } from './provider';
 
 const normalizer = (mapStateToProps, context, dispatch) => {
     let ret = {};
@@ -44,11 +44,9 @@ const normalizer = (mapStateToProps, context, dispatch) => {
 // connect(() => {}, config) -> state
 const connect = function (mapStateToProps = state => state, config = {}) {
     return function withStore(Component) {
+        const isFunctionComponent = !Component.prototype.render;
         class StoreWrapper extends React.Component {
-            static contextTypes = {
-                store: T.any,
-                injectStore: T.any
-            };
+            static contextType = StoreContext;
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
@@ -118,7 +116,15 @@ const connect = function (mapStateToProps = state => state, config = {}) {
                 this.beforeRender();
                 const { dispatch, state } = this.store;
                 const props = normalizer(mapStateToProps, state, dispatch);
-                const ret = <Component {...this.props} {...props} dispatch={dispatch} ref={this.setInstance} />;
+                let attrs = {
+                    ...this.props,
+                    ...props,
+                    dispatch
+                };
+                if (!isFunctionComponent) {
+                    attrs.ref = this.setInstance;
+                }
+                const ret = <Component {...attrs} />;
                 this.afterRender();
                 return ret;
             }

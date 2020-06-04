@@ -6,6 +6,7 @@ import Store from './store';
 import compose from './compose';
 import hotRender from './hot-render';
 import {throttle} from './utils';
+import { useStore, useDispatch } from './hooks';
 
 export default {
     DataSource,
@@ -15,5 +16,7 @@ export default {
     Provider,
     compose,
     throttle,
-    hotRender
+    hotRender,
+    useStore,
+    useDispatch
 };

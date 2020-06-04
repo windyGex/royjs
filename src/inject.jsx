@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import T from 'prop-types';
 import eql from 'shallowequal';
 import { isArray, warning } from './utils';
+import { StoreContext } from './provider';
 
 // inject(listStore)
 // inject(listStore, true)
@@ -37,12 +37,8 @@ const inject = function (key, value) {
     return function withStore(Component) {
         const { render, componentDidMount } = Component.prototype;
         class StoreWrapper extends React.Component {
-            static contextTypes = {
-                store: T.any
-            };
-            static childContextTypes = {
-                injectStore: T.any
-            };
+            static contextType = StoreContext;
+
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
@@ -108,12 +104,6 @@ and using this.props.dispatch instead of this.store.dispatch`);
                         return !eql(this.props, nextProps);
                     };
                 }
-            }
-
-            getChildContext() {
-                return {
-                    injectStore: this.store
-                };
             }
 
             beforeRender() {

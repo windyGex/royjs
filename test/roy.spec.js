@@ -4,7 +4,7 @@
 import chai from 'chai';
 import React from 'react';
 import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-15';
+import Adapter from 'enzyme-adapter-react-16';
 import { Store, inject, connect, Provider, compose } from '../src/index';
 import { JSDOM } from 'jsdom';
 import sinon from 'sinon';
@@ -449,30 +449,6 @@ describe('it should support batch update when multiple set store', () => {
         }, 10);
     });
 
-    it('should support connect inject store', () => {
-        const injectStore = new Store({
-            state: {
-                a: 1
-            }
-        });
-        @connect(
-            state => state,
-            { inject: true }
-        )
-        class Child extends React.Component {
-            render() {
-                return <span>{this.props.a}</span>;
-            }
-        }
-        @inject(injectStore)
-        class App extends React.Component {
-            render() {
-                return <Child />;
-            }
-        }
-        const wrapper = mount(<App />);
-        expect(wrapper.find('span').text()).eq('1');
-    });
 
     it('should support collect deps for didMount', () => {
         const store = new Store({
@@ -519,17 +495,15 @@ describe('it should support batch update when multiple set store', () => {
                     }
                 ]
             },
-            { inject: true }
         )
         class Child extends React.Component {
             render() {
                 return <span onClick={() => this.props.onAdd()}>{this.props.a}</span>;
             }
         }
-        @inject(injectStore)
         class App extends React.Component {
             render() {
-                return <Child />;
+                return <Provider store={injectStore}><Child /></Provider>;
             }
         }
         const wrapper = mount(<App />);

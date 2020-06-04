@@ -1,6 +1,6 @@
 {
   "name": "@royjs/core",
-  "version": "1.3.1",
+  "version": "2.0.0",
   "description": "A tiny mvvm library for react",
   "main": "lib/index.js",
   "scripts": {
@@ -17,7 +17,6 @@
     "example:cart-create": "parcel examples/cart-create/index.html",
     "example:cart-inject": "parcel examples/cart-inject/index.html",
     "example:pure": "parcel examples/pure/index.html",
-    "benchmark": "parcel test/benchmark.html",
     "release": "npm run test && node ./scripts/release",
     "notice": "node ./scripts/notice"
   },
@@ -74,7 +73,7 @@
     "conventional-changelog": "^2.0.3",
     "dva": "^2.3.1",
     "enzyme": "^3.3.0",
-    "enzyme-adapter-react-15": "^1.0.6",
+    "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^4.13.1",
     "eslint-loader": "^1.9.0",
     "fs-extra": "^7.0.0",
@@ -83,8 +82,8 @@
     "mocha": "^4.0.1",
     "nyc": "^13.1.0",
     "parcel": "^1.9.7",
-    "react": "^15.6.2",
-    "react-dom": "^15.6.2",
+    "react": "16.x",
+    "react-dom": "16.x",
     "react-test-renderer": "^15.6.2",
     "request": "^2.88.0",
     "rimraf": "^2.6.2",
