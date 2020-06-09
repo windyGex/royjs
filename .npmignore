@@ -1,0 +1,7 @@
+.cache/
+.nyc_output/
+coverage/
+examples/
+scripts/
+test/
+src/

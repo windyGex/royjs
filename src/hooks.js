@@ -3,7 +3,7 @@ import Store from './store';
 import { StoreContext } from './provider';
 import { isPlainObject } from './utils';
 
-export function useStore(mapStateToProps) {
+export function useStore(mapStateToProps = state => state) {
     const ctx = useContext(StoreContext);
     const store = (ctx && ctx.store) || Store.get();
     const deps = {};
@@ -12,7 +12,6 @@ export function useStore(mapStateToProps) {
     };
     store.on('get', get);
     const [state, setState] = useState(() => mapStateToProps(store.state));
-    store.off('get', get);
     const set = (newState: any) => {
         if (Array.isArray(newState)) {
             newState = [...newState];
@@ -36,6 +35,9 @@ export function useStore(mapStateToProps) {
             set(newState);
         }
     };
+    useEffect(() => {
+        store.off('get', get);
+    }, []);
     useEffect(() => {
         store.on('change', change);
         return () => {
