@@ -1,14 +1,10 @@
-<a name="2.0.0"></a>
-# [2.0.0](https://github.com/windyGex/roy/compare/1.3.1...2.0.0) (2020-06-04)
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/windyGex/roy/compare/2.0.0...2.0.1) (2020-06-09)
 
 
-### Features
+### Bug Fixes
 
-* support hooks ([ce8b20f](https://github.com/windyGex/roy/commit/ce8b20f))
-
-### BR
-
-* Only support React@16+
+* lost deps for using connect api ([66133f7](https://github.com/windyGex/roy/commit/66133f7))
 
 
 
