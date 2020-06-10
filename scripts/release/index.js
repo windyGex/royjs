@@ -12,22 +12,16 @@ let packageInfo;
 co(function * () {
     yield changelog();
     packageInfo = require('../../package.json');
-    yield publishToTnpm();
-    yield pushMaster();
+    yield pushRemote();
 }).catch(err => {
     console.error('Release failed', err.stack);
 });
 
-function * pushMaster() {
-    yield runCmd('git checkout master');
+function * pushRemote() {
+    yield runCmd('git checkout 1.x');
     yield runCmd('git add .');
     yield runCmd(`git commit -m 'chore: Release-${packageInfo.version}'`);
-    yield runCmd('git push github master');
-}
-
-function * publishToTnpm() {
-    yield runCmd('git checkout master');
-    yield runCmd('git pull');
     yield runCmd(`git tag ${packageInfo.version}`);
-    yield runCmd(`git push github ${packageInfo.version}`);
+    yield runCmd(`git push origin ${packageInfo.version}`);
+    yield runCmd('git push origin 1.x');
 }
