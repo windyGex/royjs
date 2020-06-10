@@ -85,7 +85,7 @@ class Store extends Events {
             ...this.state,
             ...state
         };
-        this.originState = deepCopy(state)
+        this.originState = deepCopy(state);
         this.model = observable(state);
         this.model.on('get', args => {
             this.trigger('get', args);
@@ -143,21 +143,21 @@ class Store extends Events {
     }
     hot(state = {}, actions = {}, prefix, plugins) {
         this.transaction(() => {
-            const keyMap = {}
+            const keyMap = {};
             const diffKeys = diff(this.originState, state)
-                .concat( diff(state, this.originState) )
-                .filter(key => keyMap[key] ? false : ( keyMap[key] = true ) )
+                .concat(diff(state, this.originState))
+                .filter(key => keyMap[key] ? false : (keyMap[key] = true));
 
-            const setValue = (key , value ) => {
+            const setValue = (key, value) => {
                 key = prefix ? `${prefix}.${key}` : key;
                 this.set(key, value);
-            }
+            };
 
             diffKeys.forEach(key => {
-                const value = key.split('.').reduce((obj,curKey) => obj && obj[curKey], state)
-                setValue(key, value)
-            })
-            this.originState = deepCopy(state)
+                const value = key.split('.').reduce((obj, curKey) => obj && obj[curKey], state);
+                setValue(key, value);
+            });
+            this.originState = deepCopy(state);
         });
         this._initPlugins(plugins, actions);
         this._wrapActions(actions, this.model, prefix);
