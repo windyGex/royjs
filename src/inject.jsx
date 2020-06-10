@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import eql from 'shallowequal';
-import { isArray, warning } from './utils';
+import { warning, change, get } from './utils';
 import { StoreContext } from './provider';
 
 // inject(listStore)
@@ -42,23 +42,8 @@ const inject = function (key, value) {
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
-                this._change = obj => {
-                    obj = isArray(obj) ? obj : [obj];
-                    let matched;
-                    for (let index = 0; index < obj.length; index++) {
-                        const item = obj[index];
-                        const match = Object.keys(this._deps).some(dep => item.key.indexOf(dep) === 0);
-                        if (match) {
-                            matched = true;
-                        }
-                    }
-                    if (matched) {
-                        this.forceUpdate();
-                    }
-                };
-                this._get = data => {
-                    this._deps[data.key] = true;
-                };
+                this._change = change.bind(this);
+                this._get = get.bind(this);
                 Object.keys(defaultProps).forEach(key => {
                     const store = defaultProps[key];
                     this[key] = store;

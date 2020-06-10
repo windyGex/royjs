@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Store from './store';
 import eql from 'shallowequal';
-import { isArray, isPlainObject, warning } from './utils';
+import { isArray, isPlainObject, warning, get, change } from './utils';
 import { StoreContext } from './provider';
 
 const normalizer = (mapStateToProps, context, dispatch) => {
@@ -50,23 +50,8 @@ const connect = function (mapStateToProps = state => state, config = {}) {
             constructor(props, context) {
                 super(props, context);
                 this._deps = {};
-                this._change = obj => {
-                    let matched;
-                    obj = isArray(obj) ? obj : [obj];
-                    for (let index = 0; index < obj.length; index++) {
-                        const item = obj[index];
-                        const match = Object.keys(this._deps).some(dep => item.key.indexOf(dep) === 0);
-                        if (match) {
-                            matched = match;
-                        }
-                    }
-                    if (matched) {
-                        this.forceUpdate();
-                    }
-                };
-                this._get = data => {
-                    this._deps[data.key] = true;
-                };
+                this._change = change.bind(this);
+                this._get = get.bind(this);
                 this.store = context.store || Store.get();
                 if (config.inject) {
                     if (context.injectStore) {

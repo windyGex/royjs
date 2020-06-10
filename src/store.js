@@ -178,7 +178,7 @@ class Store extends Events {
             this.pendingUnobservations = [];
         }
     }
-    _wrapActions(actions, state, prefix) {
+    _wrapActions(actions = {}, state, prefix) {
         Object.keys(actions).forEach(type => {
             const actionType = prefix ? `${prefix}.${type}` : type;
             const that = this;

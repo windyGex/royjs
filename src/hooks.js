@@ -25,7 +25,7 @@ export function useStore(mapStateToProps = state => state) {
         let matched;
         for (let index = 0; index < obj.length; index++) {
             const item = obj[index];
-            const match = Object.keys(deps).some((dep) => item.key.indexOf(dep) === 0);
+            const match = Object.keys(deps).some((dep) => dep.indexOf(item.key) === 0);
             if (match) {
                 matched = true;
             }

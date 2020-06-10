@@ -51,3 +51,22 @@ export const diff = function diff(left, right, previousPath = '', keys = []) {
     });
     return keys;
 };
+
+export const change = function change(obj) {
+    let matched;
+    obj = isArray(obj) ? obj : [obj];
+    for (let index = 0; index < obj.length; index++) {
+        const item = obj[index];
+        const match = Object.keys(this._deps).some(dep => dep.indexOf(item.key) === 0);
+        if (match) {
+            matched = match;
+        }
+    }
+    if (matched) {
+        this.forceUpdate();
+    }
+};
+
+export const get = function get(data) {
+    this._deps[data.key] = true;
+};
