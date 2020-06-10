@@ -23,6 +23,12 @@ function wrap(key, value, ret) {
             });
         } else if (Array.isArray(value)) {
             value = observable(value, ret);
+            value.on('get', function (args) {
+                const currentKey = `${key}.${args.key}`;
+                ret.trigger('get', {
+                    key: currentKey
+                });
+            });
             value.on('change', function (args) {
                 const mixArgs = { ...args };
                 if (!args.key) {
