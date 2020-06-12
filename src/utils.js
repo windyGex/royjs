@@ -57,7 +57,7 @@ export const change = function change(obj) {
     obj = isArray(obj) ? obj : [obj];
     for (let index = 0; index < obj.length; index++) {
         const item = obj[index];
-        const match = Object.keys(this._deps).some(dep => dep.indexOf(item.key) === 0);
+        const match = Object.keys(this._deps).some(dep => item.key.indexOf(dep) === 0);
         if (match) {
             matched = match;
         }
