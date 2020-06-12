@@ -124,3 +124,40 @@ describe('support inject store to React Component', () => {
         expect(store.state.sort).eql(1);
     });
 });
+
+
+describe('support render', () => {
+    it('should render', () => {
+        const store = new Store({
+        state: {
+            data: {}
+        },
+        actions: {
+            updateTime (state, time) {
+                state.set('data.time', time)
+            }
+        }
+        });
+        @connect()
+        class Todo2 extends React.Component {
+            render () {
+                const { data, dispatch } = this.props;
+                return (
+                    <div>{data.time}</div>
+                )
+            }
+        }
+        class App extends React.Component {
+            render () {
+                return (
+                <Provider store={store}>
+                    <Todo2 />
+                </Provider>
+                )
+            }
+        }
+        const app = mount(<App/>);
+        store.state.set('data.time', 1)
+        expect(app.find('div').text()).eql('1')
+    });
+});
