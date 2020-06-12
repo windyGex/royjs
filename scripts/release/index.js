@@ -18,7 +18,6 @@ co(function * () {
 });
 
 function * pushRemote() {
-    yield runCmd('git checkout 1.x');
     yield runCmd('git add .');
     yield runCmd(`git commit -m 'chore: Release-${packageInfo.version}'`);
     yield runCmd(`git tag ${packageInfo.version}`);
