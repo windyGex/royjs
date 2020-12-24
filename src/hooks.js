@@ -10,6 +10,8 @@ export function useStore(mapStateToProps = state => state) {
     const get = useRef();
     const change = useRef();
     const set = useRef();
+    const isUnmounted = useRef();
+    isUnmounted.current = false;
     get.current = (data) => {
         deps[data.key] = true;
     };
@@ -19,15 +21,17 @@ export function useStore(mapStateToProps = state => state) {
         state = {...state}; // for deps
     }
     store.off('get', get.current);
-    set.current = (newState: any) => {
+    set.current = (newState) => {
         if (Array.isArray(newState)) {
             newState = [...newState];
         } else if (isPlainObject(newState)) {
             newState = { ...newState };
         }
-        setState(newState);
+        if (!isUnmounted.current) {
+            setState(newState);
+        }
     };
-    change.current = (obj: any) => {
+    change.current = (obj) => {
         obj = Array.isArray(obj) ? obj : [obj];
         let matched;
         for (let index = 0; index < obj.length; index++) {
@@ -46,6 +50,7 @@ export function useStore(mapStateToProps = state => state) {
     useEffect(() => {
         store.on('change', change.current);
         return () => {
+            isUnmounted.current = true;
             store.off('change', change.current);
         };
     }, [store]);
