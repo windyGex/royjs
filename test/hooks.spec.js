@@ -198,4 +198,21 @@ describe('support for function component', () => {
     expect(d).eql(3);
     expect(app.find('span').text()).eql('3');
   });
+
+  it('should support $raw', () => {
+    const store = new Store({
+    });
+    const d = {
+      b: 1
+    };
+    store.create('test', {
+      state: {
+        a: d
+      }
+    });
+    expect(store.state.test.a.$raw.b).eq(1);
+    expect(d.$raw.b).eq(1);
+    expect(store.state.test.a.toJSON().b).eq(1);
+    expect(d.toJSON().b).eq(1);
+  })
 });

@@ -280,9 +280,23 @@ const observable = function observable(object) {
         };
         returnProxy = new Proxy(object, handler);
         if (!object.$proxy) {
-            Object.defineProperty(object, '$proxy', {
-                get() {
-                    return returnProxy;
+            Object.defineProperties(object, {
+                $proxy: {
+                    get() {
+                        return returnProxy
+                    }
+                },
+                $raw: {
+                    get() {
+                        return rawJSON(object)
+                    }
+                },
+                toJSON: {
+                    get() {
+                        return function toJSON() {
+                            return rawJSON(object)
+                        }
+                    }
                 }
             });
         }
