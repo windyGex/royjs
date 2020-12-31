@@ -50,7 +50,7 @@ const inject = function (key, value) {
                     this[key].on('change', this._change);
                     this[key].history = this[key].history || this.props.history;
                     if (this[key].name) {
-                        this.context.store && this.context.store.mount(this[key].name, this[key]);
+                        this.context && this.context.store && this.context.store.mount(this[key].name, this[key]);
                     }
                     if (!Component.prototype._hasSet) {
                         Object.defineProperty(Component.prototype, key, {

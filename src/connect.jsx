@@ -52,8 +52,8 @@ const connect = function (mapStateToProps = state => state, config = {}) {
                 this._deps = {};
                 this._change = change.bind(this);
                 this._get = get.bind(this);
-                this.store = context.store || Store.get();
-                if (config.inject) {
+                this.store = context && context.store || Store.get();
+                if (config.inject && context) {
                     if (context.injectStore) {
                         this.store = context.injectStore;
                     } else {
